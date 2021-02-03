@@ -1,3 +1,12 @@
 #!/bin/bash
 
 echo "welcome $USER!"
+
+#gcc complation alias: c89, c99, debug mode, releasa mode
+alias gd='gcc -ansi -pedantic-errors -wall -wextra -g'
+alias gc='gcc -ansi -pedantic-errors -wall -wextra -DNDEBUG -03'
+alias gd9='gcc -std=c99 -pedantic-errors -wall -wextra -g'
+alias gc9='gcc -std=c99 -pedantic-errors -wall -wextra -DNDEBUG 03'
+
+#valgrind alias
+alias vlg='vaglgrind --leak-check=yes --track-origins=yes'
