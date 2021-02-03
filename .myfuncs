@@ -10,3 +10,7 @@ alias gc9='gcc -std=c99 -pedantic-errors -wall -wextra -DNDEBUG 03'
 
 #valgrind alias
 alias vlg='vaglgrind --leak-check=yes --track-origins=yes'
+
+alias cmt='git commit -m'
+alias psh='git push -u'
+alias stat='git status'
