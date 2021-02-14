@@ -14,7 +14,9 @@ int IsSumFound (int* sorted_arr, int sum, int size)
 		}
 		if (*(sorted_arr+first)+*(sorted_arr+last)==sum)
 		{
-			return(last*100000+first);
+			*(sorted_arr) = first;
+			*(sorted_arr + 1) = last;
+			return(1);
 		}
 	}
 
