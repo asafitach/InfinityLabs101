@@ -14,13 +14,14 @@ int main( int argc, char **argv, char **envp)
 	{
 	printf("Argument with no use: %s", *(argv+1));
 	}
+	
 /*creating a buffer */	
+	
 	size=Count(envp);
 	buffer=(char**)malloc(size*sizeof(char*));
-
 	assert(buffer!=NULL);
 
-	
+	i=0;
 	while(*(envp+i))
 	{	
 	*(buffer+i)=(char*)malloc((strlen(*(envp+i))+1)*(sizeof(char)));

@@ -4,24 +4,24 @@
 
 
 
-int main( int argc, char** argv)
+int main()
 {
 
 
-int num=0;
+int num = 0;
 int* arr;
 
-if(argc<2)
-{
-printf("Please insert number while entering the file");
-}
+printf("please insert the number of soldiers: \n");
+scanf("%d", &num);
 
-num=atoi(argv[1]);
-arr= (int*)malloc(num*sizeof(int));
+
+arr = (int*)malloc(num * sizeof(int));
 
 AllAlive(arr, num);
 KillToSurvive(arr, num);
 PrintTheLast(arr, num);
+
+free(arr);
 
 
 return (0);

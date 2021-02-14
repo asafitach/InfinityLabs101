@@ -22,13 +22,13 @@ int flag = 0;
 
 while( count < num-1 )
 {
-	if( arr[i%num] == 1 && flag == 0)
+	if( *(arr + (i % num)) == 1 && flag == 0)
 	{
 		flag = 1;
 	}
-	else if( arr[i % num] == 1 && flag == 1)
+	else if( *(arr + (i % num)) == 1 && flag == 1)
 	{
-		arr[i % num] = 0;
+		*(arr + (i % num)) = 0;
 		flag = 0;
 		count++;
 	}
