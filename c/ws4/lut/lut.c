@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include<stdio.h>/*printf*/
+#include<stdlib.h>/*system*/
 #include"lut.h"
 
 void Initialize (void (**fun_arr)(void), int size)
@@ -9,11 +9,11 @@ void Initialize (void (**fun_arr)(void), int size)
 	{
 		*(fun_arr + i)= &Empty;
 	}
-	*(fun_arr + 'A') = &APressed;
-	*(fun_arr + 'a') = &APressed;
-	*(fun_arr + 'T') = &TPressed;
-	*(fun_arr + 't') = &TPressed;
-	*(fun_arr +  27) = &EscPressed;
+	*(fun_arr + 'A') = APressed;
+	*(fun_arr + 'a') = APressed;
+	*(fun_arr + 'T') = TPressed;
+	*(fun_arr + 't') = TPressed;
+	*(fun_arr +  27) = EscPressed;
 
 	return;
 }

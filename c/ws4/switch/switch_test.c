@@ -5,7 +5,7 @@
 
 int main()
 {
-	int chr;
+	int chr = 0;
 
 	system("stty -icanon -echo");
 
