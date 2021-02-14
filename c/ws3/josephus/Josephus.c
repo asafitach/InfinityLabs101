@@ -1,10 +1,14 @@
 #include<stdio.h>/*printf*/
+#include<assert.h>/*assert*/
 #include "Josephus.h"
 
 
 void AllAlive( int *arr, int num)
 {
 	int i = 0;
+	
+	assert(arr);
+	
 	for(i = 0; i < num; i++)
 	{
 		*(arr + i) = 1;
@@ -19,6 +23,8 @@ void KillToSurvive(int *arr, int num)
 	int i = 0;
 	int count = 0;
 	int flag = 0;
+	
+	assert(arr);
 
 	while( count < num-1 )
 	{

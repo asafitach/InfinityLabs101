@@ -19,13 +19,23 @@ int main( int argc, char **argv, char **envp)
 	
 	size = Count(envp);
 	buffer = (char**)malloc(size * sizeof(char*));
-	assert(buffer != NULL);
+	if(buffer == 0)
+	{
+	printf("allocation failed\n");
+	}
+	
 
 	i = 0;
 	while(*(envp + i))
 	{	
 		*(buffer + i)=(char*)malloc((strlen(*(envp + i)) + 1)*(sizeof(char)));
 		i++;
+		if(buffer == 0)
+		{
+			printf("allocation failed\n");
+			Free(buffer, i);
+		}
+				
 	}
 
 

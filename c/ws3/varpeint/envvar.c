@@ -74,6 +74,7 @@ void Free(char **multi_arr, size_t size)
 	{
 
 		free(*(multi_arr + i - 1));
+		*(multi_arr + i - 1) = NULL;
 	}
 
 
