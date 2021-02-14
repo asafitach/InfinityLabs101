@@ -1,5 +1,5 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include<stdio.h>/*printf, scanf*/
+#include<stdlib.h>/*malloc, free*/
 #include"Josephus.h"
 
 
@@ -8,21 +8,21 @@ int main()
 {
 
 
-int num = 0;
-int* arr;
+	int num = 0;
+	int* arr;
 
-printf("please insert the number of soldiers: \n");
-scanf("%d", &num);
-
-
-arr = (int*)malloc(num * sizeof(int));
-
-AllAlive(arr, num);
-KillToSurvive(arr, num);
-PrintTheLast(arr, num);
-
-free(arr);
+	printf("please insert the number of soldiers: \n");
+	scanf("%d", &num);
 
 
-return (0);
+	arr = (int*)malloc(num * sizeof(int));
+
+	AllAlive(arr, num);
+	KillToSurvive(arr, num);
+	PrintTheLast(arr, num);
+
+	free(arr);
+
+
+	return (0);
 }

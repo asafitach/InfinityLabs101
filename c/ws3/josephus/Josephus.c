@@ -1,4 +1,4 @@
-#include<stdio.h>
+#include<stdio.h>/*printf*/
 #include "Josephus.h"
 
 
@@ -16,25 +16,25 @@ void AllAlive( int *arr, int num)
 
 void KillToSurvive(int *arr, int num)
 {
-int i = 0;
-int count = 0;
-int flag = 0;
+	int i = 0;
+	int count = 0;
+	int flag = 0;
 
-while( count < num-1 )
-{
-	if( *(arr + (i % num)) == 1 && flag == 0)
+	while( count < num-1 )
 	{
-		flag = 1;
+		if( *(arr + (i % num)) == 1 && flag == 0)
+		{
+			flag = 1;
+		}
+		else if( *(arr + (i % num)) == 1 && flag == 1)
+		{
+			*(arr + (i % num)) = 0;
+			flag = 0;
+			count++;
+		}
+		i++;
 	}
-	else if( *(arr + (i % num)) == 1 && flag == 1)
-	{
-		*(arr + (i % num)) = 0;
-		flag = 0;
-		count++;
-	}
-	i++;
-}
-return;
+	return;
 }
 
 /**********************************************/

@@ -12,7 +12,7 @@ int main( int argc, char **argv, char **envp)
 	
 	if(argc > 1)
 	{
-	printf("Argument with no use: %s", *(argv+1));
+		printf("Argument with no use: %s", *(argv + 1));
 	}
 	
 /*creating a buffer */	
@@ -24,8 +24,8 @@ int main( int argc, char **argv, char **envp)
 	i = 0;
 	while(*(envp + i))
 	{	
-	*(buffer + i)=(char*)malloc((strlen(*(envp + i)) + 1)*(sizeof(char)));
-	i++;
+		*(buffer + i)=(char*)malloc((strlen(*(envp + i)) + 1)*(sizeof(char)));
+		i++;
 	}
 
 

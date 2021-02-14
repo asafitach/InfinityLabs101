@@ -1,6 +1,6 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include<stdio.h>/*printf*/
+#include<stdlib.h>/*free*/
+#include<string.h>/*strcpy, strlen*/
 #include "envvar.h"
 
 size_t Count(char **arr)
@@ -18,7 +18,6 @@ size_t Count(char **arr)
 void ArrayOfEnvVar(char **dest, char **src)
 {
 	size_t str = 0;
-	size_t chr = 0;
 
 	for(str = 0; *(src + str); str++)
 	{
@@ -39,9 +38,9 @@ void ToLowerToAll(char **env_arr, size_t size)
 	{
 		while(*(chr + *(env_arr + str)))
 		{
-			if( *(chr + *(env_arr + str)) > 64 && *(chr + *(env_arr + str)) < 91)
+			if( (*(chr + *(env_arr + str)) >= 'A') && (*(chr + *(env_arr + str)) <= 'Z'))
 			{
-				*(chr + *(str + env_arr)) = *(chr + *(env_arr + str)) + 32;
+				*(chr + *(str + env_arr)) = *(chr + *(env_arr + str)) + 'a'-'A';
 			}
 			chr++;
 		}
@@ -70,7 +69,6 @@ void PrintAll(char **env_arr, size_t size)
 void Free(char **multi_arr, size_t size)
 {
 	size_t i = 0;
-	size_t j = 0;
 	
 	for(i = size ; i > 0; i--)
 	{
