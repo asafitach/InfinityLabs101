@@ -1,28 +1,31 @@
 
-/*
-struct func
-{
-char name[10];
-int *(ptr_cmp)(char *);
-int *(ptr)(FILE*, char*);
+typedef struct{
+char *name;
+int (*cmp)(char *);
+int (*operation)(char*, char*);
 } func;
-*/
 
 
-enum STAT {
-    FAILED   = 0,
-    REMOVE   = 1,
-    COUNT    = 2,
-    APPINBEG = 3,
-    EXIT     = 4,
-    APPINEND = 5
-};
+/*
+typedef enum {
+    REMOVE    = 0,
+    COUNT     = 1,
+    EXIT      = 2,
+    APPINBEG  = 3,
+    APPEND    = 4,
+    SUCSSES   = 5, 
+    EXIT_DONE = 6,
+    ERROR     = 7
+} STAT;
+ */
 
-int CountFile (char *file_name, char *str);
-int Append(char *name_of_file, char *str);
+int comparition(char *file_name,char *str, func *arr);
 int RemoveFile( char *file_name,  char *str);
+int CountFile (char *file_name, char *str);
 int Exit (char *file_name,  char *str);
 int AppendInBegining(char *file_name, char *str);
+int Append(char *name_of_file, char *str);
+
 
 /****COMPARITION FUNCTIONS****/
 int RemCmp(char *str);
