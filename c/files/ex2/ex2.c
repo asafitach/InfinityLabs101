@@ -1,3 +1,5 @@
+/******************************* reviwed bu Eden *****************************/
+
 #include<stdio.h>/*printf*/
 #include<string.h>/*strcmp*/
 #include<stdlib.h>/*remove*/
@@ -5,8 +7,8 @@
 
 
 
-int comparition(char *file_name,char *str, func *arr)
-	{
+int Comparition(char *file_name,char *str, func *arr)
+{
 	int i=0;
 	STAT status = SUCCSESS; 
 	for(i = 0; i < 5; i++)
@@ -25,7 +27,7 @@ int comparition(char *file_name,char *str, func *arr)
 
 /**********************************************************/
 
-int RemoveFile( char *file_name, char *str)
+int RemoveFile(char *file_name, char *str)
 {
 	str = str; 
 			
@@ -74,7 +76,7 @@ int CountFile (char *file_name, char *str)
 
 	f_ptr=NULL;
 
-	printf("\nCounter stands on %d\n", count);
+	printf("\nCounter stands on %d\n", count-1);
 		
 	return(SUCCSESS);
 }
@@ -103,13 +105,13 @@ int Append(char *name_of_file, char *str)
 		return(ERROR);
 	}
 
-	check = fprintf(f_ptr, "\n %s", str);
+	check = fprintf(f_ptr, " %s", str);
 	if(check < 1)
 	{
 		printf("Could not append string\n");
 		return(ERROR);
 	}
-	check=0;
+	check = 0;
 	check = fclose(f_ptr);
 	if(check != 0)
 	{
@@ -122,7 +124,7 @@ int Append(char *name_of_file, char *str)
 
 /**********************************************************/
 
-int AppendInBegining(char *file_name, char *str)
+int AppendInBeginning(char *file_name, char *str)
 {
 	int chr = 0;
 	int check = 0;
@@ -132,15 +134,17 @@ int AppendInBegining(char *file_name, char *str)
 
 	
 	f_tmp_ptr = fopen("temp_file.txt", "w+");
-	if(f_tmp_ptr==NULL)
-	{		printf("Eror found while loading the file");
+	if(f_tmp_ptr == NULL)
+	{		
+		printf("Eror found while loading the file");
 		return(ERROR);
 	}
 
 
 	f_ptr = fopen(file_name, "r+");
-	if(f_ptr==NULL)
-	{		printf("Eror found while loading the file");
+	if(f_ptr == NULL)
+	{		
+		printf("Eror found while loading the file");
 		return(ERROR);
 	}
 
@@ -205,7 +209,7 @@ int ExitCmp(char *str)
 
 int AppFirstCmp(char *str)
 {
-	if(*(str)=='<')
+	if(*(str) == '<')
 	{
 		return(0);
 	}
@@ -217,7 +221,7 @@ int AppFirstCmp(char *str)
 
 int AppLastCmp(char *str)
 {
-	str=str;/*patch*/
+	str = str;                /*patch*/
 	return(0);
 }
 

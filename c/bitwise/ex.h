@@ -28,7 +28,7 @@ unsigned char SwapBits35(unsigned char n);
 
 unsigned char DivideBy16(unsigned char n);
 void SwapValue(unsigned int *x, unsigned int *y);
-void PrintFloatBits(unsigned int *x);
+void PrintFloatBits(float x);
 
 /************************************ 9-10 ***************************************/
 

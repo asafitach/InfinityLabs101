@@ -1,3 +1,5 @@
+/******************************* reviwed bu Eden *****************************/
+
 #ifndef __EX2_H__
 #define __EX2_H__
 
@@ -16,11 +18,11 @@ typedef enum {
 } STAT;
  
 
-int comparition(char *file_name,char *str, func *arr);
+int Comparition(char *file_name,char *str, func *arr);
 int RemoveFile( char *file_name,  char *str);
 int CountFile (char *file_name, char *str);
 int Exit (char *file_name,  char *str);
-int AppendInBegining(char *file_name, char *str);
+int AppendInBeginning(char *file_name, char *str);
 int Append(char *name_of_file, char *str);
 
 

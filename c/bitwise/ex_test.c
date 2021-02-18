@@ -74,7 +74,7 @@ int main()
 
 	f = 0.004;
 	printf("The binary interpration of %f is:\n", f);
-	PrintFloatBits((unsigned int *)&f);
+	PrintFloatBits(f);
 
 
 	return 0;

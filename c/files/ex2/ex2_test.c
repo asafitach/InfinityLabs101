@@ -1,3 +1,5 @@
+/******************************* reviwed bu Eden *****************************/
+
 #include<stdio.h>/*printf fgets*/
 #include<stdlib.h>/*malloc free*/
 #include"ex2.h"
@@ -28,7 +30,7 @@ int main()
 
 	arr[3].name="<";
 	arr[3].cmp=AppFirstCmp;
-	arr[3].operation=AppendInBegining;
+	arr[3].operation=AppendInBeginning;
 
 	arr[4].name="append";
 	arr[4].cmp=AppLastCmp;
@@ -41,10 +43,11 @@ int main()
 	str = (char*)malloc(100 * sizeof(char));
 	if(str == NULL)
 	{
-	printf("malloc");
-	return (1);
+		printf("malloc");
+		return (1);
 	}
 	
+	getchar();
 	while(stat == SUCCSESS)
 	{
 			
@@ -60,7 +63,7 @@ int main()
 			return(1);
 		}
 				
-		stat = comparition(file_name, str, arr);	
+		stat = Comparition(file_name, str, arr);	
 		if(ERROR == stat)
 		{
 			free(str);	
@@ -70,5 +73,5 @@ int main()
 
 		free(str);	
 	
-	exit(0);
+	exit(0); /*only exit works (approved by Erez)*/
 }

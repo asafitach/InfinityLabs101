@@ -178,10 +178,11 @@ void SwapValue(unsigned int *x, unsigned int *y)
 
 /*****************************************************************************/
 
-void PrintFloatBits(unsigned int *x)
+void PrintFloatBits(float f)
 {
 	int count;
 	unsigned int n;
+	unsigned int *x = (unsigned int*)&f;
 
 	for(count = 31; count > -1; count--)
 	{
