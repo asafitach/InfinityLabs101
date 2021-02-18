@@ -1,5 +1,3 @@
-#ifndef __EX2_H__
-#define __EX2_H__
 
 typedef struct{
 char *name;
@@ -10,9 +8,9 @@ int (*operation)(char*, char*);
 
 
 typedef enum {
-    SUCCSESS   = 0, 
-    EXIT_DONE  = 3,
-    ERROR      = 2
+    SUCSSES   = 0, 
+    EXIT_DONE = 1,
+    ERROR     = 2
 } STAT;
  
 
@@ -31,5 +29,7 @@ int ExitCmp(char *str);
 int AppLastCmp(char *str);
 int AppFirstCmp(char *str);
 
-#endif /* __EX2_H__ */
 
+
+/*FILE *CopyFile(FILE *f_tmp_ptr, FILE *f_ptr);
+FILE *OpenFile (char *file_name, char* opt);*/

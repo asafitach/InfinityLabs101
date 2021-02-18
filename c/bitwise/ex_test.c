@@ -1,11 +1,13 @@
+/*****************        Reviewed by Fei       **************************/
+
 #include<stdio.h>/*printf*/
 #include"ex.h"
 
 int main()
 {
 	unsigned int x, y, n, ans = 0;
-	unsigned char b, c =16;
-	unsigned int arr[9]={5, 9, 15, 12, 7, 2, 10, 55, 8};
+	unsigned char b = 0, c =16;
+	unsigned int arr[9] = {5, 9, 15, 12, 7, 2, 10, 55, 8};
 	float f = 0;
 	x = 3;
 	y = 0;
@@ -37,6 +39,7 @@ int main()
 	b = MirrorBits(c);
 	printf("mirror of %d is %d\n", c, b);
 
+	c = 34;
 	b = BitsOn2N6( c);
 	printf("in %d is the 2'th and 6'th both on? %d\n", c, b);
 

@@ -1,3 +1,5 @@
+/*****************        Reviewed by Fei       **************************/
+
 #ifndef __EX_H__
 #define __EX_H__
 
@@ -31,7 +33,6 @@ void PrintFloatBits(unsigned int *x);
 /************************************ 9-10 ***************************************/
 
 unsigned int CountBits(unsigned int n);
-void BitLut() ;
 int CountBitsOn(unsigned int n);
 
 

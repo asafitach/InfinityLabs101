@@ -1,3 +1,5 @@
+/*****************        Reviewed by Fei       **************************/
+
 #include<stdio.h>/*printf*/
 #include"ex.h"
 
@@ -37,15 +39,8 @@ unsigned int IsPowOf2Itarate( unsigned int n)
 /*****************************************************************************/
 
 unsigned int IsPowerOf2( unsigned int n)
-{	
-	if(0 == n)
-	{
-		return(0);
-	}
-	n++;
-	n = (n & 1);
-	
-	return(n);
+{		
+	return((n != 0) && ((n & (n - 1)) == 0));
 }
 
 /*****************************************************************************/
@@ -68,8 +63,8 @@ unsigned int AddOne(unsigned int n)
 
 void TreeBitsOn(unsigned int *numbers, unsigned int size)
 {
-	unsigned int count=0;
-	unsigned int index;
+	unsigned int count = 0;
+	unsigned int index = 0;
 
 	for(index = 0; index < size; index++)
 	{

@@ -1,16 +1,16 @@
-#include<stdio.h>/*printf fgets*/
-#include<stdlib.h>/*malloc free*/
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
 #include"ex2.h"
 
 
 
 int main()
 {
-	char *fgets_suc = NULL;
-	STAT stat = SUCCSESS;
-	char *str = NULL;
-	/*char *file_name = "rec.txt";*/
+	int stat = 0;
 	char file_name[300] = "0";
+	char str_of_str [9][] = {"slkjfd", "lksdjf lskjfl", "	kjflask`12345=-09", 
+	"ksldfj dlsvkdj", "<start", "-count", "-exit", "lskdjfl lk", "-remove"};
 
 
 	func arr[4];
@@ -33,42 +33,33 @@ int main()
 	arr[4].name="append";
 	arr[4].cmp=AppLastCmp;
 	arr[4].operation=Append;
+	 
 
-	
+
+
 	printf("Please enter the file name followed by Enter key:\n");
 	scanf("%s", file_name);
 
-	str = (char*)malloc(100 * sizeof(char));
-	if(str == NULL)
+	stat = SUCSSES;
+	while(SUCSSES == stat)
 	{
-	printf("malloc");
-	return (1);
-	}
-	
-	while(stat == SUCCSESS)
-	{
-			
-		printf("Please enter string to be added to the file\n"	
+		printf("Please enter string to be added to the file\n"
 		" -NOTE- max size of string is 100 chars\n");
 
-		fgets_suc = fgets(str, 100, stdin);
+		/*str=fgets(str, 25, stdin);*/
 		
+		scanf("%s", stri);
 		
-		if(fgets_suc==NULL)
-		{
-			printf("Coulden't get input\n");
-			return(1);
-		}
-				
-		stat = comparition(file_name, str, arr);	
-		if(ERROR == stat)
-		{
-			free(str);	
-			return(1);
-		}
+
+		stat=comparition(file_name, str, arr);
 	}
 
-		free(str);	
-	
-	exit(0);
+	if(7==stat)
+	{
+		exit(1);
+	}
+
+		return (0);
+
 }
+

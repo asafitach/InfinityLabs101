@@ -1,20 +1,20 @@
-#include<stdio.h>/*printf*/
-#include<string.h>/*strcmp*/
-#include<stdlib.h>/*remove*/
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
 #include"ex2.h"
 
 
 
 int comparition(char *file_name,char *str, func *arr)
 	{
-	int i=0;
-	STAT status = SUCCSESS; 
-	for(i = 0; i < 5; i++)
+	int i=0; 
+	for(i=0;i<5;i++)
 	{			
-		if(arr[i].cmp(str) == 0)
+		if(arr[i].cmp(str)==0)
 		{
-			status = arr[i].operation(file_name, str);
-			return(status);
+			printf("%d %s\n", i
+			i=arr[i].operation(file_name, str);
+			return(i);
 		}
 	}
 	return(ERROR);
@@ -29,13 +29,13 @@ int RemoveFile( char *file_name, char *str)
 {
 	str = str; 
 			
-	if(remove(file_name) != 0)
+	if(remove(file_name)!=0)
 	{
 		printf("Eror in removing file");
 		return(ERROR);
 	}
 	
-	return(SUCCSESS);
+	return(SUCSSES);
 }
 
 /**********************************************************/
@@ -43,12 +43,9 @@ int RemoveFile( char *file_name, char *str)
 int CountFile (char *file_name, char *str)
 {
 	int count = 0;
-	char str_count[100];
-	char *return_value = NULL;
+	char *ptr = str;
 	int check = 0;
 	FILE *f_ptr = NULL;
-	
-	str = str;
 	
 	f_ptr = fopen(file_name, "r");
 	if(f_ptr == NULL)
@@ -57,13 +54,12 @@ int CountFile (char *file_name, char *str)
 		return(ERROR);
 	}
 
-	do
+	while(ptr != NULL)
 	{
-		return_value = fgets(str_count,100, f_ptr);
+		ptr = fgets(str,100, f_ptr);
 		count++;
 	}
-	while(return_value != NULL);
-		
+	
 	check = fclose(f_ptr);
 	if(check != 0)
 	{
@@ -71,19 +67,19 @@ int CountFile (char *file_name, char *str)
 		return(ERROR);
 	}
 
-
+	ptr=NULL;
 	f_ptr=NULL;
 
-	printf("\nCounter stands on %d\n", count);
+	printf("\nCounter stands on %d\n", count-1);
 		
-	return(SUCCSESS);
+	return(SUCSSES);
 }
 
 /**********************************************************/
 
 int Exit (char *file_name, char *str)
 {
-	str = str;
+	str=str;
 	printf("\n \n End of session with %s, good-bye \n \n", file_name);
 	return(EXIT_DONE);
 }
@@ -96,10 +92,10 @@ int Append(char *name_of_file, char *str)
 	FILE *f_ptr = NULL;
 
 	
-	f_ptr = fopen(name_of_file, "a+");
+	f_ptr = fopen(name_of_file, "+a");
 	if(f_ptr == NULL)
 	{
-		printf("Eror found while loading the file. function: Append\n");
+		printf("Eror found while loading the file");
 		return(ERROR);
 	}
 
@@ -109,7 +105,7 @@ int Append(char *name_of_file, char *str)
 		printf("Could not append string\n");
 		return(ERROR);
 	}
-	check=0;
+	
 	check = fclose(f_ptr);
 	if(check != 0)
 	{
@@ -117,7 +113,7 @@ int Append(char *name_of_file, char *str)
 		return(ERROR);
 	}
 
-	return(SUCCSESS);
+	return(SUCSSES);
 }
 
 /**********************************************************/
@@ -172,8 +168,7 @@ int AppendInBegining(char *file_name, char *str)
 	}
 	fclose(f_tmp_ptr);
 	RemoveFile("temp_file.txt", str);
-	
-	return(SUCCSESS);
+	return(SUCSSES);
 }
 
 
@@ -182,23 +177,21 @@ int AppendInBegining(char *file_name, char *str)
 
 int RemCmp(char *str)
 {
-		return(strcmp(str,"-remove\n"));
+		return(strcmp(str,"-remove"));
 }
 
 /**********************************************************/
 
 int CountCmp(char *str)
 {
-	return(strcmp(str,"-count\n"));
+	return(strcmp(str,"-count"));
 }
 
 /**********************************************************/
 
 int ExitCmp(char *str)
 {
-	int res = 0;
-	res=strcmp(str,"-exit\n");
-	return(res);
+	return(strcmp(str,"-exit"));
 }
 
 /**********************************************************/
