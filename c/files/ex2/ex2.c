@@ -5,7 +5,7 @@
 #include<stdlib.h>/*remove*/
 #include"ex2.h"
 
-
+	
 
 int Comparition(char *file_name,char *str, func *arr)
 {
