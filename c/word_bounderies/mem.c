@@ -63,7 +63,7 @@ void *MemCpy(void *dest, const void * source, size_t n)
 	
 	while(n)
 	{
-		if(((size_t)ptr % sizeof(size_t) != 0) || n < sizeof(size_t))
+		if(/*((size_t)ptr % sizeof(size_t) != 0) ||*/ n < sizeof(size_t))
 		{
 			*(ptr) = *(src + N - n);
 			ptr ++;
