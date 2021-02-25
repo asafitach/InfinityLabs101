@@ -9,17 +9,23 @@ typedef enum
 	MALLOC_FAILED
 }status_t;
 
+void PrintError(size_t stat);
 status_t MemSetTest();	
 status_t MemCpyTest();	
 status_t MemMoveTest();
 
 int main()
 {
-	MemSetTest();
+	status_t ret_val = SUCCESS;
 	
-	MemCpyTest();
+	ret_val = MemSetTest();
+	PrintError(ret_val);
 	
-	MemMoveTest();
+	ret_val = MemCpyTest();
+	PrintError(ret_val);
+	
+	ret_val = MemMoveTest();
+	PrintError(ret_val);
 	
 	return (0);
 }
@@ -27,7 +33,7 @@ int main()
 
 status_t MemSetTest()
 {
-	char c = 'f';
+	char c = 'w';
 	size_t size = 23;
 	char *str_cpy1 = (char*)calloc(size + 1, sizeof(char));
 	char *str_cpy2 = NULL;
@@ -66,7 +72,7 @@ status_t MemSetTest()
 status_t MemCpyTest()
 {
 	size_t size = 10;
-	char *str = "hello world";
+	char *str = "welcome, it's nice to see you!";
 	char *str_cpy1 = (char*)calloc(size + 1, sizeof(char));
 	char *str_cpy2 = NULL;
 	
@@ -104,8 +110,9 @@ status_t MemCpyTest()
 
 status_t MemMoveTest()
 {
-	size_t size = 15;
+	size_t size = 31;
 	size_t num_bytes = 9;
+	int flag = 0;
 	char *str_cpy1 = (char*)calloc(size + 1, sizeof(char));
 	char *str_cpy2 = NULL;
 	
@@ -122,14 +129,24 @@ status_t MemMoveTest()
 		return (MALLOC_FAILED);
 	}
 	
-	strcpy(str_cpy1, "hello world!");
-	strcpy(str_cpy2, "hello world!");
+	strcpy(str_cpy1, "welcome, it's nice to see you!");
+	strcpy(str_cpy2, "welcome, it's nice to see you!");
 	
 	MemMove(str_cpy1 + 3, str_cpy1, num_bytes);
-	memmove(str_cpy2 + 3, str_cpy2, num_bytes);
-	
+	memmove(str_cpy2 + 3, str_cpy2, num_bytes);	
 	
 	if (0 == strcmp(str_cpy1, str_cpy2))
+	{
+		flag = 1;
+	}
+		
+	strcpy(str_cpy1, "welcome, it's nice to see you!");
+	strcpy(str_cpy2, "welcome, it's nice to see you!");
+	
+	MemMove(str_cpy1, str_cpy1 + 3, num_bytes);
+	memmove(str_cpy2, str_cpy2 + 3, num_bytes);	
+	
+	if ((0 == strcmp(str_cpy1, str_cpy2)) && (flag == 1))
 	{
 		printf("MemMove function - succeeded\n");
 	}
@@ -138,8 +155,18 @@ status_t MemMoveTest()
 		printf("MemMove function - failed\n");
 	}
 		
+		
 	free(str_cpy1);	
 	free(str_cpy2);	
 
 	return (SUCCESS);
+}
+
+
+void PrintError(size_t stat)
+{
+	if(stat == 	MALLOC_FAILED)
+	{
+		printf("\n\n\n\t\t\t>>>Allocation failed!<<<\n\n\n");
+	}
 }

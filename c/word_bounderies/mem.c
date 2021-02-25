@@ -1,6 +1,8 @@
 /*****************        Reviewed by Fei       **************************/
+#include <assert.h>
 #include "mem.h"
 
+# define WORD 8
 
 size_t Chunk (size_t c)
 {
@@ -16,62 +18,51 @@ size_t Chunk (size_t c)
   return(num);
 }
 
-void *MemSet(void *src, int c, size_t n)
+void *MemSet(void *str, int c, size_t n)
 {
-	char *str =(char*) src;
+	char *str_tmp =(char*) str;
 	size_t chunk = Chunk((size_t)(c % BYTE));
 
 	while(n)
 	{
-		if(((size_t)str % sizeof(size_t) != 0) || (n < sizeof(size_t)))
+		if(((size_t)str_tmp % sizeof(size_t) != 0) || (n < sizeof(size_t)))
 		{
-			*(char*)str = c;
+			*(char*)str_tmp = c;
 			n --;
-			str ++;
+			str_tmp ++;
 		}
 		else
 		{
-			*(size_t*)str = chunk;
+			*(size_t*)str_tmp = chunk;
 			n -= WORD;
-			str += WORD;
+			str_tmp += WORD;
 		}
 	}
 	
-	return(src);
+	return(str);
 }
 
-size_t WordChunk(char *src)
-{
-  int i = 0;
-  size_t num = 0;
- 
-  for(i=0; i < WORD;  i++)
-  {
-    num <<= WORD;
-    num |= (size_t)(*(src+WORD -i -1) % BYTE);
-  }
-  
-  return(num);
-}	
 
-
-void *MemCpy(void *dest, const void * source, size_t n)
+void *MemCpy(void *dest, const void * src, size_t n)
 {
 	char *ptr = (char*) dest;
-	char *src = (char*) source;
-	const size_t N = n;
+	char *src_tmp = (char*) src;
+	assert(ptr);
+	assert(src_tmp);
 	
 	while(n)
 	{
-		if(/*((size_t)ptr % sizeof(size_t) != 0) ||*/ n < sizeof(size_t))
+		if(n < WORD)
 		{
-			*(ptr) = *(src + N - n);
+			*(char*)(ptr) = *(src_tmp);
+			src_tmp ++;
 			ptr ++;
 			n --;
 		}
 		else
 		{
-			*(size_t*)ptr = WordChunk(src + N - n);
+			*((size_t*)ptr) = *((size_t*)src_tmp);
+			src_tmp += WORD;
 			ptr += WORD;
 			n -= WORD;
 		}
@@ -80,28 +71,40 @@ void *MemCpy(void *dest, const void * source, size_t n)
 }
 
 
-void *MemMove(void *str1, const void *str2, size_t n)
+void *MemMove(void *dest, const void *src, size_t n)
 {
-	char *ptr = (char*) str1;
-	char *src = (char*) str2;
-	size_t new_n = (size_t)str2-(size_t)str1;
+	char *ptr = (char*) dest;
+	char *src_tmp = (char*) src;
+	size_t new_n = (size_t)src_tmp-(size_t)dest;
 	size_t size = 0;
 	
 	if((new_n > 0) && (new_n < n))
-	{
-		MemCpy(str1, str2, new_n);
+	{	
+		while(n>WORD)
+		{
+			MemCpy(ptr, src_tmp, WORD);
+			ptr += WORD;
+			src_tmp += WORD;
+			n -= WORD;
+		}		
+		MemCpy(ptr, src_tmp, n);
 	}
 	else
 	{
+		size = n % WORD; 
+		if(0 != size)
+		{
+			MemCpy(ptr + n - size, src_tmp + n - size, size);
+			n -= size; 
+		}	
 		while(n)
 		{
-			size = (n > WORD) ? (WORD):(n);
-			MemCpy(ptr + n - size, src + n - size, size);
-			n -= size;
+			MemCpy(ptr + n - WORD, src_tmp + n - WORD, WORD);
+			n -= WORD;
 		} 
 	}
 	
-	return (str1);
+	return (dest);
 }
 
 
