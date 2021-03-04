@@ -2,7 +2,7 @@
 
 echo "welcome $USER!"
 
-alias myfuc='gedit ~/git/.myfuncs'
+alias myfuncs='gedit ~/git/.myfuncs'
 
 #gcc complation alias: c89, c99, debug mode, releasa mode
 alias gd='gcc -ansi -pedantic-errors -Wall -Wextra -g'
@@ -15,10 +15,6 @@ alias gc9='gcc -std=c99 -pedantic-errors -wall -wextra -DNDEBUG -o3'
 #valgrind alias
 alias vlg='valgrind --leak-check=yes --track-origins=yes'
 
-alias cmt='git commit -m'
-alias psh='git push -u'
-alias stat='git status'
-
 #cd alias
 alias cdg='cd ~/git'
 alias cdc='cd ~/git/c'
@@ -26,4 +22,10 @@ alias cdtmp='cd /tmp'
 
 #git
 alias gup='git add ~/git|git commit -m "UPDATE!"|git push'
+alias cmt='git commit -m'
+alias psh='git push -u'
+alias stat='git status'
 
+#creating new files
+alias ch='f(){ touch $1.c $1.h $1_test.c; unset -f f; }; f'
+alias t='cp ~/git/test.c ./*_test.c'
