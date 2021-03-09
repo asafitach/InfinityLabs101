@@ -2,7 +2,7 @@
 
 echo "welcome $USER!"
 
-alias myfuncs='gedit ~/git/.myfuncs'
+alias myfuncs='gedit ~/asaf-itach/.myfuncs'
 
 #gcc complation alias: c89, c99, debug mode, releasa mode
 alias gd='gcc -ansi -pedantic-errors -Wall -Wextra -g'
@@ -16,16 +16,19 @@ alias gc9='gcc -std=c99 -pedantic-errors -wall -wextra -DNDEBUG -o3'
 alias vlg='valgrind --leak-check=yes --track-origins=yes'
 
 #cd alias
-alias cdg='cd ~/git'
-alias cdc='cd ~/git/c'
+alias cdg='cd ~/asaf-itach'
+alias cdc='cd ~/asaf-itach/c'
 alias cdtmp='cd /tmp'
 
 #git
-alias gup='git add ~/git|git commit -m "UPDATE!"|git push'
+alias gup='git add ~/asaf-itach & git commit -m "UPDATE!"& git push'
 alias cmt='git commit -m'
 alias psh='git push -u'
 alias stat='git status'
 
 #creating new files
 alias ch='f(){ touch $1.c $1.h $1_test.c; unset -f f; }; f'
-alias t='cp ~/git/test.c ./*_test.c'
+alias t='cp ~/asaf-itach/test.c ./*_test.c'
+
+#tools
+alias c='clear'
