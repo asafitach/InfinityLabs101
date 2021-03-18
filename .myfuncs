@@ -21,14 +21,23 @@ alias cdc='cd ~/asaf-itach/c'
 alias cdtmp='cd /tmp'
 
 #git
-alias gup='git add ~/asaf-itach & git commit -m "UPDATE!"& git push'
+alias gup='git add ~/asaf-itach/ & git commit -m "UPDATE!"& git push'
 alias cmt='git commit -m'
 alias psh='git push -u'
 alias stat='git status'
 
 #creating new files
-alias ch='f(){ touch $1.c $1.h $1_test.c; unset -f f; }; f'
-alias t='cp ~/asaf-itach/test.c ./*_test.c'
+alias ch='f(){ touch $1.c $1.h; unset -f f; }; f'
+function t { cp ~/asaf-itach/test.c .;  mv test.c "$1"_test.c;}
+export -f t
+function cf { cp ~/asaf-itach/temp.c .;  mv temp.c "$1".c;}
+export -f cf
 
 #tools
 alias c='clear'
+alias cc='cd ~/asaf-itach/ds/bin'
+alias d='cgdb ./a.out'
+alias a='./a.out'
+
+
+

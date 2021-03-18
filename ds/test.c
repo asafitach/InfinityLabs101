@@ -11,26 +11,22 @@
 #define TEST(name, actual, expected)\
     printf("%s: %s\n\n", name, actual == expected ? GREEN"Pass"WHITE : RED"Fail"WHITE)
     
-void Test(); 
+void TestStackCreate(); 
 
 int main()
 {
     system("clear");
     
-    Test(); 
+    TestStackCreate(); 
     
     return 0; 
 }
 
-void Test()
+void TestStackCreate()
 {
-    printf(CYAN"\tTest \n\n"WHITE); 
+    printf(CYAN"\tTest StackCreate\n\n"WHITE); 
     
-    TEST("  ", 1 , 1); 
+    TEST("receive a pointer", (StackCreate(5)? 1:0) , 1); 
     
-    TEST("  ", 1 , 1); 
-    
-    TEST("  ", 1 , 1); 
-    
-    printf(CYAN"\tEnd Test \n\n"WHITE); 
+    printf(CYAN"\tEnd Test StackCreate\n\n"WHITE); 
 }

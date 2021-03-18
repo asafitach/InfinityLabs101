@@ -20,7 +20,7 @@ stack_t *StackCreate(size_t capacity)
 		printf("Allocation Failed");
 		return (NULL);
 	}
-	if(NULL == array)
+	if(NULL == stack->array)
 	{
 		free(stack);
 		printf("Allocation Failed");

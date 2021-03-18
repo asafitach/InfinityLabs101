@@ -231,6 +231,19 @@ status_t SlistForeach(slist_iter_t from, slist_iter_t to , action_func_t action_
 	return(stat);
 }	
 
-
+void SlistAppend(slist_t *dest, slist_t *src)
+{
+	assert(NULL != dest);
+	assert(NULL != src);
+	
+	dest->tail->data = src->head->data;
+	dest->tail->next = src->head->next;
+	
+	dest->tail = src->tail;
+	dest->tail->data = dest;
+	
+	free(src->head);
+	free(src);
+}
 
 

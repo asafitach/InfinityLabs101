@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <assert.h>
 
-#define LEN (5)
+#define LEN (15)/*cant work with less then 4 - due to hardcoded instructions*/
 
 typedef struct node
 {
@@ -24,7 +25,7 @@ int main()
 	node_t arr[LEN];
 	int index = 0;
 	
-	for (index = 0; index < LEN ; index++)/*initializing the first array of nodes*/
+	for (index = 0; index < LEN - 1 ; index++)/*initializing the first array of nodes*/
 	{
 	  arr[index].data = index;
 	  arr[index].next = &arr[index+1];
@@ -33,7 +34,7 @@ int main()
 	arr[LEN - 1].next = NULL;
 	
 	
-	for (index = 0; index < LEN ; index++)
+	for (index = 0; index < LEN - 1 ; index++)
 	{
 	  arr2[index].data = index;
 	  arr2[index].next = &arr2[index+1];
@@ -48,22 +49,22 @@ int main()
 	PrintList(ptr);
 	
 	res = HasLoop(ptr);
-	printf("0 if there is no loop %d\n", res);	
+	printf("0 is SUCCESS %d\n", res);	
 	
 	arr[2].next = &arr[3];/*creating loop*/
 	res = HasLoop(ptr);
-	printf("0 if there is no loop %d\n", res);
+	printf("1 is SUCCESS %d\n", res);
 	
 	arr[2].next = &arr[1];/*change bake to helthy list*/
 	ptr = FindIntersection(ptr, &arr[2]);
-	if(NULL != ptr)
+	if (NULL != ptr)
 	printf("intersection success\n");
 	
 	ptr = FindIntersection(ptr, arr2);
-	if(NULL == ptr)
+	if (NULL == ptr)
 	printf("intersection success\n");
 	
-	return 0;
+	return (0);
 }
 
 
@@ -72,7 +73,7 @@ int main()
 
 void PrintList (node_t *head)
 {
-	while(head->next != NULL)
+	while (head->next != NULL)
 	{
 		printf("%d\t", head->data);
 		head = head->next;
@@ -86,7 +87,9 @@ node_t *Flip(node_t *head)
 	node_t *cur = head->next;
 	node_t *nex = cur->next;
 
-	while(nex->next != NULL)
+	assert(head);	
+	
+	while (nex->next != NULL)
 	{
 		cur->next = pre;
 		pre = cur;
@@ -95,8 +98,9 @@ node_t *Flip(node_t *head)
 	}
 	head->next = nex;
 	cur->next = pre;
+	nex->data = cur;
 	
-	return cur;
+	return (cur);
 }
 
 int HasLoop(const node_t *head)
@@ -104,30 +108,36 @@ int HasLoop(const node_t *head)
 	node_t *ptr1 = (node_t*)head;
 	node_t *ptr2 = (node_t*)head->next;
 
-	while(ptr1 != ptr2)
+	assert(head);
+
+	while (ptr1 != ptr2)
 	{
 		ptr1 = ptr1->next;
 		ptr2 = ptr2->next;
-		if(NULL == ptr2)
-			return(0);
+		if (NULL == ptr2)
+		{
+			return (0);
+		}
 		ptr2 = ptr2->next;
 		if(NULL == ptr2)
-			return(0);
+		{
+			return (0);
+		}
 	}
 			
-return 1;
+	return (1);
 }
 
 int Count(node_t *head)
 {
 	int count = 0;
 	
-	while(head->next != NULL)
+	while (head->next != NULL)
 	{
 	count++;
 	head= head->next;
 	}
-	return count;
+	return (count);
 }
 
 
@@ -136,21 +146,24 @@ node_t *FindIntersection(node_t *head_1, node_t *head_2)
 	int count1 = Count(head_1);
 	int count2 = Count(head_2);
 	
-	while(count1<count2)
+	assert(head_1);
+	assert(head_2);
+	
+	while (count1<count2)
 	{
 		count2--;
 		head_2 = head_2->next;
 	}
 
-	while(count1>count2)
+	while (count1>count2)
 	{
 		count1--;
 		head_1 = head_1->next;
 	}
 
-	while(head_1 != NULL)
+	while (head_1 != NULL)
 	{
-		if(head_1 == head_2)
+		if (head_1 == head_2)
 		{
 			return (head_1);
 		}
@@ -158,6 +171,6 @@ node_t *FindIntersection(node_t *head_1, node_t *head_2)
 		head_2 = head_2->next;
 	}
 	
-	return(head_1);
+	return (head_1);
 }
 

@@ -123,4 +123,7 @@ int SlistIsEmpty(slist_t *list);
 
 status_t SlistForeach(slist_iter_t from, slist_iter_t to , action_func_t action_func, void *param);
 
+void PrintList (node_t *head);
+void SlistAppend(slist_t *dest, slist_t *src);
+
 #endif /* __S__L_LIST_H__ */

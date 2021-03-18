@@ -1,23 +1,22 @@
-TARGET = a.out
-OBJ = s_l_list_test1.o s_l_list.o
-DEPEND = ../include/s_l_list.h
+
+TARGET = stack
+
+OBJ = $(TARGET)_test.o $(TARGET).o
+CFILES = ../test/$(TARGET)_test.c ../src/$(TARGET).c
+DEPEND = ../include/$(TARGET).h
 CC = gcc
 CFLAGS = -ansi -pedantic-errors -Wall -Wextra -g
-CFILES = ../test/s_l_list_test1.c ../src/s_l_list.c
-
 
 $(TARGET) : $(OBJ)
-	$(CC) -o $(TARGET) $(CFLAGS) $(OBJ) -iquote ../include/
+	$(CC) -o a.out $(CFLAGS) $(OBJ) -iquote ../include/
 	
 $(OBJ) : $(DEPEND)
 	$(CC) -c $(CFLAGS) $(CFILES) -iquote ../include/
 
-#libfoo.a : foo.o
-#	ar -rc libfoo.a foo.o
 
 .PHONY : clean	
 clean :
-	rm -f $(TARGET) $(OBJ)
+	rm -f *o *out
 
 	
 
