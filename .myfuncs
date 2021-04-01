@@ -6,7 +6,7 @@ alias myfuncs='gedit ~/asaf-itach/.myfuncs'
 
 #gcc complation alias: c89, c99, debug mode, releasa mode
 alias gd='gcc -ansi -pedantic-errors -Wall -Wextra -g'
-alias gc='gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -o3'
+alias gc='gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3'
 alias gdo='gcc -ansi -pedantic-errors -Wall -Wextra -g -c'
 alias gd9='gcc -std=c99 -pedantic-errors -wall -wextra -g'
 alias gc9='gcc -std=c99 -pedantic-errors -wall -wextra -DNDEBUG -o3'
@@ -28,16 +28,26 @@ alias stat='git status'
 
 #creating new files
 alias ch='f(){ touch $1.c $1.h; unset -f f; }; f'
-function t { cp ~/asaf-itach/test.c .;  mv test.c "$1"_test.c;}
+function t { cp ~/asaf-itach/test.c .;  mv test.c "$1"_test.c; gedit "$1"_test.c&}
 export -f t
-function cf { cp ~/asaf-itach/temp.c .;  mv temp.c "$1".c;}
+function cf { cp ~/asaf-itach/temp.c .;  mv temp.c "$1".c; gedit "$1".c&}
 export -f cf
 
 #tools
 alias c='clear'
-alias cc='cd ~/asaf-itach/ds/bin'
+alias ds='cd ~/asaf-itach/ds/bin'
+alias sys='cd ~/asaf-itach/system_programming'
 alias d='cgdb ./a.out'
 alias a='./a.out'
 
+#GIT lazy
+function gitup() 
+{
+    pushd ~/asaf-itach
+    git add .
+    git commit -m "$1"
+    git push -u origin master
+    popd 
+}
 
 

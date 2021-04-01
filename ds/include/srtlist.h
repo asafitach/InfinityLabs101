@@ -5,15 +5,7 @@
 
 #include "dllist.h"
 
-/********  C FILE  *******/
 
-struct srtlist
-{
-	dlist_t *list;
-	cmp_func_t cmp_func;
-};
-
-/*************************/
 
 typedef struct srtlist srtlist_t;
 typedef dlist_iter_t srtlist_iter_t; 
@@ -128,7 +120,7 @@ srtlist_iter_t SrtListEnd(const srtlist_t *list);
 return: returns 0 for SUCCESS, 1 for FAIL if actaion_func didn't work on all the elements.
 @errors:
 */
-int SrtListForeach(srtlist_iter_t from, srtlist_iter_t to , int(*action_func_t)(void *data, void *param), void *param);
+int SrtListForeach(srtlist_iter_t from, srtlist_iter_t to , action_func_t actaion_func, void *param);
 
 
 /*Description: The function finds the first element in the list.

@@ -1,4 +1,6 @@
 #include"sumof.h"
+
+
 int IsSumFound (int* sorted_arr, int sum, int size)
 {
 	int first, last;

@@ -172,8 +172,7 @@ void *DlistPopBack(dlist_t *dlist)
 
 void *DlistGetData(const dlist_iter_t iterator)
 {
-	assert(NULL != iterator->next);
-	assert(NULL != iterator->prev);
+	assert(NULL != iterator);
 	return(((dlist_iter_t)iterator)->data);
 }
 
@@ -260,7 +259,7 @@ dlist_iter_t DlistEnd(const dlist_t *list)
 
 dlist_iter_t DlistNext(dlist_iter_t iterator)
 {
-	assert(NULL != iterator->next);
+	assert(NULL != iterator);
 	return (iterator->next);
 }
 
@@ -292,7 +291,7 @@ int DlistForeach(dlist_iter_t from, dlist_iter_t to , action_func_t action_func,
 	while(index != to)
 	{
 		stat = action_func(index->data, param);
-		if(0 == stat)
+		if(1 == stat)
 		{
 			return (stat);
 		}
