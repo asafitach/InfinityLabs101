@@ -42,10 +42,13 @@ int CountSetBits(unsigned char chr)
 int main()
 {
 	unsigned char chr = 0xeb;
+	char check = 0xfe;
 	printf("the number of couple bits in 111001011 is: %d\n", Coupling(chr));
 	
 	printf("the number of bits on in 111001011 is: %d\n", CountSetBits(chr));
 	
+	printf("%d --> %d\n", check, check >> 1);
+
 	return (0);
 }
 /********************************E.O.F*****************************************/

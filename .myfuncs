@@ -36,9 +36,10 @@ export -f cf
 #tools
 alias c='clear'
 alias ds='cd ~/asaf-itach/ds/bin'
-alias sys='cd ~/asaf-itach/system_programming'
+alias sys='cd ~/asaf-itach/system_programming/'
 alias d='cgdb ./a.out'
 alias a='./a.out'
+alias zoo='xdg-open https://infinitylabs.zoom.us/j/6567999017?pwd=UDRKU1FzZlhkNzk2ODFxeGVsdk9kQT09#success &'
 
 #GIT lazy
 function gitup() 
@@ -50,4 +51,12 @@ function gitup()
     popd 
 }
 
+function gitup() 
+{
+    pushd ~/asaf-itach
+    git add .
+    git commit -m update
+    git push -u origin master
+    popd 
+}
 

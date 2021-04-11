@@ -1,7 +1,7 @@
 #include"sumof.h"
 
 
-int IsSumFound (int* sorted_arr, int sum, int size)
+int IsSumFound (int* sorted_arr, int sum, int size, int *first_ans, int *last_ans)
 {
 	int first, last;
 	for(first=0, last=size-1;first<last;)
@@ -16,8 +16,8 @@ int IsSumFound (int* sorted_arr, int sum, int size)
 		}
 		if (*(sorted_arr+first)+*(sorted_arr+last)==sum)
 		{
-			*(sorted_arr) = first;
-			*(sorted_arr + 1) = last;
+			*first_ans = first;
+			*last_ans = last;
 			return(1);
 		}
 	}
