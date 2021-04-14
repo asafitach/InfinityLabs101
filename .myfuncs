@@ -35,7 +35,9 @@ export -f cf
 
 #tools
 alias c='clear'
-alias ds='cd ~/asaf-itach/ds/bin'
+alias ds='cd ~/asaf-itach/ds'
+alias srt='cd ~/asaf-itach/ds/src/sorts'
+alias quiz='cd ~/asaf-itach/quizzes'
 alias sys='cd ~/asaf-itach/system_programming/'
 alias d='cgdb ./a.out'
 alias a='./a.out'

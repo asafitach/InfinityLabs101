@@ -2,8 +2,10 @@
 #include <assert.h> /* assert */
 #include "dllist.h"
 
+#include <stdio.h>
 
 
+int global_implicit_lib = 5;
 
 /******************************************************************************/
 
@@ -25,6 +27,21 @@ struct dlist
    
 /********************until here***************************/
 
+
+void MemoryMap(int num)
+{
+	int const int_const = 3;
+	static size_t static_var_imp = 5;
+	char *implicit_literal = "i am here";
+	int reg = 9;
+	
+
+	printf("|int---------implicit----->\t\t\t%lu|\n", (size_t)&reg);
+	printf("|const int---implicit----->\t\t\t%lu|\n", (size_t)&int_const);
+	printf("|static------implicit----->\t\t\t%lu|\n", (size_t)&static_var_imp);
+	printf("|literal ----implicit----->\t\t\t%lu|\n", (size_t)implicit_literal);
+	printf("----------------------------------------------------------------\n\n");
+}
 
 dlist_t *DlistCreate(void)
 {

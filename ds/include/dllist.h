@@ -13,6 +13,8 @@ typedef struct dlist dlist_t;
 typedef int(*is_equal_func_t)(void *data, void *param);
 typedef int(*action_func_t)(void *data, void *param);
 
+void MemoryMap(int num);
+
 /*Description: The function creates a new doubly linked list data structure.
 @return: The function returns a pointer to dlist_t structure.
 @errors: Returns NULL if malloc fails.
