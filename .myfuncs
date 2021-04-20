@@ -33,6 +33,12 @@ export -f t
 function cf { cp ~/asaf-itach/temp.c .;  mv temp.c "$1".c; gedit "$1".c&}
 export -f cf
 
+#path
+PATH=/usr/local/jdk1.7.0/bin:$PATH
+export PATH
+PATH=/usr/java:$PATH
+export PATH
+
 #tools
 alias c='clear'
 alias ds='cd ~/asaf-itach/ds'

@@ -27,7 +27,7 @@ struct stack
 };
 typedef struct stack stack_t;
 typedef struct node node_t;
-	stack_t *(*stackcreate)(size_t) = NULL;
+	
 
 struct node
 {
@@ -76,6 +76,7 @@ int main(int argc, char *argv[], char *envp[])
 	static int static_int_second = 2;
 	const static int const_static_int_first;
 	const static int const_static_int_second = 2;
+	stack_t *(*stackcreate)(size_t) = NULL;
 	char env_var[500];
 	char *alloc_first = malloc(5);
 	char *alloc_second = malloc(12);

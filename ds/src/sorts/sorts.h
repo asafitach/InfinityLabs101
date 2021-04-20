@@ -9,4 +9,8 @@ void InsertionSort(int *arr, size_t size);
 
 void SelectionSort(int *arr, size_t size);
 
+void RadixSort(int *arr, size_t size);
+
+void CountingSort(int *arr, size_t size);
+
 #endif /*__SORTS_H__*/

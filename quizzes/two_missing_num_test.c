@@ -80,6 +80,20 @@ void PrintMissingNumInArray(int arr[], int N)
 	free(lut);
 }
 
+/*void PrintMissingNumInArray2(int arr[], int N)*/
+/*{*/
+/*	register int res = N;*/
+/*	res ^= N-1;*/
+/*	--N;*/
+/*	while (N > 0)*/
+/*	{*/
+/*		res ^= arr[N - 1];*/
+/*		res ^= N;*/
+/*		--N;*/
+/*	}*/
+	
+	
+
 void PrintMissingNumInArrayMath(int arr[], int N)
 {
 	register int sum = 0;

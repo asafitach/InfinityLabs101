@@ -1,0 +1,33 @@
+{ 
+    "version": "0.1.0", 
+    "isShellCommand": true, 
+    "taskName": "GenericBuild", 
+    "showOutput": "always", 
+    "command": "sh", 
+    "suppressTaskName": false, 
+    "args": [
+        "-c",
+        "clang -std=c11 -Wall -Wextra -pedantic -pthread \"${file}\" && ./a.out"
+    ],
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/a.out",
+            "args": ["/home/asafitach/asaf-itach/ds/test/a.out"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }]
+}
+    

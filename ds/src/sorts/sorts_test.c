@@ -1,6 +1,7 @@
 #include <stdio.h> /*printf*/
 #include <stdlib.h>/*rand*/
 #include <time.h>/*time*/
+#include "utility.h"
 
 #include "sorts.h"
 
@@ -28,10 +29,7 @@
      				GREEN"Pass"RESET : RED"Fail"RESET)
 /******************************************************************************/
 
-void GetRandomArray(int *arr, size_t size);
 static int IntCmpFunc(const void *data, const void *param);
-static int ArrayCompare(int *arr1, int *arr2, size_t size);
-static void ArrayCopy(int *arr1, int *arr2, size_t size);
 
 /******************************************************************************/
 
@@ -43,7 +41,7 @@ void TestSort(void(*func)(int *, size_t), int *arr1, int *arr2, char *str)
 	clock_t after = 0;
 	
 	GetRandomArray(arr1, SIZE);
-	ArrayCopy(arr2, arr1, SIZE);
+	ArrCpy(arr2, arr1, SIZE);
 	
 	before = clock();
 	func(arr1, SIZE);
@@ -55,7 +53,7 @@ void TestSort(void(*func)(int *, size_t), int *arr1, int *arr2, char *str)
 	after = clock();
 	qs_time = (float)(after - before) / CLOCKS_PER_SEC;
 	
-	if (ArrayCompare(arr1, arr2, SIZE))
+	if (ArrCmp(arr1, arr2, SIZE))
 	{
 		printf(RED"sort function is incorrect!\n"RESET);
 	}
@@ -74,24 +72,14 @@ int main()
 	TestSort(InsertionSort, arr1, arr2, "insertion");
 	
 	TestSort(SelectionSort, arr1, arr2, "selction");
+	
+	TestSort(CountingSort, arr1, arr2, "counting");
+	
+	TestSort(RadixSort, arr1, arr2, "radix");
 
 	
 	return 0;
 }
-
-/******************************************************************************/
-
-void GetRandomArray(int *arr, size_t size)
-{
-	size_t i = 0;
-	srand(time(0));
-	for (i = 0; i < size; ++i)
-	{
-		arr[i] = rand() % 100;
-	}
-}
-
-
 
 /******************************************************************************/
 
@@ -101,30 +89,4 @@ static int IntCmpFunc(const void *data, const void *param)
 }
 
 
-/******************************************************************************/
-
-static int ArrayCompare(int *arr1, int *arr2, size_t size)
-{
-	size_t i = 0;
-	for (i = 0; i < size; ++i)
-	{
-		if (arr1[i] != arr2[i])
-		{
-			return 1;
-		}
-	}
-	return 0;
-}
-
-/******************************************************************************/
-
-static void ArrayCopy(int *arr1, int *arr2, size_t size)
-{
-	size_t i = 0;
-	for (i = 0; i < size; ++i)
-	{
-		arr1[i] = arr2[i];
-		
-	}
-	
-}
+/*************************** E. O. F. *****************************************/
