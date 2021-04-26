@@ -1,0 +1,51 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${default}"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c89",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        },
+        {
+            "name": "gcc",
+            "includePath": [
+                "${default}",
+                "/home/asafitach/asaf-itach/ds/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c89",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "compilerArgs": [
+                "                \"-g\",",
+                "                \"-ansi\",",
+                "                \"-pedantic-errors\",",
+                "                \"-Wall\",",
+                "                \"-Wextra\",",
+                "                \"${file}\",",
+                "                \"/home/asafitach/asaf-itach/ds/src/avl.c\",",
+                "                \"-o\",",
+                "                \"${fileDirname}/${fileBasenameNoExtension}\",",
+                "                \"-I\",",
+                "                \"                \"-g\",",
+                "                \"-ansi\",",
+                "                \"-pedantic-errors\",",
+                "                \"-Wall\",",
+                "                \"-Wextra\",",
+                "                \"${file}\",",
+                "                \"/home/asafitach/asaf-itach/ds/src/avl.c\",",
+                "                \"-o\",",
+                "                \"${fileDirname}/${fileBasenameNoExtension}\",",
+                "                \"-I\",",
+                "                \"/home/asafitach/asaf-itach/ds/include\"\""
+            ]
+        }
+    ],
+    "version": 4
+}

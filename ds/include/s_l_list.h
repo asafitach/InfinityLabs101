@@ -17,6 +17,7 @@ typedef int(*cmp_func_t)(const void *data, void *param);
 typedef int(*action_func_t)(void *data, void *param);
 
 
+
 /*Description: The function creates a new singly linked list data structure.
 @return: The function returns a pointer to slist_t structure.
 @errors: Returns NULL if malloc fails.

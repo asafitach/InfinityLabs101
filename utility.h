@@ -6,6 +6,12 @@
 #include <stddef.h>/* size_t */
 #include <stdlib.h>/* rand */
 
+
+#define RANGE 1000000
+#define ASCII 256
+#define WORD 8
+#define BYTE 1
+
 typedef enum status
 {
 	SUCCSESS = 0,

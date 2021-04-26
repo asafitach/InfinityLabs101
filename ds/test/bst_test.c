@@ -50,18 +50,33 @@ void Test()
         printf("%d ", *data);
     }
 
-  /*  runner = BstBegin(tree);
-    */data = (int *)BstGetData(runner);
-    printf("%d ", *data);
+    printf("\n%lu\n", BstSize(tree));
+    runner = BstBegin(tree);
+    data = (int *)BstGetData(runner);
+    printf("%d \n", *data);
 
     for (index = 1; index < SIZE; ++index)
     {
         data = (int *)BstGetData(runner);
-        printf("%d", *data);
+        printf(" %d ", *data);
         runner = BstNext(runner);
     }
     
+    printf("\n\n");
+    runner = BstBegin(tree);
+        data = (int *)BstGetData(runner);
+        printf(" %d\t\n", *data);
+        runner = BstNext(runner);
+    while (BstEnd(tree) != runner)
+    {
+        data = (int *)BstGetData(runner);
+        printf(" %d\t", *data);
+        runner = BstNext(runner);
+    }
 
+    runner = BstFind(tree, (void *) &(arr[2]));
+            data = (int *)BstGetData(runner);
+        printf(" \n%d\t\n", *data);
     TEST("  ", 1 , 1); 
     
     TEST("  ", 1 , 1); 
