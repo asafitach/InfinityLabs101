@@ -15,7 +15,7 @@ void Swap(int *x, int *y)
 
 /**************************************************/
 
-int IntCmpFunc(const void *data1, const void *data2, const void *param)
+int IntCmpFuncParam(const void *data1, const void *data2, const void *param)
 {
 	int res = *((int *)data1) - *((int *)data2);
 	int flag = (res > 0) ? 1 : -1;
@@ -28,6 +28,20 @@ int IntCmpFunc(const void *data1, const void *data2, const void *param)
 	
 	return (flag);
 }
+
+int IntCmpFunc(const void *data1, const void *data2)
+{
+	return (*((int *)data1) - *((int *)data2));
+}
+
+
+int PrintInt(void *data, void *param)
+{
+	param = param;
+	printf("%d\t", *(int *)data);
+	return (0);
+}
+
 /************************ mathematics functions *******************************/
 
 int SumDigits(int num)

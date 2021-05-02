@@ -1,4 +1,4 @@
-{
+/*{
     "version": "2.0.0",
     "tasks": [
         {
@@ -12,11 +12,11 @@
                 "-Wall",
                 "-Wextra",
                 "${file}",
-                "/home/eden/eden-atar/ds/src/avl.c",
+                "/home/asafitach/asaf-itach/ds/src/avl.c",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}",
                 "-I",
-                "/home/eden/eden-atar/ds/include"
+                "/home/asafitach/asaf-itach/ds/include"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -31,4 +31,36 @@
             "detail": "compiler: /usr/bin/gcc"
         }
     ]
+}*/
+{ 
+    "version": "0.1.0", 
+    "isShellCommand": true, 
+    "taskName": "GenericBuild", 
+    "showOutput": "always", 
+    "command": "sh", 
+    "suppressTaskName": false, 
+    "args": [
+        "-c",
+        "clang -std=c11 -Wall -Wextra -pedantic -pthread \"${file}\" && ./a.out"
+    ],
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/home/asafitach/asaf-itach/ds/a.out",
+            "args": ["/home/asafitach/asaf-itach/ds/a.out"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }]
 }

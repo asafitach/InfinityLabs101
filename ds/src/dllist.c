@@ -215,7 +215,7 @@ size_t DlistSize(const dlist_t *list)
 dlist_iter_t DlistFindOne(dlist_iter_t from, dlist_iter_t to, is_equal_func_t is_equal_func, const void *param)
 {
 	dlist_iter_t index = NULL;
-	assert(NULL != from->next);
+/*	assert(NULL != from->next);*/
 	assert(NULL != to);
 	assert(NULL != from);
 

@@ -15,7 +15,7 @@ typedef enum state
     ERROR                          /*syntext/math/allocation error*/
 } state_t;
 
-typedef enum operators
+typedef enum operators/*change by priotrity write switch case*/
 {
     CLOSE_PAREN = 1,
     PLUS = 2,
@@ -28,7 +28,7 @@ typedef enum operators
 }operators_t;
 
 typedef state_t (*transition_t)(char **input, double *res, calculator_status_t *calc_state);
-typedef void (*operation_t)(double num1, double num2);
+typedef void (*operation_t)(double num1, double num2);/*return state insert to double *ans */
 
 /************************** globals *****************************************/
 
@@ -80,14 +80,14 @@ void OpenParen(double num1, double num2)
 /*****************************************************************************/
 
 /* for every operator insertion this function calculates any possible calc' from the stacks */
-calculator_status_t SubTotal(operators_t operator)
+calculator_status_t SubTotal(operators_t operator)/*change name!!!!!*/
 {
     operators_t prev_op = 0;
     operation_t function = NULL;
     void *data = NULL;
 	void *data2 = NULL;
 
-    if (1 == StackIsEmpty(g_op_stack) || operator == OPEN_PAREN)/* open paren is like opening new stack frame */
+    if (1 == StackIsEmpty(g_op_stack) || operator == OPEN_PAREN)/* open paren is like opening new stack frame !! own transition!!*/
     {
         StackPush(g_op_stack, *(void **)&operator);
         return (CALC_SUCCESS);
@@ -95,7 +95,7 @@ calculator_status_t SubTotal(operators_t operator)
     
 	data = StackPeek(g_op_stack);
     prev_op = *(operators_t *)&data;
-    while (prev_op / 2 >= operator / 2 && OPEN_PAREN != prev_op) 
+    while (prev_op / 2 >= operator / 2 && OPEN_PAREN != prev_op) /**/
     {
         StackPop(g_op_stack);
         function = *g_op_lut[prev_op];
@@ -103,7 +103,7 @@ calculator_status_t SubTotal(operators_t operator)
         StackPop(g_num_stack);
 		data2 = StackPeek(g_num_stack);
         StackPop(g_num_stack);
-        if (DIVISION == prev_op && 0 == *(double *)&data2)
+        if (DIVISION == prev_op && 0 == *(double *)&data2)/*!!*/
         {
             return (CALC_MATH_ERROR);
         }
@@ -153,10 +153,11 @@ operators_t SwitchOperatorToEnum(char operator)/* return the enum which include 
 
 /************************* transitions ***************************************/
 
-state_t InsertNum(char **input, double *result, calculator_status_t *calc_state)
+state_t InsertNum(char **input, double *result, calculator_status_t *calc_state)/*change to handle !!*/
 {
     char *ptr = NULL;
     double num =  strtod(*input, &ptr);
+
     assert(NULL != result);
 
     if (ptr == *input)
@@ -174,7 +175,7 @@ state_t InsertNum(char **input, double *result, calculator_status_t *calc_state)
 
 /*****************************************************************************/
 
-state_t InsertOp(char **input, double *result, calculator_status_t *calc_state)
+state_t InsertOp(char **input, double *result, calculator_status_t *calc_state)/*can be dismissed*/
 {
    char *exp = *input;
 
@@ -183,7 +184,7 @@ state_t InsertOp(char **input, double *result, calculator_status_t *calc_state)
 
     *calc_state = SubTotal(SwitchOperatorToEnum(**input));
 
-    if (')' == **input)
+    if (')' == **input)/*!!make transition*/
     {
         *input = exp + 1;
         return (WAITING_FOR_OP);
@@ -227,7 +228,7 @@ void InitTransition(void)
     size_t index = 0;
     for (index = 0; index < ASCII; ++index)
     {
-        g_trans_lut[index][WAITING_FOR_NUM] = Error;
+        g_trans_lut[index][WAITING_FOR_NUM] = Error;/*flip input state!!!*/
         g_trans_lut[index][WAITING_FOR_OP] = Error;
     }
 
@@ -242,7 +243,7 @@ void InitTransition(void)
     }
 
     g_trans_lut[0][WAITING_FOR_OP] = InsertOp;
-    g_trans_lut['('][WAITING_FOR_NUM] = InsertOp;
+    g_trans_lut['('][WAITING_FOR_NUM] = InsertOp;/*open brac trans!!!*/
     g_trans_lut[')'][WAITING_FOR_OP] = InsertOp;
     g_trans_lut['-'][WAITING_FOR_OP] = InsertOp;
     g_trans_lut['-'][WAITING_FOR_NUM] = InsertNum;
@@ -258,7 +259,7 @@ void InitTransition(void)
 
 void InitOperation(void)
 {
-    g_op_lut[PLUS] = Plus;
+    g_op_lut[PLUS] = Plus;/*!!!  + */
     g_op_lut[MINUS] = Minus;
     g_op_lut[MULTI] = Multi;
     g_op_lut[DIVISION] = Division;
@@ -358,7 +359,7 @@ calculator_status_t Calculate(const char *expression, double *res)
     g_num_stack = StackCreate(strlen(expression));
     g_op_stack = StackCreate(strlen(expression));
 
-    if (NULL == g_op_stack || NULL == g_num_stack)
+    if (NULL == g_op_stack || NULL == g_num_stack)/* beak into 2 !!! */
     {
         return (CALC_MEMORY_ALLOCATION_ERROR);
     }
@@ -375,9 +376,9 @@ calculator_status_t Calculate(const char *expression, double *res)
         calc_state = CALC_SYNTAX_ERROR;
     }
 
-    if (CALC_SUCCESS == calc_state)
+    if (CALC_SUCCESS == calc_state)/*why there is string left*/
     {
-        calc_state = ToatalSum(res);
+        calc_state = ToatalSum(res);/*can be the handler to NULL */
     }
     
 

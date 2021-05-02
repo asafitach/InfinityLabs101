@@ -2,22 +2,12 @@
 #define __avl_H__
 
 #include <stddef.h>  /* size_t */
+#include "utility.h"
 
 typedef struct avl avl_t;
 
 typedef int(*cmp_func_t)(const void *data1, const void *data2);
 typedef int(*action_func_t)(void *data, void *param);
-
-/****************************c file *************/
-
-typedef struct avl_node avl_node_t;
-
-typedef enum children
-{
-	LEFT = 0,
-	RIGHT,
-	NUM_OF_CHILDREN
-}children_t;
 
 typedef enum order
 {
@@ -27,28 +17,17 @@ typedef enum order
 	
 }order_t;
 
-struct avl_node 
-{
-	void *data;
-	size_t height;
-	avl_node_t *children[NUM_OF_CHILDREN];
-};
 
-struct avl
-{
-	cmp_func_t cmp_func;
-	avl_node_t *root;
-	
-};
+
 
 /**********************************************/
-                
+   /*           
 typedef enum 
 {
 	SUCCESS = 0,
 	FAIL = 1
 } status_t;   
-
+*/
 
 avl_t *AvlCreate(cmp_func_t cmp_func);
 
@@ -119,5 +98,7 @@ size_t AvlHeight(const avl_t *tree);
 @return: The function returns the height of the avl.
 @errors: 
 */
+void MirrorTree(avl_t *tree);
+
 
 #endif /* __avl_H__ */
