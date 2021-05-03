@@ -178,36 +178,5 @@ int PrintWord(void *key, const void *param)
 
 
 
-size_t TwoDigitsSum(const void *data)
-{
-    char *string = (char *)data;
-
-    return ((size_t)(tolower(*string) + tolower((int)*(string + 1)) - 'a'));
-}
-
-int StrLenVoid(void *data1, void *data2)
-{
-    return ((strcmp((char *)data1, (char *)data2) == 0) ? 1: 0);
-}
-
-void SpellChecker(int argc, char *argv[])
-{
-    hashtable_t *table = HashtableCreate(26 *27, TwoDigitsSum, StrLenVoid);
-    int index = 0;
-
-    HashtableLoadSpell(table);
-
-    for (index = 1; index < argc; ++index)
-    {
-        if (NULL == HashtableFind(table, (void *)argv[index]))
-        {
-            printf("%s >>>is not a word<<<\n", argv[index]);
-        }
-        else
-        {
-            printf("%s is a word\n", argv[index]);
-        }
-    }
 
 
-}

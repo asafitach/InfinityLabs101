@@ -5,8 +5,6 @@
 
 
 #define RED "\033[1;31m"
-#define GREEN "\033[1;32m"
-#define CYAN "\033[1;36m"
 #define WHITE "\033[0m"
 
 #define TEST(name, actual, expected)\

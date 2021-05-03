@@ -16,6 +16,9 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c) (MAX(MAX((a), (b)), (c)))
 
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MIN3(a, b, c) (MIN(MIN((a), (b)), (c)))
+
 typedef enum status
 {
 	SUCCESS = 0,
@@ -53,6 +56,8 @@ int IntCmpFunc(const void *data1, const void *data2);
 int IntCmpFuncParam(const void *data1, const void *data2, const void *param);
 
 int PrintInt(void *data, void *param);
+
+void SwapMem(void* data1, void* data2, int size);
 
 /************************ mathematics functions *******************************/
 

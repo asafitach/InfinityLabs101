@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 #include "utility.h"
 
 
@@ -40,6 +41,21 @@ int PrintInt(void *data, void *param)
 	param = param;
 	printf("%d\t", *(int *)data);
 	return (0);
+}
+
+void SwapMem(void* data1, void* data2, int size)
+{
+	char *buffer = (char *)malloc(size);
+	if (NULL == buffer)
+	{
+		return;
+	}
+
+	memcpy(buffer, data1, size);
+	memcpy(data1, data2, size);
+	memcpy(data2, buffer, size);
+
+	free(buffer);
 }
 
 /************************ mathematics functions *******************************/

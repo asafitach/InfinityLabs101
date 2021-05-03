@@ -33,7 +33,7 @@ void MemoryMap(int num)
 	int const int_const = 3;
 	static size_t static_var_imp = 5;
 	char *implicit_literal = "i am here";
-	int reg = 9;
+	int reg = num;
 	
 
 	printf("|int---------implicit----->\t\t\t%lu|\n", (size_t)&reg);

@@ -87,5 +87,7 @@ double HashSD(hashtable_t *table);
 
 void HashtableLoadSpell(hashtable_t *table);
 
+void SpellChecker(int argc, char *argv[]);
+
 #endif /* __HASHT_H__ */
 

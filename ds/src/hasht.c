@@ -1,12 +1,11 @@
 #include <stdlib.h>/* malloc free */
 #include <stdio.h>/* fgets */
 #include <assert.h>/* assert */
-#include <string.h>
+#include <string.h> /* strlen */
+#include <ctype.h> /*tolower*/
 #include "dllist.h"
 #include "hasht.h"
-/*
-#include "utility.h"
-*/
+
 struct hashtable 
 {
     dlist_t **hashtable_items; 
@@ -17,7 +16,7 @@ struct hashtable
 
 dlist_t **CreateLists(dlist_t **array, size_t size);
 void *ChacingData(dlist_t *list, dlist_iter_t go_to_front);
-dlist_t *GetList(dlist_t **array, size_t index);
+dlist_t *HashGetList(const hashtable_t *table, size_t index);
 
 hashtable_t *HashtableCreate(size_t table_size, hash_func_t hash_func, is_match_t is_match)
 {
@@ -64,11 +63,8 @@ void HashtableDestroy(hashtable_t *table)
 
     size = table->table_size;
     for (index = 0; index < size; ++index)
-    {
-        if (NULL != table->hashtable_items[index])
-        {
-            DlistDestroy(table->hashtable_items[index]);
-        }
+    {   
+        DlistDestroy(HashGetList(table, index));   
     }
 
     free(table->hashtable_items);
@@ -86,7 +82,7 @@ status_t HashtableInsert(hashtable_t *table, void *data)
 
     hash_size = table->table_size;
     hash_index = table->hash_func(data) % hash_size;
-    if (NULL == DlistPushFront(table->hashtable_items[hash_index], data))
+    if (NULL == DlistPushFront(HashGetList(table, hash_index), data))
     {
         return (FAIL);
     }
@@ -94,7 +90,7 @@ status_t HashtableInsert(hashtable_t *table, void *data)
     return (SUCCESS);
 }
 
-void HashtableRemove(hashtable_t *table, void *data)/*what should*/
+void HashtableRemove(hashtable_t *table, void *data)
 {
     size_t hash_index = 0;
     dlist_t *list = NULL;
@@ -103,7 +99,7 @@ void HashtableRemove(hashtable_t *table, void *data)/*what should*/
     assert(NULL != table);
 
     hash_index = table->hash_func(data) % table->table_size;
-    list = table->hashtable_items[hash_index];
+    list = HashGetList(table, hash_index);
     to_remove = DlistFindOne(DlistBegin(list), DlistEnd(list), table->is_match, data);
     if (DlistEnd(list) != to_remove)
     {
@@ -124,7 +120,7 @@ size_t HashtableCount(const hashtable_t *table)
 
     while (index)
     {
-        list = table->hashtable_items[index - 1];
+        list = HashGetList(table, index - 1);
         count += DlistSize(list);
         --index;
     }
@@ -142,7 +138,7 @@ void *HashtableFind(const hashtable_t *table, const void *data)
     assert(NULL != table);
 
     hash_index = table->hash_func((void *)data) % table->table_size;
-    list = table->hashtable_items[hash_index];
+    list = HashGetList(table, hash_index);
 
     found = DlistFindOne(DlistBegin(list), DlistEnd(list), table->is_match, data);
     return ((found == DlistEnd(list)) ? NULL: ChacingData(list, found));
@@ -151,6 +147,7 @@ void *HashtableFind(const hashtable_t *table, const void *data)
 void *ChacingData(dlist_t *list, dlist_iter_t go_to_front)
 {
     void *data = DlistGetData(go_to_front);
+    DlistRemove(go_to_front);
     DlistPushFront(list, data);
 
     return (data);
@@ -168,7 +165,7 @@ int HashtableIsEmpty(const hashtable_t *table)
     do
     {
         --index;
-        is_empty += DlistIsEmpty(table->hashtable_items[index]);
+        is_empty += DlistIsEmpty(HashGetList(table, index));
     }while (index);
 
     return ((is_empty == table->table_size) ? 1: 0);
@@ -189,7 +186,7 @@ int HashtableForeach(const hashtable_t *table, action_func_hash_t action_func, v
     index = table->table_size;
     while (index)
     {
-        list = table->hashtable_items[index - 1];
+        list = HashGetList(table, index - 1);
         elements = DlistSize(list);
         node = DlistBegin(list);
         while (0 != elements)
@@ -207,11 +204,6 @@ int HashtableForeach(const hashtable_t *table, action_func_hash_t action_func, v
 }
 
 
-/*Description: The function returns the hashtable load.
-@params: pointer to the hashtable.
-@return: double for the load of the hashtable.
-@errors:
-*/
 void HashtableLoadSpell(hashtable_t *table)
 {
     FILE *fp = NULL;
@@ -269,5 +261,45 @@ dlist_t **CreateLists(dlist_t **array, size_t size)
     }
     
     return (NULL);
+}
+
+dlist_t *HashGetList(const hashtable_t *table, size_t index)
+{
+    return (table->hashtable_items[index]);
+}
+
+size_t HashFuncSum2Letter(const void *data)
+{
+    char *string = (char *)data;
+
+    return ((size_t)(tolower(*string) + tolower((int)*(string + 1)) - 'a'));
+}
+
+int StrCmpVoid(void *data1, void *data2)
+{
+    return ((strcmp((char *)data1, (char *)data2) == 0) ? 1: 0);
+}
+
+/* */
+void SpellChecker(int argc, char *argv[])
+{
+    hashtable_t *table = HashtableCreate(26 *27, HashFuncSum2Letter, StrCmpVoid);
+    int index = 0;
+
+    HashtableLoadSpell(table);
+
+    for (index = 1; index < argc; ++index)
+    {
+        if (NULL == HashtableFind(table, (void *)argv[index]))
+        {
+            printf("%s >>>is not a word<<<\n", argv[index]);
+        }
+        else
+        {
+            printf("%s is a word\n", argv[index]);
+        }
+    }
+
+
 }
 

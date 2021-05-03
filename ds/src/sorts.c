@@ -216,5 +216,296 @@ void RadixSort(int *arr, size_t size)
 }
 
 
-/***********************************E.O.F.*************************************/
 
+/*************************** Binary Search ************************************/
+
+int *BinarySearch(int *arr, int array_size, int num)
+{
+	int from = 0;
+	int cur_size = array_size;
+	int cur_value = 0;
+
+	assert(NULL != arr);
+
+	cur_value = arr[cur_size / 2];
+	while (cur_value != num && cur_size > 0 && cur_size <= array_size)
+	{
+		if (cur_value < num)
+		{
+			from += cur_size / 2;
+		}
+			cur_size /= 2;
+		cur_value = arr[from + (cur_size / 2)];
+	}
+
+	if (cur_value == num)
+	{
+		return (arr + from + (cur_size / 2));
+	}
+	return (NULL);
+}
+
+/******************** Recursive Binary Search *********************************/
+
+int *RecursiveBinarySearch(int *arr, int array_size, int num)
+{
+	if (num == *(arr + array_size / 2))
+	{
+		return (arr + array_size / 2);
+	}
+	if (array_size <= 1)
+	{
+		return (NULL);
+	}
+	else if (num < *(arr + array_size / 2))
+	{
+		return (RecursiveBinarySearch(arr, array_size / 2, num));
+	}
+	else /*if (num > *(arr + array_size / 2))*/
+	{
+		return (RecursiveBinarySearch(arr + array_size / 2, array_size / 2, num));
+	}
+}
+
+
+/*************************** Merge Sort ***************************************/
+
+/*
+static void Merge(int *arr, int *left, int *middle, int *right, int *help_arr)
+{
+	int help_index = left - arr;
+	int *runner = middle;
+
+	if (left == middle)
+	{
+		if (*left > runner)
+		{
+
+		}
+	} || runner == right)
+	{
+		if (left != middle)
+		{
+			if (*left < *middle)
+			{
+
+			}
+			help_arr[help_index] = 
+		}
+		help_arr[help_index] = MIN3(*left, *right, *runner);
+		if (*left > *right)
+		{
+			help_arr[help_index] = *right;
+			++help_index;
+			help_arr[help_index] = *left;
+		}
+		return;
+	}
+	do
+	{
+		if (*left < *runner)
+		{
+			help_arr[help_index] = *left;
+			++left;
+		}
+		else
+		{
+			help_arr[help_index] = *(runner);
+			++runner;
+		}
+		++help_index;
+	}
+	while (left != middle && runner != right);
+		if (*left < *runner && left != middle)
+		{
+			help_arr[help_index] = *left;
+			++left;
+		}
+		else if (*runner < *left && runner != right)
+		{
+			help_arr[help_index] = *(runner);
+			++runner;
+		}
+		++help_index;
+
+		while (runner != right)
+		{
+			help_arr[help_index] = *runner;
+			++runner;
+			++help_index;
+		}
+
+
+		while (left != middle)
+		{
+			help_arr[help_index] = *left;
+			++left;
+			++help_index;
+		}		
+	
+	
+}
+
+static void RecursiveMergeSort(int *arr, int *left, int *right, int *help_arr)
+{
+	int *middle = (int *)(((right - left) / 2) + left);
+
+	if (left == right)
+	{
+		return;
+	}
+
+	RecursiveMergeSort(arr, left, middle, help_arr);
+	RecursiveMergeSort(arr, middle + 1, right, help_arr);
+
+	Merge(arr, left, middle, right, help_arr);
+}
+
+void MergeSort(int *arr_to_sort, size_t num_elements)
+{
+	int *help_arr = (int *)malloc(sizeof(int) * num_elements);
+	if (NULL == help_arr)
+	{
+		return;
+	}
+
+	RecursiveMergeSort(arr_to_sort, arr_to_sort, arr_to_sort + num_elements - 1, help_arr);
+	ArrCpy(arr_to_sort, help_arr, num_elements);
+	free(help_arr);
+}
+*/
+void Merge(int *left_arr, int left_len, int *right_arr, int right_len)
+{
+	int left_runner = 0;
+	int right_runner = 0;
+	int index = 0;
+
+	int *tmp_arr = (int *)malloc(sizeof(int) * (left_len + right_len));
+	if (NULL == tmp_arr)
+	{
+		return;
+	}
+
+	while (left_runner < left_len && right_runner < right_len)
+	{
+		if (left_arr[left_runner] <= right_arr[right_runner])
+		{
+			tmp_arr[index] = left_arr[left_runner];
+			++left_runner;
+		}
+		else
+		{
+			tmp_arr[index] = right_arr[right_runner];
+			++right_runner;
+		}
+		++index;
+	}
+
+	while (left_runner < left_len)
+	{
+		tmp_arr[index] = left_arr[left_runner];
+		++left_runner;
+		++index;
+	}
+	while (right_runner < right_len)
+	{
+		tmp_arr[index] = right_arr[right_runner];
+		++right_runner;
+		++index;
+	}
+
+	ArrCpy(left_arr, tmp_arr, left_len + right_len);
+	free(tmp_arr);
+
+
+
+}
+void MergeSort(int *arr, size_t size)
+{
+	if (size < 2)
+	{
+		return;
+	}
+	MergeSort(arr, size / 2);
+	MergeSort(arr + (size / 2), size - (size / 2));
+
+	Merge(arr ,size / 2, arr + (size / 2), size - (size / 2));
+}
+
+/*************************** Quick Sort ***************************************/
+void Qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
+{
+	void *left = (size_t *)base + 1;
+	void *right = (size_t *)base + nitems - 1;
+
+	if (2 > nitems)
+	{
+		return;
+	}
+
+	while (left != right)
+	{
+		while (0 >= compar(left, base) && left != right)
+		{
+			left = (void *)((size_t *)left + 1);
+		}
+		while (0 < compar(right, base) && left != right)
+		{
+			right = (void *)((size_t *)right - 1);
+		}
+		SwapMem(left, right, size);
+	}
+
+		SwapMem((void *)((size_t *)right - 1), base, size);
+	
+
+
+	Qsort(base, (((size_t)right - (size_t)base) / size), size, compar);
+	Qsort((void *)((size_t *)left), nitems - (((size_t)right - (size_t)base) / size) - 1, size, compar);
+
+
+}
+
+
+
+/*
+// v is an array of elements to sort.
+// size is the number of elements in array
+// left and right is start and end of array
+//(*comp)(void*, void*) is a pointer to a function
+// which accepts two void* as its parameter
+void _qsort(void* v, int size, int left, int right,
+					int (*comp)(void*, void*))
+{
+	void *vt, *v3;
+	int i, last, mid = (left + right) / 2;
+	if (left >= right)
+		return;
+
+	// casting void* to char* so that operations
+	// can be done.
+	void* vl = (char*)(base + (left * size));
+	void* vr = (char*)(base + (mid * size));
+	swap(vl, vr, size);
+	last = left;
+	for (i = left + 1; i <= right; i++) {
+
+		// vl and vt will have the starting address
+		// of the elements which will be passed to
+		// comp function.
+		vt = (char*)(base + (i * size));
+		if ((*comp)(vl, vt) > 0) {
+			++last;
+			v3 = (char*)(base + (last * size));
+			swap(vt, v3, size);
+		}
+	}
+	v3 = (char*)(base + (last * size));
+	swap(vl, v3, size);
+	_qsort(v, size, left, last - 1, comp);
+	_qsort(v, size, last + 1, right, comp);
+}
+
+void PartitionAlgho(void *array, )*/
+
+/***********************************E.O.F.*************************************/
