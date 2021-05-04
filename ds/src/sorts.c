@@ -378,48 +378,50 @@ void Merge(int *left_arr, int left_len, int *right_arr, int right_len)
 {
 	int left_runner = 0;
 	int right_runner = 0;
-	int index = 0;
+	int *tmp_index = NULL;
+
+	assert(NULL != left_arr);
+	assert(NULL != right_arr);
 
 	int *tmp_arr = (int *)malloc(sizeof(int) * (left_len + right_len));
 	if (NULL == tmp_arr)
 	{
 		return;
 	}
+	tmp_index = tmp_arr;
 
 	while (left_runner < left_len && right_runner < right_len)
 	{
 		if (left_arr[left_runner] <= right_arr[right_runner])
 		{
-			tmp_arr[index] = left_arr[left_runner];
+			*tmp_index = left_arr[left_runner];
 			++left_runner;
 		}
 		else
 		{
-			tmp_arr[index] = right_arr[right_runner];
+			*tmp_index = right_arr[right_runner];
 			++right_runner;
 		}
-		++index;
+		++tmp_index;
 	}
 
 	while (left_runner < left_len)
 	{
-		tmp_arr[index] = left_arr[left_runner];
+		*tmp_index = left_arr[left_runner];
 		++left_runner;
-		++index;
+		++tmp_index;
 	}
 	while (right_runner < right_len)
 	{
-		tmp_arr[index] = right_arr[right_runner];
+		*tmp_index = right_arr[right_runner];
 		++right_runner;
-		++index;
+		++tmp_index;
 	}
 
 	ArrCpy(left_arr, tmp_arr, left_len + right_len);
 	free(tmp_arr);
-
-
-
 }
+
 void MergeSort(int *arr, size_t size)
 {
 	if (size < 2)
@@ -435,8 +437,8 @@ void MergeSort(int *arr, size_t size)
 /*************************** Quick Sort ***************************************/
 void Qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
 {
-	void *left = (size_t *)base + 1;
-	void *right = (size_t *)base + nitems - 1;
+	char *left = (char *)base + size;
+	char *right = (char *)base + (nitems - 1) * size;
 
 	if (2 > nitems)
 	{
@@ -447,21 +449,21 @@ void Qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, c
 	{
 		while (0 >= compar(left, base) && left != right)
 		{
-			left = (void *)((size_t *)left + 1);
+			left += size;
 		}
 		while (0 < compar(right, base) && left != right)
 		{
-			right = (void *)((size_t *)right - 1);
+			right -= size;
 		}
 		SwapMem(left, right, size);
 	}
 
-		SwapMem((void *)((size_t *)right - 1), base, size);
+		SwapMem(right - size, base, size);
 	
 
 
-	Qsort(base, (((size_t)right - (size_t)base) / size), size, compar);
-	Qsort((void *)((size_t *)left), nitems - (((size_t)right - (size_t)base) / size) - 1, size, compar);
+	Qsort(base, (((char *)right - (char *)base) / size), size, compar);
+	Qsort((void *)(right), nitems - (((char *)right - (char *)base) / size), size, compar);
 
 
 }

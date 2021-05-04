@@ -1,133 +1,97 @@
-#ifndef __BST_H__
-#define __BST_H__
+/*****************************************************************************/
 
-#include <stddef.h>  /* size_t */
+#ifndef __HEAP_H__
+#define __HEAP_H__
 
-typedef struct bst_node bst_node_t;
-typedef bst_node_t* bst_iter_t; 
-typedef struct bst bst_t;
+#include <stddef.h> /* size_t */
+#include "d_vector.h"
+/*****************************************************************************/
+/*struct heap*/
+/*{*/
+/*	d_vector_t *d_vector;*/
+/*    heap_cmp_t cmp_func;*/
+/*}; */
 
-typedef int(*cmp_func_t)(const void *data1, const void *data2, const void *param);
-typedef int(*action_func_t)(void *data, void *param);
+/*****************************************************************************/
 
+typedef struct heap heap_t; 
+typedef int(*heap_cmp_t)(const void *data1, const void *data2);
+typedef int(*heap_is_match)(const void *data, void *param);
 
+/*****************************************************************************/
 
-/*Description: The function creates a new binary tree data structure.
-@return: The function returns a pointer to bst_t structure.
+/*
+Description: The function creates a new priority heap.
+@return: The function returns a pointer to the new priority heap.
 @errors: Returns NULL if malloc fails.
 */
+heap_t *HeapCreate(heap_cmp_t heap_cmp);
 
-bst_t *BstCreate(cmp_func_t cmp_func, void *param);
+/*****************************************************************************/
 
-
-/*Description: The function frees all the elements in the tree.
-@params: The function gets a pointer to the binary tree.
+/*
+Description: The function frees the heap.
+@params: The function gets a pointer to the priority heap.
 */
-void BstDestroy(bst_t *tree);
+void HeapDestroy(heap_t *heap);
 
-
-/*Description: The functions inserts a new element and places it in the right place- left/right.
-@params: The function gets a pointer to the tree and the data to be inserted.
-@return: status_t
+/*****************************************************************************/
+/*Description: The functions inserts a new element to the heap.
+@params: The function gets a pointer to the heap and the data to be inserted.
+@return: returns 0 on SUCCESS and 1 in FAILURE.
 @errors: malloc fail.
 */
-bst_iter_t BstInsert(bst_t *tree, void *data);
+int HeapPush(heap_t *heap, void *data);
 
-
-/*Description: The function removes an element from the bst.
-@params: The function gets an iterator to the element to be removed and a pointer to the tree.
-@return: iterator 
+/*****************************************************************************/
+/*
+Description: The function removes an element from the front of the heap.
+@params: The function gets a pointer to the heap.
+@return: The function is void.
 @errors: 
 */
-void BstRemove(bst_iter_t iterator);
+void HeapPop(heap_t *heap);
 
-
-/*Description: The function gets an iterator and returns the data at the 
-location.
-@params: The function gets an interators. 
-@return: The function return int.
+/*****************************************************************************/
+/*
+Description: The function removes an element that matches given data.
+@params: The function gets a pointer to the heap, and data.
+@return: The function is void.
 @errors: 
 */
+void *HeapRemove(heap_t *heap, heap_is_match is_match, void * param);
 
-void *BstGetData(bst_iter_t iterator);
-
-/*Description: The function returns the number of items stored in the bst.
-@params: The function gets a pointer to the bst.
-@return: The function returns the number of items in the bst.
+/*****************************************************************************/
+/*
+Description: The function gets a pointer to the heap and returns the data at the 
+head of the heap.
+@params: The function gets a pointer to the heap. 
+@return: The function return the data at the front of the heap.
 @errors: 
 */
-size_t BstSize(const bst_t *tree);
+void *HeapPeek(const heap_t *heap);
 
-
-/*Description: The function finds and element in the bst.
-@params: The function gets a pointer to the bst.
-@return: The function returns an iterator that points to the data or NULL
-if data is not in the bst.
+/*****************************************************************************/
+/*
+Description: The function returns the number of items stored in the heap.
+@params: The function gets a pointer to the heap.
+@return: The function returns the number of items in the heap.
 @errors: 
 */
-bst_iter_t BstFind(const bst_t *tree, void *data); 
+size_t HeapSize(const heap_t *heap);
 
-/*Description: The function returns iterator to the head of the bst.
-@params: The function gets a pointer bst.
-@return: The function returns an iterator.
-@errors:
-*/
-bst_iter_t BstBegin(const bst_t *tree);
-
-
-/*Description: The function returns iterator to the tail of the bst.
-@params: The function gets a pointer bst.
-@return: The function returns an iterator.
-@errors:
-*/
-bst_iter_t BstEnd(const bst_t *tree);
-
-/*Description: The function returns an iterator to the n element after 
-the current iterator position.
-@params: The function gets an iterator and n.
-@return: The function returns an iterator.
-@errors:
-*/
-
-bst_iter_t BstNext(bst_iter_t iterator);
-
-
-/*Description: The function returns an iterator to the n element before 
-the current iterator position.
-@params: The function gets an iterator and n.
-@return: The function returns an iterator.
-@errors:
-*/
-
-bst_iter_t BstPrev(bst_iter_t iterator);
-
-/*Description: The function checks if bst is empty. 
+/*****************************************************************************/
+/*
+Description: The function checks if heap is empty. 
 returns 1 for TRUE, 0 for FALSE.
-@params: The function a pointer to the bst.
+@params: The function a pointer to the heap.
 @return: The function returns an int (BOOLEAN).
 @errors:
 */
+int HeapIsEmpty(const heap_t *heap);
 
-int BstIsEmpty(const bst_t *tree);
+/*****************************************************************************/
 
-/*Description: The function invokes func_ptr for each element in the mentioned range. 
-@params: A function pointer, iterator start and end.
-@return: int, 0 for success, 1 if one of the actions has failed
-@errors:
-*/
+#endif /* __HEAP_H__ */
 
-int BstForeach(bst_iter_t from, bst_iter_t to , action_func_t action_func, void *param);
-
-/*Description: The function checks if the 2 iterators are equal. 
-returns 1 for TRUE, 0 for FALSE.
-@params: The function a pointer to 2 iterators.
-@return: The function returns an int (BOOLEAN).
-@errors:
-*/
-
-int BstIterIsEqual(bst_iter_t iter1, bst_iter_t iter2);
-
-void Print2DInt(bst_node_t *tree, int space);
-void Print2DStr(bst_iter_t root, int space);
-
-#endif /* __BST_H__ */
+/*****************************************************************************/

@@ -28,7 +28,6 @@ d_vector_t *VectorCreate(size_t init_capacity)
 	if (NULL == d_vector->elements)
 	{
 		free(d_vector);
-		printf("Allocation failed");
 		return (NULL);
 	}
 	

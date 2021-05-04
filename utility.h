@@ -67,6 +67,8 @@ int CountDigits(int num);
 
 int Pow(int x, int y, int ans);
 
+double DPower(double x, double y);
+
 /******************************* array functions ******************************/
 
 void GetRandomArray(int *arr, size_t size, int range);

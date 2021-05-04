@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <time.h>
+#include <assert.h>
 #include <string.h>
 #include "utility.h"
 
@@ -45,7 +46,7 @@ int PrintInt(void *data, void *param)
 
 void SwapMem(void* data1, void* data2, int size)
 {
-	char *buffer = (char *)malloc(size);
+	char *buffer = (char *)malloc((size_t)size);
 	if (NULL == buffer)
 	{
 		return;
@@ -101,6 +102,27 @@ int Pow(int x, int y, int ans)
 	return (ans * x);
 }
 
+double DPower(double x, double y)
+{
+	double res = 1;
+
+	assert(0 != x);
+	assert(y == (double)((int)y));
+
+	if (y < 0)
+	{
+		y *= -1;
+		x = 1 / x;
+	}
+
+	while (y)
+	{
+		res *= x;
+		--y;
+	}
+
+	return (res);
+}
 /******************************* array functions ******************************/
 
 void GetRandomArray(int *arr, size_t size, int range)

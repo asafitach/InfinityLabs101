@@ -61,7 +61,6 @@ void TestQSort(int *arr1, int *arr2, char *str)
 	GetRandomArray(arr1, SIZE, 1000);
 	ArrCpy(arr2, arr1, SIZE);
 
-
 	Qsort((void *)arr1, SIZE, sizeof(int), IntCmpFunc);
 	
 	qsort(arr2, SIZE, sizeof(int), IntCmpFunc1);
@@ -89,7 +88,7 @@ void TestSearch(int*(*func)(int *, int, int), int *arr, char *str)
 	printf(MAGEN"%s the number %d in array? %d (success)\n"RESET, str, SIZE / 3, *ans);
 
 	ans = func(arr, SIZE, SIZE * 2);
-	printf(MAGEN"%s the number %d in array? %d (1 for success)\n"RESET, str, SIZE * 2, (ans == NULL));
+	printf(MAGEN"%s the number %d in array? %d (1 for success)\n\n"RESET, str, SIZE * 2, (ans == NULL));
 }
 /******************************************************************************/
   				
@@ -100,7 +99,7 @@ int main()
 
 	TestQSort(arr1, arr2, "quick sort");
 
-/*	TestSort(BubbleSort, arr1, arr2, "bubble");
+	TestSort(BubbleSort, arr1, arr2, "bubble");
 	
 	TestSort(InsertionSort, arr1, arr2, "insertion");
 	
@@ -115,7 +114,7 @@ int main()
 	TestSearch(BinarySearch, arr1, "binary search");
 
 	TestSearch(RecursiveBinarySearch, arr1, "recuraive binary search");
-*/
+
 	return 0;
 }
 
