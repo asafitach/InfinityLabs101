@@ -6,11 +6,7 @@
 #include <stddef.h> /* size_t */
 #include "d_vector.h"
 /*****************************************************************************/
-/*struct heap*/
-/*{*/
-/*	d_vector_t *d_vector;*/
-/*    heap_cmp_t cmp_func;*/
-/*}; */
+
 
 /*****************************************************************************/
 
@@ -89,6 +85,9 @@ returns 1 for TRUE, 0 for FALSE.
 @errors:
 */
 int HeapIsEmpty(const heap_t *heap);
+
+
+void PrintHeap(heap_t *heap);
 
 /*****************************************************************************/
 

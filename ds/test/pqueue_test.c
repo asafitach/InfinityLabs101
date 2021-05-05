@@ -66,7 +66,7 @@ void TestEnqueuePeekIsemptyCount()
 
 	pq = PQCreate(StrCmp);
 	
-	PQEnQueue(pq, (void*)str);	
+	PQEnqueue(pq, (void*)str);	
     
     TEST(" insert + peek ", (PQPeek(pq) == (void*)str) , 1); 
 
@@ -88,15 +88,15 @@ void TestDeQueue()
 	char *str2 = " world";
 	pq = PQCreate(StrCmp);
     
-    PQEnQueue(pq, (void*)str);
-    PQEnQueue(pq, (void*)str2);
+    PQEnqueue(pq, (void*)str);
+    PQEnqueue(pq, (void*)str2);
     
     TEST(" insert + size ", PQCount(pq) , 2); 
     	
 	    
-    PQDeQueue(pq);
+    printf("%s %d\n", (char*)PQDequeue(pq), StrCmp(str, str2));
 
-    TEST(" insert + size ", PQDeQueue(pq), (void *)str2); 
+    TEST(" insert + size ", PQDequeue(pq), (void *)str); 
     
     TEST(" pop front + back + size ", PQCount(pq) , 0);    
 
@@ -135,10 +135,10 @@ void TestFindMulti()
 	pq2 = PQCreate(StrCmp);
 	 
 	 
-    PQEnQueue(pq, (void*)str);
-    PQEnQueue(pq, (void*)str);
-	PQEnQueue(pq, (void*)str); 
-    PQEnQueue(pq, (void*)str2);
+    PQEnqueue(pq, (void*)str);
+    PQEnqueue(pq, (void*)str);
+	PQEnqueue(pq, (void*)str); 
+    PQEnqueue(pq, (void*)str2);
 
 
 	  
@@ -163,20 +163,15 @@ void TestForeach()
 	char *str2 = " world";
 	pq = PQCreate(StrCmp);	
 
-    PQEnQueue(pq, (void*)str);
-    PQEnQueue(pq, (void*)str2);	
-    PQEnQueue(pq, (void*)str);
-    PQEnQueue(pq, (void*)str2);	
+    PQEnqueue(pq, (void*)str);
+    PQEnqueue(pq, (void*)str2);	
+    PQEnqueue(pq, (void*)str);
+    PQEnqueue(pq, (void*)str2);	
 
-#ifndef NDEBUG
-	PQPrint(pq, PrintList2, (void *)str2);
-#endif
+
 	
     TEST("\n erase ", PQErase(pq, IsMatch, (void *)str2) , (void *)str2); 
-
-#ifndef NDEBUG
-    PQPrint(pq, PrintList2, (void *)str2);
-#endif    	
+   	
 
     printf(CYAN"\tEnd Test \n\n"WHITE); 
     

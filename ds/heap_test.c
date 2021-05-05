@@ -53,12 +53,12 @@ void TestRemove();
 int main ()
 {
     TestCreateDestroy();
-/*    TestPush();
-  */  TestSize();
+    TestPush();
+    TestSize();
     TestIsEmpty();
- /*   TestPopPeek();
+    TestPopPeek();
     TestRemove();
-   */ return 0;
+    return 0;
 }
 
 void TestCreateDestroy()
@@ -120,6 +120,7 @@ void TestRemove()
     {
        HeapPush(heap, (void *) i);
     }
+    PrintHeap(heap);
 
     HeapRemove(heap, IntIsMatch, (void *) 3);
 
@@ -142,11 +143,11 @@ void TestSize()
 }
 int CmpInt(const void *new_data, const void *curr_data)
 {
-    return ((*(int **)&new_data) - (*(int **)&curr_data));
+    return ((*(int *)&new_data) - (*(int *)&curr_data));
 }
 
 int IntIsMatch(const void *data1, void *data2)
 {
-    return (*(int**)&(data1) == *(int**)&(data2));
+    return (*(int*)&(data1) == *(int*)&(data2));
 }
 

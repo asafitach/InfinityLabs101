@@ -1,19 +1,30 @@
-#include <assert.h>
-#include <stdlib.h>
+#include <assert.h> /* assert */
+#include <stdlib.h> /* malloc free */
+#include <stdio.h> /* printf */
 #include "heap.h"
 #include "d_vector.h"
+
 /*****************************************************************************/
+
 struct heap
 {
 	d_vector_t *d_vector;
     heap_cmp_t cmp_func;
 }; 
 
-#define RIGHT(a) (2 * a) + 2
-#define LEFT(a) (2 * a) + 1
-#define PARRENT(a) (a - 1) / 2
+#define RIGHT(a) ((2 * a) + 2)
+#define LEFT(a) ((2 * a) + 1)
+#define PARRENT(a) (((int)a - 1) / 2)
 
-#define INIT_CAPACITY 15
+#define INIT_CAPACITY 10
+
+
+void HeapifyDown(heap_t *heap, size_t index);
+
+void HeapifyUp(heap_t *heap, void *data);
+
+void VectorSwap(d_vector_t *d_vector, size_t index1, size_t index2);
+
 /*****************************************************************************/
 
 heap_t *HeapCreate(heap_cmp_t heap_cmp)
@@ -58,19 +69,20 @@ int HeapPush(heap_t *heap, void *data)
    
     if (SUCCESS != VectorPushBack(heap->d_vector, data))
     {
-        return (0);
+        return (1);
+    }
+    if (1 == HeapSize(heap))
+    {
+        return(0);
     }
 
-    HeapifyUp(heap);
+    HeapifyUp(heap, data);
+
+    return (0);
 }
 
 /*****************************************************************************/
-/*
-Description: The function removes an element from the front of the heap.
-@params: The function gets a pointer to the heap.
-@return: The function is void.
-@errors: 
-*/
+
 void HeapPop(heap_t *heap)
 {
     size_t index = 0;
@@ -82,6 +94,11 @@ void HeapPop(heap_t *heap)
 
     VectorPopBack(heap->d_vector);
 
+    if (2 > HeapSize(heap))
+    {
+        return;
+    }
+
     HeapifyDown(heap, 0);
 }
 
@@ -92,16 +109,18 @@ void *HeapRemove(heap_t *heap, heap_is_match is_match, void * param)
     void *data = NULL;
     size_t index = 0;
     size_t size = 0;
+    d_vector_t *vector = NULL;
 
     assert(NULL != heap);
     assert(NULL != is_match);
     assert(1 != HeapIsEmpty(heap));
 
-    size = VectorGetSize(heap->d_vector);
+    vector = heap->d_vector;
+    size = VectorGetSize(vector);
     
     while (index < size)
     {
-        data = VectorGetElement(heap->d_vector, index);
+        data = VectorGetElement(vector, index);
         if (1 == is_match(data, param))
         {
             break;
@@ -114,9 +133,15 @@ void *HeapRemove(heap_t *heap, heap_is_match is_match, void * param)
         return (NULL);
     }
 
-    VectorSetElement(heap->d_vector, index, VectorGetElement(heap->d_vector, size));
+    if (index == size - 1)
+    {
+        VectorPopBack(vector);
+        return (data);
+    }
 
-    VectorPopBack(heap->d_vector);
+    VectorSetElement(vector, index, VectorGetElement(vector, size - 1));
+
+    VectorPopBack(vector);
 
     HeapifyDown(heap, index);
 
@@ -128,6 +153,11 @@ void *HeapRemove(heap_t *heap, heap_is_match is_match, void * param)
 void *HeapPeek(const heap_t *heap)
 {
     assert(NULL != heap);
+
+    if (1 == HeapIsEmpty(heap))
+    {
+        return (NULL);
+    }
 
     return (VectorGetElement(heap->d_vector, 0));
 }
@@ -156,7 +186,7 @@ void HeapifyDown(heap_t *heap, size_t index)
 {
     d_vector_t *vector = heap->d_vector;
     size_t last_index = VectorGetSize(vector) - 1;
-    int *(*cmp)(const void *, const void *) = heap->cmp_func;
+    heap_cmp_t cmp = heap->cmp_func;
     void *data_to_move = VectorGetElement(vector, index);
     void *right = NULL;
     void *left = NULL;
@@ -165,32 +195,88 @@ void HeapifyDown(heap_t *heap, size_t index)
     {
         right = VectorGetElement(vector, RIGHT(index));
         left = VectorGetElement(vector, LEFT(index));
-        if (cmp(right, left) > 0)
+        if (0 > cmp(data_to_move, left))
         {
-
+            if (0 > cmp(data_to_move, right) && 0 < cmp(right, left))
+            {
+                VectorSwap(vector, index, RIGHT(index));
+                index = RIGHT(index);
+            }
+            else
+            {
+                VectorSwap(vector, index, LEFT(index));
+                index = LEFT(index);
+            }
+        }
+        else if (0 > cmp(data_to_move, right))
+        {
+            VectorSwap(vector, index, RIGHT(index));
+            index = RIGHT(index);
+        }
+        else
+        {
+            return;
         }
     }
 
-
-    void *cmp_data = VectorGetElement(vector, PARRENT(index));
-
+    if (LEFT(index) == last_index && 0 > cmp(data_to_move, VectorGetElement(vector, LEFT(index))))
+    {
+        VectorSwap(vector, index, LEFT(index));
+    }
 }
 
 void HeapifyUp(heap_t *heap, void *data)
 {
     d_vector_t *vector = heap->d_vector;
     size_t index = VectorGetSize(vector) - 1;
-    int *(*cmp)(const void *, const void *) = heap->cmp_func;
-    void *cmp_data = VectorGetElement(vector, PARRENT(index));
-    
-    while (index && 1 == cmp(data, cmp_data))
+    heap_cmp_t cmp = heap->cmp_func;
+    void *cmp_data = NULL;
+
+    int res = 0;
+     
+    cmp_data = VectorGetElement(vector, PARRENT(index));
+    res = cmp(data, cmp_data);
+    while (0 < res)
     {
-        VectorSetElement(vector, index, cmp_data);
+        VectorSwap(vector, index, PARRENT(index));
         index = PARRENT(index);
-        VectorSetElement(vector, index, data)
+        if (0 == index)
+        {
+            return;
+        }
         cmp_data = VectorGetElement(vector, PARRENT(index));
     }
 }
 
+void VectorSwap(d_vector_t *vector, size_t index1, size_t index2)
+{
+    void *data1 = VectorGetElement(vector, index1);
+    VectorSetElement(vector, index1, VectorGetElement(vector, index2));
+    VectorSetElement(vector, index2, data1);
+}
 
+void PrintHeap(heap_t *heap)
+{
+    size_t arr_size = VectorGetSize(heap->d_vector);
+    size_t i = 0;
+    void *data = NULL;
+
+    for(i = 0; i < arr_size; i++)
+    {
+        data = VectorGetElement(heap->d_vector, i);
+        printf("%d-->", *(int *)&data);
+    }
+    printf("\n");
+}
+/* for int* and not int
+void PrintHeap(heap_t *heap)
+{
+    size_t arr_size = VectorGetSize(heap->d_vector);
+    size_t i = 0;
+
+    for(i = 0; i < arr_size; i++)
+    {
+        printf("%d-->", *(int *)VectorGetElement(heap->d_vector, i));
+    }
+}*/
 /*****************************************************************************/

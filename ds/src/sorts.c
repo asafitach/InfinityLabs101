@@ -221,52 +221,57 @@ void RadixSort(int *arr, size_t size)
 
 int *BinarySearch(int *arr, int array_size, int num)
 {
-	int from = 0;
-	int cur_size = array_size;
-	int cur_value = 0;
+	int *left = arr;
+	int *mid = arr;
+	int *right = arr + array_size;
 
 	assert(NULL != arr);
 
-	cur_value = arr[cur_size / 2];
-	while (cur_value != num && cur_size > 0 && cur_size <= array_size)
+
+	mid = (right - left) / 2 + left;
+	while (left < right)
 	{
-		if (cur_value < num)
+		if (*mid > num)
 		{
-			from += cur_size / 2;
+			right = mid - 1;
 		}
-			cur_size /= 2;
-		cur_value = arr[from + (cur_size / 2)];
+		else if (*mid < num)
+		{
+			left = mid + 1;
+		}
+		else
+		{
+			return (mid);
+		}
+		mid = (right - left) / 2 + left;
 	}
 
-	if (cur_value == num)
-	{
-		return (arr + from + (cur_size / 2));
-	}
-	return (NULL);
+	return ((*mid == num) ? mid: NULL);
 }
 
 /******************** Recursive Binary Search *********************************/
 
 int *RecursiveBinarySearch(int *arr, int array_size, int num)
 {
-	if (num == *(arr + array_size / 2))
+	int mid = array_size / 2;
+
+	if (num == *(arr + mid))
 	{
-		return (arr + array_size / 2);
+		return (arr + mid);
 	}
 	if (array_size <= 1)
 	{
 		return (NULL);
 	}
-	else if (num < *(arr + array_size / 2))
+	else if (num < *(arr + mid))
 	{
-		return (RecursiveBinarySearch(arr, array_size / 2, num));
+		return (RecursiveBinarySearch(arr, mid, num));
 	}
-	else /*if (num > *(arr + array_size / 2))*/
+	else /*if (num > *(arr + mid))*/
 	{
-		return (RecursiveBinarySearch(arr + array_size / 2, array_size / 2, num));
+		return (RecursiveBinarySearch(arr + mid, mid, num));
 	}
 }
-
 
 /*************************** Merge Sort ***************************************/
 
@@ -374,14 +379,11 @@ void MergeSort(int *arr_to_sort, size_t num_elements)
 	free(help_arr);
 }
 */
-void Merge(int *left_arr, int left_len, int *right_arr, int right_len)
+void Merge(int *left_arr, int left_len, int *right_arr, int right_len)/*/maby use runner !!!*/
 {
 	int left_runner = 0;
 	int right_runner = 0;
 	int *tmp_index = NULL;
-
-	assert(NULL != left_arr);
-	assert(NULL != right_arr);
 
 	int *tmp_arr = (int *)malloc(sizeof(int) * (left_len + right_len));
 	if (NULL == tmp_arr)
@@ -389,6 +391,9 @@ void Merge(int *left_arr, int left_len, int *right_arr, int right_len)
 		return;
 	}
 	tmp_index = tmp_arr;
+
+	assert(NULL != left_arr);
+	assert(NULL != right_arr);
 
 	while (left_runner < left_len && right_runner < right_len)
 	{
@@ -435,15 +440,11 @@ void MergeSort(int *arr, size_t size)
 }
 
 /*************************** Quick Sort ***************************************/
-void Qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
+	
+	void SortPartition(char *base, char **p_right, char **p_left, size_t size, int (*compar)(const void *, const void*))
 {
-	char *left = (char *)base + size;
-	char *right = (char *)base + (nitems - 1) * size;
-
-	if (2 > nitems)
-	{
-		return;
-	}
+	char *right = *p_right;
+	char *left = *p_left;
 
 	while (left != right)
 	{
@@ -459,7 +460,22 @@ void Qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, c
 	}
 
 		SwapMem(right - size, base, size);
-	
+		*p_left = left;
+		*p_right = right; 
+}
+
+
+void Qsort(void *base, size_t nitems, size_t size, int (*compar)(const void *, const void*))
+{
+	char *left = (char *)base + size;
+	char *right = (char *)base + (nitems - 1) * size;
+
+	if (2 > nitems)
+	{
+		return;
+	}
+
+	SortPartition((char *)base, &right, &left, size, compar);
 
 
 	Qsort(base, (((char *)right - (char *)base) / size), size, compar);
