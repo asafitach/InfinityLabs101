@@ -29,7 +29,7 @@
                                                                 ? GREEN"SUCCESS\n"RESET\
                                                                 : RED"\aFAILURE\n"RESET)  
 
-#define NUM_OF_INPUT_BITES 4
+#define NUM_OF_INPUT_BITES 6
 
 #define CREATE_TRIE trie_t *trie = TrieCreate(NUM_OF_INPUT_BITES)
 
@@ -133,6 +133,18 @@ void TestTrieNextAvailable(void)
 
     if (PATH_OCCUPIED == TrieInsert(trie, req_data))
     {
+        TEST_ARE_EQUAL("TestTrieNextAvailable1", TrieNextAvailable(trie, req_data_ptr), SUCCESS);
+
+        printf("\n%lu\n", req_data);
+        
+        TrieInsert(trie, req_data);
+
+        TEST_ARE_EQUAL("TestTrieNextAvailable1", TrieNextAvailable(trie, req_data_ptr), SUCCESS);
+
+        printf("\n%lu\n", req_data);
+        
+        TrieInsert(trie, req_data);
+
         TEST_ARE_EQUAL("TestTrieNextAvailable1", TrieNextAvailable(trie, req_data_ptr), SUCCESS);
 
         printf("\n%lu\n", req_data);

@@ -47,6 +47,7 @@ static trie_node_t *CreateTrieNode(trie_node_t *parent);
 static void SetOccupied(trie_node_t *child);
 
 static trie_status_t FindNext(trie_node_t *root, size_t num_of_input_bits, size_t *data_ptr, size_t tmp_data, size_t i);
+
 static size_t Reverse(size_t data, size_t num_of_input_bits);
 
 
@@ -122,6 +123,8 @@ trie_status_t TrieInsert(trie_t *trie, size_t data)
     size_t i = 0;
 
     assert(NULL != trie);
+
+    data = Reverse(data, trie->num_of_input_bits);
 
     root = trie->root;
 
@@ -241,7 +244,7 @@ size_t TrieCount(const trie_t *trie)
 
 trie_status_t TrieNextAvailable(const trie_t *trie, size_t *data_ptr)
 {
-    size_t data = *data_ptr;
+    size_t data = 0;
     
     size_t bit = 0;
     
@@ -252,6 +255,8 @@ trie_status_t TrieNextAvailable(const trie_t *trie, size_t *data_ptr)
     size_t i = 0;
 
     assert(NULL != trie);
+
+    data = Reverse(*data_ptr, trie->num_of_input_bits);
 
     root = trie->root;
     
@@ -312,27 +317,12 @@ static trie_status_t FindNext(trie_node_t *root, size_t num_of_input_bits, size_
             *data_ptr = tmp_data;
             return (SUCCESS);
         }
-
-        if (NULL == LEFT_CHILD)
-        {
-            tmp_data = Reverse(tmp_data << (num_of_input_bits - i - 1), num_of_input_bits);
-            *data_ptr = tmp_data;
-            return (SUCCESS);
-        }
-        else if (0 == LEFT_CHILD->is_occupied)
+        else if (NULL != LEFT_CHILD && 0 == LEFT_CHILD->is_occupied)
         {
             root = LEFT_CHILD;
             tmp_data <<= MASK;
         }
-        else if (NULL == RIGHT_CHILD)
-        {
-            tmp_data <<= MASK;
-            tmp_data |= MASK;
-            tmp_data = Reverse(tmp_data << (num_of_input_bits - i - 2), num_of_input_bits);
-            *data_ptr = tmp_data;
-            return (SUCCESS);
-        }
-        else
+        else if (NULL != RIGHT_CHILD && 0 == RIGHT_CHILD->is_occupied)
         {
             root = RIGHT_CHILD;
             tmp_data <<= MASK;

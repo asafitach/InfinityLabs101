@@ -2,41 +2,20 @@
 #define __DHCP_H__
 
 #include <stddef.h>      /* size_t */
-#include "trie.h"
+
 # define IPV 4
 
+#define BITS_IN_BYTE 8
+
 /******************************************************************/
-typedef enum children
-{
-	LEFT = 0,
-	RIGHT ,
-	NUM_OF_CHILDREN 
-}children_t;
-
-typedef struct dhcp 
-{
-	unsigned char subnet_ip[IPV]; 
-    size_t num_of_subnet_bits;
-    trie_node_t *root;
-} dhcp_t;
-
-typedef trie_node trie_node_t; 
-
-struct trie_node
-{
-    int is_occupied;
-	trie_node_t *parent; /*for iterative implementation only*/ 
-	trie_node_t *children[NUM_OF_CHILDREN];
-};
-
-/*************************************************************************/
+typedef struct dhcp dhcp_t;
 
 typedef enum dhcp_status
 {
 	OK = 0,
     DOUBLE_FREE,
-	FAIL,
-}dhcp_status_t;
+	FAIL
+} dhcp_status_t;
 
 
 /*************************************************************************/
@@ -71,5 +50,10 @@ dhcp_status_t DhcpFreeIp(dhcp_t *dhcp, unsigned char ip[IPV]);
 */
 size_t DhcpCountFree(dhcp_t *dhcp); 
 
+#ifndef NDEBUG
+
+void PrintSubnet(dhcp_t *dhcp);
+
+#endif
 
 #endif /* __DHCP_H__ */
