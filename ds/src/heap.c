@@ -58,7 +58,6 @@ void HeapDestroy(heap_t *heap)
     VectorDestroy(heap->d_vector);
 
     free(heap);
-    heap = NULL;
 }
 
 /*****************************************************************************/
@@ -71,10 +70,10 @@ int HeapPush(heap_t *heap, void *data)
     {
         return (1);
     }
-    if (1 == HeapSize(heap))
+/*     if (1 == HeapSize(heap))
     {
         return(0);
-    }
+    } the parrent will be tha same and heapify will return it*/
 
     HeapifyUp(heap, data);
 
@@ -94,10 +93,10 @@ void HeapPop(heap_t *heap)
 
     VectorPopBack(heap->d_vector);
 
-    if (2 > HeapSize(heap))
+/*     if (2 > HeapSize(heap))
     {
         return;
-    }
+    }  test if there is no need in this "if"*/
 
     HeapifyDown(heap, 0);
 }
@@ -197,7 +196,7 @@ void HeapifyDown(heap_t *heap, size_t index)
         left = VectorGetElement(vector, LEFT(index));
         if (0 > cmp(data_to_move, left))
         {
-            if (0 > cmp(data_to_move, right) && 0 < cmp(right, left))
+            if (/* 0 > cmp(data_to_move, right) &&  */0 < cmp(right, left))
             {
                 VectorSwap(vector, index, RIGHT(index));
                 index = RIGHT(index);
@@ -231,12 +230,9 @@ void HeapifyUp(heap_t *heap, void *data)
     size_t index = VectorGetSize(vector) - 1;
     heap_cmp_t cmp = heap->cmp_func;
     void *cmp_data = NULL;
-
-    int res = 0;
      
     cmp_data = VectorGetElement(vector, PARRENT(index));
-    res = cmp(data, cmp_data);
-    while (0 < res)
+    while (0 < cmp(data, cmp_data))
     {
         VectorSwap(vector, index, PARRENT(index));
         index = PARRENT(index);

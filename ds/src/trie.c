@@ -159,10 +159,42 @@ trie_status_t TrieInsert(trie_t *trie, size_t data)
     return (SUCCESS);
 }
 
-/* trie_status_t TrieRemove(trie_t *trie, size_t data)
-{
-   assert(NULL != trie);
-} */
+trie_status_t TrieRemove(trie_t *trie, size_t data)
+{    
+    trie_node_t *root = NULL;
+    unsigned int bit = 0;
+    size_t num_of_elements = 0;
+    
+    assert(NULL != trie);
+    
+    root = trie->root;
+    num_of_elements = trie->num_of_input_bits;
+    
+    while (num_of_elements)
+    {
+        bit = data & MASK;
+        data >>= 1;
+        if (NULL == CHILD)
+        {
+            return (PATH_INVALID);
+        }
+        root = CHILD;
+        --num_of_elements;
+    }
+    
+    if (0 == root->is_occupied)
+    {
+        return (PATH_INVALID);
+    }
+    
+    while (NULL != root && 1 == root->is_occupied)
+    {
+        root->is_occupied = 0;
+        root = root->parent;
+    }
+    --trie->num_of_input_bits;
+    return (SUCCESS);
+}
 
 int TrieIsFound(const trie_t *trie, size_t data)
 {
@@ -186,6 +218,11 @@ int TrieIsFound(const trie_t *trie, size_t data)
         }
 
         root = CHILD;
+    }
+
+    if (0 == root->is_occupied)
+    {
+        return (0);
     }
 
     return (1);

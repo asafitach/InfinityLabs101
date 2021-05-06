@@ -145,6 +145,11 @@ void TestTrieNextAvailable(void)
 
     TEST_ARE_EQUAL("TestTrieNextAvailable3", TrieCount(trie), 2);
 
+    
+    TEST_ARE_EQUAL("Remove", TrieRemove(trie, req_data), SUCCESS);
+
+    TEST_ARE_EQUAL("Find WHats Deleted", TrieIsFound(trie, req_data), 0);
+
     DESTROY_TRIE;
 
     return ;
