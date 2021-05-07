@@ -112,7 +112,6 @@ void *HeapRemove(heap_t *heap, heap_is_match is_match, void * param)
 
     assert(NULL != heap);
     assert(NULL != is_match);
-    assert(1 != HeapIsEmpty(heap));
 
     vector = heap->d_vector;
     size = VectorGetSize(vector);
@@ -130,12 +129,6 @@ void *HeapRemove(heap_t *heap, heap_is_match is_match, void * param)
     if (index == size)
     {
         return (NULL);
-    }
-
-    if (index == size - 1)
-    {
-        VectorPopBack(vector);
-        return (data);
     }
 
     VectorSetElement(vector, index, VectorGetElement(vector, size - 1));

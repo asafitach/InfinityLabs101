@@ -165,6 +165,8 @@ dhcp_status_t DhcpFreeIp(dhcp_t *dhcp, unsigned char ip_to_free[IPV])
 
     data = GetIpWithoutSubnet(ip_to_free);
 
+/*     if (0 == data )
+ */
     if (SUCCESS == TrieRemove(dhcp->trie, data))
     {
         return (OK);

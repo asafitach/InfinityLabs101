@@ -123,11 +123,11 @@ void TestTrieNextAvailable(void)
 {
     CREATE_TRIE;
 
-    size_t req_data = 5;
+    size_t req_data = 62;
 
     size_t *req_data_ptr = &req_data;
 
-    size_t data = 5;
+    size_t data = 62;
 
     TrieInsert(trie, data);
 
