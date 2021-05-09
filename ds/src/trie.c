@@ -1,6 +1,7 @@
 #include <assert.h>   /* assert */
 #include <stddef.h>   /* NULL size_t */
 #include <stdlib.h>   /* malloc free */
+#include <stdio.h>
 
 #include "trie.h"
 
@@ -119,7 +120,9 @@ trie_status_t TrieInsert(trie_t *trie, size_t data)
     data = Reverse(data, trie->num_of_input_bits);
 
     runner = trie->root;
-
+    
+/*    /// if trie is full
+ */
     for(i = 0; i < trie->num_of_input_bits; i++)
     {
          if (1 == runner->is_occupied)  /* if occupied */
@@ -310,13 +313,13 @@ static trie_status_t FindNext(trie_node_t *runner, size_t num_of_input_bits, siz
         else if (NULL != LEFT_CHILD && 0 == LEFT_CHILD->is_occupied)
         {
             runner = LEFT_CHILD;
-            tmp_data <<= MASK;
+            tmp_data <<= 1;
         }
         else if (NULL != RIGHT_CHILD && 0 == RIGHT_CHILD->is_occupied)
         {
             runner = RIGHT_CHILD;
-            tmp_data <<= MASK;
-            tmp_data |= MASK;
+            tmp_data <<= 1;
+            tmp_data |= 1;
         }
     }
     
@@ -327,8 +330,8 @@ static trie_status_t FindNext(trie_node_t *runner, size_t num_of_input_bits, siz
 
 static size_t Reverse(size_t data, size_t num_of_input_bits)
 {
-    return (data);
-/*     size_t reversed_data = 0;
+/*     return (data);
+ */     size_t reversed_data = 0;
 
     while (num_of_input_bits > 0)
     {
@@ -341,7 +344,7 @@ static size_t Reverse(size_t data, size_t num_of_input_bits)
         --num_of_input_bits;
     }
 
-    return (reversed_data); */
+    return (reversed_data); 
 }
 
 /********************* CreateTrieNode( ***************************/
@@ -395,3 +398,31 @@ static void SetOccupied(trie_node_t *parent)
         parent = parent->parent;
     }
 }
+#ifndef NDEBUG
+
+void Print2DInt(trie_node_t *root, int space)
+{
+    int i = 0;
+        
+    space += 10;
+    if (root == NULL)
+    {
+        return;
+    }
+    Print2DInt(root->children[1], space);
+    
+    printf("\n");
+    for(i = 10; i < space; ++i)
+         printf(" ");
+    printf("d:%d", (root->is_occupied));    
+    Print2DInt(root->children[0], space);
+}
+
+void PrintTrie(trie_t *trie)
+{
+    Print2DInt(trie->root, 0);
+
+    printf("\n");
+} 
+
+#endif

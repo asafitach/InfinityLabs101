@@ -268,4 +268,70 @@ void PrintHeap(heap_t *heap)
         printf("%d-->", *(int *)VectorGetElement(heap->d_vector, i));
     }
 }*/
+/*
+void HespSort(heap_t *heap, heap_cmp_t cmp)
+{
+    assert(NULL != heap);
+    assert(NULL != cmp);
+
+
+    return (RecursiveHespSort(heap->d_vector, cmp, 0, LogOf2(HeapSize(heap) / 2), 0));
+}
+
+size_t LogOf2(size_t number)
+{
+    size_t log = 0;
+
+    while(number)
+    {
+        ++log;
+        number /= 2;
+    }
+
+    return (log - 1);
+}
+
+void RecursiveHeapSort(d_vector_t *vector, heap_cmp_t cmp, size_t cur_index, size_t level, size_t cur_level)
+{
+
+    if (NULL == VectorGetElement(cur_index));
+    {
+        return;
+    }
+
+    if (cur_level <= level)
+    {
+        RecursiveHeapSort(vector, cmp, VectorGetElement(vector, RIGHT(cur_index)), level, cur_level + 1);
+        RecursiveHeapSort(vector, cmp, VectorGetElement(vector, LEFT(cur_index)), level, cur_level + 1);
+    }
+
+    SortBrench(vector, cur_index, cmp);
+}
+
+void SortBrench(d_vector_t *vector, size_t parrent_index, heap_cmp_t cmp)
+{
+    void *parrent = VectorGetElement(vector, parrent_index);
+    void *right = VectorGetElement(vector, RIGHT(parrent_index));
+    void *left = VectorGetElement(vector, LEFT(parrent_index));
+
+    if (NULL != right && 0 > cmp(parrent, right))
+    {
+        if (0 > cmp(left, right) && 0 > cmp(left, parrent))
+        {
+            VectorSwap(vector, LEFT(parrent_index), parrent_index);
+            HeapifyDown()LEFT(parrent_index)
+        }
+        else
+        {
+            VectorSwap(vector, RIGHT(parrent_index), parrent_index);
+            HeapifyDown()RIGHT(parrent_index)
+        }
+    }
+    else if (NULL != left && 0 > cmp(left, parrent))
+    {
+        VectorSwap(vector, LEFT(parrent_index), parrent_index);
+        HeapifyDown()LEFT(parrent_index)
+    }
+
+}*/
 /*****************************************************************************/

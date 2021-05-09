@@ -62,6 +62,11 @@ is most similar to the requsted data in a trie ds.
 */
 trie_status_t TrieNextAvailable(const trie_t *trie, size_t *data);
 
+#ifndef NDEBUG
 
+void Print2DInt(trie_node_t *root, int space);
+
+
+#endif
 
 #endif /* __TRIE_H__ */

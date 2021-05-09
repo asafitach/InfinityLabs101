@@ -24,14 +24,16 @@ struct dhcp
 /********************* service function signitures ***************************/
 
 static void CopyArray(unsigned char *dest, unsigned char *src, size_t size);
-static size_t GetIpWithoutSubnet(unsigned char *requested_ip);
+static size_t StrToSize_t(unsigned char *requested_ip);
 static void BuildIp(dhcp_t *dhcp, size_t data, unsigned char allocted[IPV]);
+static size_t Pow(size_t arg);
 
 /********************* DhcpCreate ***************************/
 
 dhcp_t *DhcpCreate(const unsigned char subnet_ip[IPV], size_t num_of_subnet_bits)
 {
     dhcp_t *dhcp = NULL;
+    trie_status_t status = SUCCESS;
 
     assert(IPV * BITS_IN_BYTE != num_of_subnet_bits);
 
@@ -54,9 +56,15 @@ dhcp_t *DhcpCreate(const unsigned char subnet_ip[IPV], size_t num_of_subnet_bits
 
     CopyArray(dhcp->subnet_ip, (unsigned char *)subnet_ip, IPV);
 
-    TrieInsert(dhcp->trie, (size_t)0);
-    TrieInsert(dhcp->trie, (size_t)pow(2, IPV * BITS_IN_BYTE - num_of_subnet_bits) - 1);
-    TrieInsert(dhcp->trie, (size_t)pow(2, IPV * BITS_IN_BYTE - num_of_subnet_bits) - 2);
+    status = TrieInsert(dhcp->trie, (size_t)0);
+    status = status ? status: TrieInsert(dhcp->trie, Pow(IPV * BITS_IN_BYTE - num_of_subnet_bits) - 1);
+    status = status ? status: TrieInsert(dhcp->trie, Pow(IPV * BITS_IN_BYTE - num_of_subnet_bits) - 2);
+
+    if (SUCCESS != status)
+    {
+        DhcpDestroy(dhcp);
+        return (NULL);
+    }
 
     return (dhcp);
 }
@@ -87,8 +95,8 @@ dhcp_status_t DhcpAllocateIp(dhcp_t *dhcp, const unsigned char requested_ip[IPV]
 
     trie = dhcp->trie;
 
-    data = GetIpWithoutSubnet((unsigned char *)requested_ip);
-
+    data = StrToSize_t((unsigned char *)requested_ip);
+ 
     status = TrieInsert(trie, data);
     if (PATH_OCCUPIED == status)
     {
@@ -109,19 +117,19 @@ dhcp_status_t DhcpAllocateIp(dhcp_t *dhcp, const unsigned char requested_ip[IPV]
     return (OK);
 }
 
-/********************* GetIpWithoutSubnet ***************************/
+/********************* StrToSize_t ***************************/
 
-static size_t GetIpWithoutSubnet(unsigned char *requested_ip)
+static size_t StrToSize_t(unsigned char *requested_ip)
 {
     size_t data = 0;
 
     size_t index = 0;
 
-    for (index = 0; index < IPV; ++index)
+    for (index = IPV; index > 0; --index)
     {
         data <<= BITS_IN_BYTE;
 
-        data |= requested_ip[index];
+        data |= requested_ip[index - 1];
     }
 
     return (data);
@@ -137,20 +145,16 @@ static void BuildIp(dhcp_t *dhcp, size_t data, unsigned char allocted[IPV])
 
     unsigned char *subnet = dhcp->subnet_ip;
 
-    for (index = 0; index < IPV; ++index)
+    for (index = IPV; index > 0; --index)
     {
-        final_ip <<= BITS_IN_BYTE;
-
-        final_ip |= subnet[index];
-
+        final_ip |= (size_t)subnet[index - 1] << ((index - 1) * BITS_IN_BYTE);
     }
 
     final_ip |= data;
 
-     for (index = IPV; index > 0; index--)
+    for (index = IPV; index > 0; index--)
     {
         allocted[index - 1] = *(char *)&final_ip;
-
         final_ip >>= BITS_IN_BYTE;
     }
 }
@@ -163,7 +167,7 @@ dhcp_status_t DhcpFreeIp(dhcp_t *dhcp, unsigned char ip_to_free[IPV])
 
     assert(NULL != dhcp);
 
-    data = GetIpWithoutSubnet(ip_to_free);
+    data = StrToSize_t(ip_to_free);
 
 /*     if (0 == data )
  */
@@ -183,7 +187,7 @@ size_t DhcpCountFree(dhcp_t *dhcp)
 
     assert(NULL != dhcp);
 
-    max_capacity = pow(2, IPV * BITS_IN_BYTE - dhcp->num_of_subnet_bits);
+    max_capacity = Pow(IPV * BITS_IN_BYTE - dhcp->num_of_subnet_bits);
     
     return (max_capacity - TrieCount(dhcp->trie));
 }
@@ -197,12 +201,19 @@ static void CopyArray(unsigned char *dest, unsigned char *src, size_t size)
     assert(NULL != dest);
     assert(NULL != src);
 
-    for (i = 0; i < size; i++)
+    for (i = size; i > 0; i--)
     {
-        dest[i] = src[i];
+        dest[i - 1] = src[i - 1];
     }
 
     return ;
+}
+
+/********************* PowerSize_t ***************************/
+
+static size_t Pow(size_t arg)
+{
+    return (1 << arg);
 }
 
 #ifndef NDEBUG

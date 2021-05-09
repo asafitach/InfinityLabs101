@@ -52,8 +52,9 @@ size_t DhcpCountFree(dhcp_t *dhcp);
 
 #ifndef NDEBUG
 
-void PrintSubnet(dhcp_t *dhcp);
+void PrintDhcpSubnet(dhcp_t *dhcp);
 
+void PrintIp(unsigned char ip[IPV]);
 #endif
 
 #endif /* __DHCP_H__ */
