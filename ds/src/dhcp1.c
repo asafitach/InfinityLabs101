@@ -96,6 +96,7 @@ dhcp_status_t DhcpAllocateIp(dhcp_t *dhcp, const unsigned char requested_ip[IPV]
     trie = dhcp->trie;
 
     data = StrToSize_t((unsigned char *)requested_ip);
+    data >>= dhcp->num_of_subnet_bits;
  
     status = TrieInsert(trie, data);
     if (PATH_OCCUPIED == status)
@@ -152,9 +153,9 @@ static void BuildIp(dhcp_t *dhcp, size_t data, unsigned char allocted[IPV])
 
     final_ip |= data;
 
-    for (index = IPV; index > 0; index--)
+    for (index = 0; index < IPV; index++)
     {
-        allocted[index - 1] = *(char *)&final_ip;
+        allocted[index] = *(char *)&final_ip;
         final_ip >>= BITS_IN_BYTE;
     }
 }
@@ -168,6 +169,7 @@ dhcp_status_t DhcpFreeIp(dhcp_t *dhcp, unsigned char ip_to_free[IPV])
     assert(NULL != dhcp);
 
     data = StrToSize_t(ip_to_free);
+    data >>= dhcp->num_of_subnet_bits;
 
 /*     if (0 == data )
  */

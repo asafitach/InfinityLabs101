@@ -51,6 +51,9 @@ static trie_status_t FindNext(trie_node_t *runner, size_t num_of_input_bits, siz
 
 static size_t Reverse(size_t data, size_t num_of_input_bits);
 
+trie_node_t *CreatePath(trie_node_t *parrent, size_t level, size_t data);
+
+
 
 
 /********************* Api functions definition ***************************/
@@ -111,51 +114,41 @@ static void TrieDestroyHelper(trie_node_t *runner)
 
 trie_status_t TrieInsert(trie_t *trie, size_t data)
 {
-    size_t bit = 0;
     trie_node_t *runner = NULL;
-    size_t i = 0;
+    trie_node_t *parrent = NULL;
+    size_t level = 0;
+    size_t index = 0;
 
     assert(NULL != trie);
 
-    data = Reverse(data, trie->num_of_input_bits);
-
     runner = trie->root;
+    level = trie->num_of_input_bits;
+    index = level;
 
-    if (1 == runner->is_occupied)
+    while(level && NULL != runner)
     {
-        return (TRIE_FULL);
+        parrent = runner;
+        --level;
+        runner = parrent->children[(data >> level) & 1];
     }
 
-    for(i = 0; i < trie->num_of_input_bits; i++)
+    if (!level && 1 == runner->is_occupied)
     {
-         if (1 == runner->is_occupied)  /* if occupied */
-        {
-            return (PATH_OCCUPIED);
-        }
 
-        bit = (data >> i) & MASK;
-
-        if (NULL == CHILD)  /* if not exsits and not occupied */
-        {
-            CHILD = CreateTrieNode(runner);
-
-            if (NULL == CHILD)
-            {
-                return (MALLOC_FAIL);
-            }
-        }
-
-        runner = CHILD;
-    }
-
-    if (1 == runner->is_occupied)  /* checks if the last node is occupied */
-    {
         return (PATH_OCCUPIED);
+
+    }
+
+    if (level)
+    {
+        runner = CreatePath(parrent, level - 1, data);
+        if (NULL == runner)
+        {
+            return (MALLOC_FAIL);
+        }
     }
 
     SetOccupied(runner);
-
-    trie->size++;
 
     return (SUCCESS);
 }
@@ -163,73 +156,65 @@ trie_status_t TrieInsert(trie_t *trie, size_t data)
 trie_status_t TrieRemove(trie_t *trie, size_t data)
 {    
     trie_node_t *runner = NULL;
-    unsigned int bit = 0;
-    size_t num_of_elements = 0;
-    
-    assert(NULL != trie);
-    
-    runner = trie->root;
-    num_of_elements = trie->num_of_input_bits;
-    data = Reverse(data, num_of_elements);
+    trie_node_t *parrent = NULL;
+    size_t level = 0;
+    size_t index = 0;
 
-    
-    while (num_of_elements)
+    assert(NULL != trie);
+
+    runner = trie->root;
+    level = trie->num_of_input_bits;
+    index = level;
+
+    while(level && NULL != runner)
     {
-        bit = data & MASK;
-        data >>= 1;
-        if (NULL == CHILD)
+        parrent = runner;
+        --level;
+        runner = parrent->children[(data >> level) & 1];
+    }
+
+    if (!level && 1 == runner->is_occupied)
+    {
+        while (NULL != runner && 1 == runner->is_occupied)
         {
-            return (PATH_INVALID);
+            runner->is_occupied = 0;
+            runner = runner->parent;
         }
-        runner = CHILD;
-        --num_of_elements;
+
+        return (SUCCESS);
     }
-    
-    if (0 == runner->is_occupied)
-    {
-        return (PATH_INVALID);
-    }
-    
-/*     SetOccupied(runner);
- */    while (NULL != runner && 1 == runner->is_occupied)
-    {
-        runner->is_occupied = 0;
-        runner = runner->parent;
-    }
-    --trie->size;
-    return (SUCCESS);
+
+    return (PATH_INVALID);
 }
 
 int TrieIsFound(const trie_t *trie, size_t data)
 {
-    size_t bit = 0;
     trie_node_t *runner = NULL;
-    size_t i = 0;
+    trie_node_t *parrent = NULL;
+    size_t level = 0;
+    size_t index = 0;
 
     assert(NULL != trie);
 
     runner = trie->root;
-    data = Reverse(data, trie->num_of_input_bits);
+    level = trie->num_of_input_bits;
+    index = level;
 
-
-    for(i = 0; i < trie->num_of_input_bits; i++)
+    while(level && NULL != runner)
     {
-        bit = (data >> i) & MASK;
-
-        if (NULL == CHILD)  /* if not exsits */
-        {
-            return (0);
-        }
-
-        runner = CHILD;
+        parrent = runner;
+        --level;
+        runner = parrent->children[(data >> level) & 1];
     }
 
-    if (0 == runner->is_occupied)
+    if (!level && 1 == runner->is_occupied)
     {
-        return (0);
+
+        return (1);
+
     }
 
-    return (1);
+    return (0);
 }  
 
 /********************* TrieCount ***************************/
@@ -245,126 +230,71 @@ size_t TrieCount(const trie_t *trie)
 
 trie_status_t TrieNextAvailable(const trie_t *trie, size_t *data_ptr)
 {
-    size_t data = 0;   
-    size_t bit = 0;   
-    size_t tmp_data = 0;
     trie_node_t *runner = NULL;
-    size_t i = 0;
+    trie_node_t *parrent = NULL;
+    size_t level = 0;
+    size_t index = 0;
+    size_t data = 0;
 
     assert(NULL != trie);
-
+    assert(NULL != data_ptr);
 
     runner = trie->root;
-    
-    if (1 == runner->is_occupied)  /* if trie is full*/
+    level = trie->num_of_input_bits;
+    index = level;
+    data = *data_ptr;
+
+    while (level && NULL != runner && 1 != runner->is_occupied)
     {
-        return (TRIE_FULL);
+        parrent = runner;
+        --level;
+        runner = parrent->children[(data >> level) & 1];
     }
 
-    if (0 == TrieIsFound(trie, *data_ptr))
+    while (NULL != parrent && parrent->children[RIGHT] == runner && 1 == parrent->children[RIGHT]->is_occupied)
     {
-        return (SUCCESS);
+        runner = parrent;
+        parrent = parrent->parent;
+        ++level;
     }
-    data = Reverse(*data_ptr, trie->num_of_input_bits);
 
-
-    for (i = 0; i < trie->num_of_input_bits; i++)
+    if (NULL == parrent)
     {
-        bit = (data >> (i)) & MASK;
-    
-        if (NULL != CHILD && 1 == CHILD->is_occupied)  /* if occupied */
+        return (PATH_OCCUPIED);
+    }
+
+    parrent = runner;
+    --level;
+    runner = parrent->children[RIGHT];
+
+    while (NULL != runner && level)
+    {
+        if (NULL == parrent)
         {
-            return (FindNext(CHILD, trie->num_of_input_bits, data_ptr, tmp_data, i )); 
+            *data_ptr = data << level;
+            return (SUCCESS);
         }
-        
-        runner = CHILD;
-        tmp_data <<= MASK;
-        tmp_data |= bit;
+        runner = parrent->children[LEFT];
+        if (!runner || 1 != runner->is_occupied)
+        {
+            parrent = runner;
+            data |= 1 << (level - 1);
+            --level;
+        }
+        else if (!parrent->children[RIGHT] || 1 != parrent->children[RIGHT]->is_occupied)
+        {
+            parrent = parrent->children[RIGHT];
+            data = (data << (level - 1)) >> level + (data >> (9 - level)) << level;
+            --level;
+        }
     }
-    
-    
-    return (FindNext(runner,trie->num_of_input_bits, data_ptr, tmp_data, i));
-    
 }
 
 /********************* comment ***************************/
 
-static trie_status_t FindNext(trie_node_t *runner, size_t num_of_input_bits, size_t *data_ptr, size_t tmp_data, size_t i)
-{
-  /*   tmp_data >>= MASK;
-    --i;
-    runner = runner->parent; */
-    
-    while (NULL != runner && runner == runner->parent->children[RIGHT])
-    {
-        runner = runner->parent;
-        tmp_data >>= MASK;
-        --i;
-    }
-        runner = runner->parent;
-        tmp_data >>= MASK;
-        --i;
-
-    
-    if (NULL == runner)
-    {
-        *data_ptr = 0;
-        return (PATH_OCCUPIED);
-    }
-    
-/*     if (NULL != RIGHT_CHILD && 1 == RIGHT_CHILD->is_occupied)
-    {
-        *data_ptr = 0;
-        return(PATH_OCCUPIED);
-    } */
-    runner = RIGHT_CHILD;
-    tmp_data <<= MASK;
-    tmp_data |= MASK;
-    ++i;
-    
-    for (; i < num_of_input_bits; ++i)
-    {
-         if (NULL == runner)
-        {
-            tmp_data = (tmp_data << (num_of_input_bits - i - 1));
-            *data_ptr = tmp_data;
-            return (SUCCESS);
-        }
-        else if (NULL != LEFT_CHILD && 0 == LEFT_CHILD->is_occupied)
-        {
-            runner = LEFT_CHILD;
-            tmp_data <<= 1;
-        }
-        else if (NULL != RIGHT_CHILD && 0 == RIGHT_CHILD->is_occupied)
-        {
-            runner = RIGHT_CHILD;
-            tmp_data <<= 1;
-            tmp_data |= 1;
-        }
-    }
-    
-    *data_ptr = (tmp_data );
-    
-    return (SUCCESS);
-}
-
 static size_t Reverse(size_t data, size_t num_of_input_bits)
 {
-/*     return (data);
- */     size_t reversed_data = 0;
-
-    while (num_of_input_bits > 0)
-    {
-        reversed_data <<= MASK;
-
-        reversed_data |= data & MASK;
-
-        data >>= MASK; 
-
-        --num_of_input_bits;
-    }
-
-    return (reversed_data); 
+return (data);
 }
 
 /********************* CreateTrieNode( ***************************/
@@ -418,6 +348,18 @@ static void SetOccupied(trie_node_t *parent)
         parent = parent->parent;
     }
 }
+
+trie_node_t *CreatePath(trie_node_t *parrent, size_t level, size_t data)
+{
+    while (NULL != CreateTrieNode(parrent) && level)
+    {
+        --level;
+    }
+
+    return ((level) ? NULL: parrent);    
+}
+
+
 #ifndef NDEBUG
 
 void Print2DInt(trie_node_t *root, int space)

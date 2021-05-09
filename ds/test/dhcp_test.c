@@ -31,6 +31,8 @@
 
 unsigned char subnet_ip_g[IPV] = {255, 127, 63, 0};
 
+#define NUM_OF_SUBNET_BITS 8 * 3
+
 #define CREATE_DHCP dhcp_t *dhcp = DhcpCreate(subnet_ip_g, NUM_OF_SUBNET_BITS)
 
 #define DESTROY_DHCP DhcpDestroy(dhcp)

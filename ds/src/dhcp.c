@@ -89,7 +89,7 @@ dhcp_status_t DhcpAllocateIp(dhcp_t *dhcp, const unsigned char requested_ip[IPV]
         return (FAIL);
     } */
 
-    data = GetIpWithoutSubnet(dhcp, requested_ip);
+    data = GetIpWithoutSubnet(dhcp, (unsigned char *)requested_ip);
 
     status = TrieInsert(trie, data);
     if (PATH_OCCUPIED == status)

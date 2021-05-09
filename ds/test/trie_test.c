@@ -7,7 +7,7 @@
 
 #define RED "\033[1;31m"  /* print in red */
 
-#define GREEN "\033[1;5;32m" /* print in green */
+#define GREEN "\033[1;32m" /* print in green */
 
 #define BLUE "\033[1;34m"  /* print in blue */
 
@@ -29,7 +29,7 @@
                                                                 ? GREEN"SUCCESS\n"RESET\
                                                                 : RED"\aFAILURE\n"RESET)  
 
-#define NUM_OF_INPUT_BITES 6
+#define NUM_OF_INPUT_BITES 4
 
 #define CREATE_TRIE trie_t *trie = TrieCreate(NUM_OF_INPUT_BITES)
 
@@ -47,13 +47,13 @@ void TestTrieNextAvailable(void);
 
 int main ()
 {
-   /*  TestTrieCreate(); */
+  TestTrieCreate(); 
 
-    /* TestTrieCount(); */
+     TestTrieCount(); 
 
-/*     TestTrieInsert();
- */
-   /*  TestTrieIsFound(); */
+    TestTrieInsert();
+ 
+     TestTrieIsFound(); 
 
    TestTrieNextAvailable();
     
@@ -123,33 +123,23 @@ void TestTrieNextAvailable(void)
 {
     CREATE_TRIE;
 
-    size_t req_data = 62;
+    size_t req_data = 15;
 
     size_t *req_data_ptr = &req_data;
 
-    size_t data = 62;
+    size_t data = 1;
 
     TrieInsert(trie, data);
 
-    if (PATH_OCCUPIED == TrieInsert(trie, req_data))
+    while (req_data)
     {
-        TEST_ARE_EQUAL("TestTrieNextAvailable1", TrieNextAvailable(trie, req_data_ptr), SUCCESS);
+        TEST_ARE_EQUAL("TestTrieNextAvailable1", TrieNextAvailable(trie, &data), SUCCESS);
 
-        printf("\n%lu\n", req_data);
+        printf("\n%lu\n", data);
         
-        TrieInsert(trie, req_data);
+        TrieInsert(trie, data);
+        --req_data;
 
-        TEST_ARE_EQUAL("TestTrieNextAvailable1", TrieNextAvailable(trie, req_data_ptr), SUCCESS);
-
-        printf("\n%lu\n", req_data);
-        
-        TrieInsert(trie, req_data);
-
-        TEST_ARE_EQUAL("TestTrieNextAvailable1", TrieNextAvailable(trie, req_data_ptr), SUCCESS);
-
-        printf("\n%lu\n", req_data);
-        
-        TrieInsert(trie, req_data);
 
     }
 

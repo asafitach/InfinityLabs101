@@ -51,18 +51,18 @@ void TestNextAvailable(void)
 
     next = 1;
 
-    
+        TrieInsert(trie, 1);
+
     TrieRemove(trie, 2);
 
     status = TrieNextAvailable(trie, &next);
 
     TEST_ARE_EQUAL("removed 2, find the next of 1 (2)", next,2);
 
-    printf("%lu   %d \n\n", next, status);
 
     TEST_ARE_EQUAL("status test", status,0);
 
-   /* printf("%ld\n" ,next);*/
+    TrieInsert(trie, 1);
 
     next = 2;
 
@@ -74,17 +74,21 @@ void TestNextAvailable(void)
 
     status = TrieNextAvailable(trie, &next);
 
+
     TEST_ARE_EQUAL("request 3 : PATH_OCCUPIED", status ,PATH_OCCUPIED);
+    printf("%lu   %d \n\n", next, status);
 
     TrieRemove(trie, 12);
 
     next = 3;
+        TrieInsert(trie, 1);
+
 
     status = TrieNextAvailable(trie, &next);
 
     TEST_ARE_EQUAL("request 3 after removing 12, should get 12", next ,12);
 
-    /*printf("%ld\n" ,next);*/
+    printf("%lu\n" ,next);
 
     next = 3;
 
@@ -102,6 +106,7 @@ void TestNextAvailable(void)
 
     TEST_ARE_EQUAL("request 3 after removing 10, should get 10", next ,10);
 
+   printf("%lu\n" ,next);
     next = 3;
     TrieRemove(trie, 9);
 
@@ -109,6 +114,7 @@ void TestNextAvailable(void)
 
     TEST_ARE_EQUAL("request 3 after removing 9, should get 9", next ,9);
 
+   printf("%lu\n" ,next);
 
     next = 3;
     TrieRemove(trie, 4);
@@ -116,6 +122,7 @@ void TestNextAvailable(void)
     status = TrieNextAvailable(trie, &next);
 
     TEST_ARE_EQUAL("request 3 after removing 4, should get 4", next ,4);
+   printf("%lu\n" ,next);
 
 
 }
@@ -215,7 +222,7 @@ void TestCreateDestroy(void)
 {
     trie_t *trie = TrieCreate(8);
     trie_status_t status = SUCCESS;
-    size_t data = 1;
+    size_t data = 0;
 
     printf(YELLOW"Create&Destroy Test\n"RESET);
     TEST_ARE_EQUAL("Create Test", (trie != NULL), 1);

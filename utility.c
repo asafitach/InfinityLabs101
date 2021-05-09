@@ -130,7 +130,7 @@ void GetRandomArray(int *arr, size_t size, int range)
 	size_t i = 0;
 	for (i = 0; i < size; ++i)
 	{
-		arr[i] = (rand() % range) /*- range / 2*/;
+		arr[i] = (rand() % range) /*- range / 2 for negetive numbers */;
 	}
 }
 
