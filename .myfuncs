@@ -2,6 +2,9 @@
 
 echo "welcome $USER!"
 
+export PATH=$PATH:/home/asafitach/asaf-itach:/home/asafitach/asaf-itach/ds:/home/asafitach/asaf-itach/system_programming
+
+
 alias myfuncs='gedit ~/asaf-itach/.myfuncs'
 
 #gcc complation alias: c89, c99, debug mode, releasa mode
