@@ -53,8 +53,8 @@ void TestNextAvailable(void)
 
         TrieInsert(trie, 1);
 
-/*     TrieRemove(trie, 2);
- */
+    TrieRemove(trie, 2);
+
     status = TrieNextAvailable(trie, &next);
 
     TEST_ARE_EQUAL("removed 2, find the next of 1 (2)", next,2);
@@ -62,7 +62,7 @@ void TestNextAvailable(void)
 
     TEST_ARE_EQUAL("status test", status,0);
 
-    TrieInsert(trie, 4);
+    TrieInsert(trie, 1);
 
     next = 2;
 
@@ -80,8 +80,8 @@ void TestNextAvailable(void)
 
     TrieRemove(trie, 12);
 
-    next = 3;
-
+    next = 5;
+       printf("insert 4 status: %d ", TrieInsert(trie, 4));
 
 
     status = TrieNextAvailable(trie, &next);

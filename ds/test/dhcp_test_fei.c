@@ -39,7 +39,7 @@ void  SecondTest()
         printf("status: %d\n",DhcpAllocateIp(dhcp, requested_id, allocted)); 
         PrintIpTest(allocted);
         TEST_ARE_EQUAL("DhcpAllocateIp Test", allocted[3], i);  
-        printf("inserted = %d \n", i); 
+        printf("inserted = %d.%d.%d.%d \n", allocted[3], allocted[2], allocted[1], allocted[0]); 
         memset(allocted, 0, 4); 
     }
 
@@ -107,6 +107,6 @@ void PrintIpTest(unsigned char *str)
     while (index)
     {
         --index;
-        printf("%d.", str[index - 1]);
+        printf("%d.", str[index]);
     }
 }

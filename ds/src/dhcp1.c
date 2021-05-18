@@ -126,11 +126,11 @@ static size_t StrToSize_t(unsigned char *requested_ip)
 
     size_t index = 0;
 
-    for (index = IPV; index > 0; --index)
+    for (index = 0; index < IPV; ++index)
     {
         data <<= BITS_IN_BYTE;
 
-        data |= requested_ip[index - 1];
+        data |= requested_ip[index];
     }
 
     return (data);
@@ -148,14 +148,14 @@ static void BuildIp(dhcp_t *dhcp, size_t data, unsigned char allocted[IPV])
 
     for (index = IPV; index > 0; --index)
     {
-        final_ip |= (size_t)subnet[index - 1] << ((index - 1) * BITS_IN_BYTE);
+        allocted[index - 1] = subnet[index - 1];
     }
 
     final_ip |= data;
 
     for (index = 0; index < IPV; index++)
     {
-        allocted[index] = *(char *)&final_ip;
+        allocted[index] |= *(char *)&final_ip;
         final_ip >>= BITS_IN_BYTE;
     }
 }
@@ -165,14 +165,22 @@ static void BuildIp(dhcp_t *dhcp, size_t data, unsigned char allocted[IPV])
 dhcp_status_t DhcpFreeIp(dhcp_t *dhcp, unsigned char ip_to_free[IPV])
 {
     size_t data = 0;
+    size_t max_ip = 0;
 
     assert(NULL != dhcp);
 
+    max_ip = dhcp->num_of_subnet_bits;
     data = StrToSize_t(ip_to_free);
-    data >>= dhcp->num_of_subnet_bits;
+    data &= (1 << (IPV * BITS_IN_BYTE - max_ip)) - 1;
+    data >>= max_ip;
 
-/*     if (0 == data )
- */
+    max_ip = 1 << ((IPV * BITS_IN_BYTE) - max_ip);
+
+    if (0 == data || max_ip == data || max_ip - 1 == data)
+    {
+        return (FAIL);
+    }
+
     if (SUCCESS == TrieRemove(dhcp->trie, data))
     {
         return (OK);

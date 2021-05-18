@@ -190,8 +190,7 @@ trie_status_t TrieRemove(trie_t *trie, size_t data)
         return (PATH_INVALID);
     }
     
-/*     SetOccupied(runner);
- */    while (NULL != runner && 1 == runner->is_occupied)
+    while (NULL != runner && 1 == runner->is_occupied)
     {
         runner->is_occupied = 0;
         runner = runner->parent;
@@ -271,6 +270,7 @@ trie_status_t TrieNextAvailable(const trie_t *trie, size_t *data_ptr)
     for (i = 0; i < trie->num_of_input_bits; i++)
     {
         bit = (data >> (i)) & MASK;
+            
     
         if (NULL != CHILD && 1 == CHILD->is_occupied)  /* if occupied */
         {
@@ -301,9 +301,9 @@ static trie_status_t FindNext(trie_node_t *runner, size_t num_of_input_bits, siz
         tmp_data >>= MASK;
         --i;
     }
-        runner = runner->parent;
+/*         runner = runner->parent;
         tmp_data >>= MASK;
-        --i;
+        --i; */
 
     
     if (NULL == runner)
@@ -327,15 +327,15 @@ static trie_status_t FindNext(trie_node_t *runner, size_t num_of_input_bits, siz
          if (NULL == runner)
         {
             tmp_data = (tmp_data << (num_of_input_bits - i - 1));
-            *data_ptr = tmp_data;
+            *data_ptr = Reverse(tmp_data, num_of_input_bits);
             return (SUCCESS);
         }
-        else if (NULL != LEFT_CHILD && 0 == LEFT_CHILD->is_occupied)
+        else if (NULL == LEFT_CHILD || (NULL != LEFT_CHILD && 0 == LEFT_CHILD->is_occupied))
         {
             runner = LEFT_CHILD;
             tmp_data <<= 1;
         }
-        else if (NULL != RIGHT_CHILD && 0 == RIGHT_CHILD->is_occupied)
+        else if (NULL == RIGHT_CHILD || (NULL != RIGHT_CHILD && 0 == RIGHT_CHILD->is_occupied))
         {
             runner = RIGHT_CHILD;
             tmp_data <<= 1;
@@ -343,7 +343,7 @@ static trie_status_t FindNext(trie_node_t *runner, size_t num_of_input_bits, siz
         }
     }
     
-    *data_ptr = (tmp_data );
+    *data_ptr = Reverse((tmp_data),num_of_input_bits );
     
     return (SUCCESS);
 }
@@ -355,11 +355,11 @@ static size_t Reverse(size_t data, size_t num_of_input_bits)
 
     while (num_of_input_bits > 0)
     {
-        reversed_data <<= MASK;
+        reversed_data <<= 1;
 
         reversed_data |= data & MASK;
 
-        data >>= MASK; 
+        data >>= 1; 
 
         --num_of_input_bits;
     }
