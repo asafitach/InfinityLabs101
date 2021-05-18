@@ -1,8 +1,6 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <omp.h>
+#include <stdio.h>/*printf*/
+#include <unistd.h>/*sleep*/
+#include <omp.h>/*pragma omp parallel for*/
 
 #define SIZE 31000
 #define NUM 1000000000

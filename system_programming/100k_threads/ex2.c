@@ -1,7 +1,6 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <stdio.h>/*printf*/
+#include <pthread.h>/*pthread_create, pthread_join, pthread_deatach*/
+#include <unistd.h>/*sleep*/
 
 #define SIZE 37000
 
@@ -25,7 +24,7 @@ int main()
 
     for (index = 0; index < SIZE; ++index)
     {
-        while (0 != pthread_create(&threads_array[index], NULL, ThreadInsertValueInArray, (void *)index) && counter)
+        while (0 != pthread_create(&threads_array[index], NULL, ThreadInsertValueInArray, *(void **)&index) && counter)
         {
             pthread_join(threads_array[index - 1], &param);
 /*             sleep(1);

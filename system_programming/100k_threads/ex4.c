@@ -1,10 +1,10 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <stdio.h>/*printf*/
+#include <pthread.h>/*pthread_create, pthread_join, pthread_deatach*/
+#include <unistd.h>/*sleep*/
 
 #define SIZE 31000
-#define NUM 90000000000
+#define NUM 1000000000
+#define STEP NUM / SIZE
 
 
 void *ThreadInsertValueInArray(void *index_to_assaign)
@@ -16,7 +16,7 @@ void *ThreadInsertValueInArray(void *index_to_assaign)
 void *SumDivisors(void *number)
 {
     size_t num = *(size_t*)&number;
-    size_t stop = num + 32300;
+    size_t stop = num + STEP;
     size_t sum_of_divisors = 0;
 
     if (stop > NUM)
@@ -43,11 +43,10 @@ int main()
     size_t index = 0;
     void *data = NULL;
     size_t sum = 0;
-    size_t steps = NUM / SIZE + 1;
 
     for (index = 0; index < SIZE; ++index)
     {
-        pthread_create(&threads_array[index], NULL, SumDivisors, (void *)((index * steps) + 1));
+        pthread_create(&threads_array[index], NULL, SumDivisors, (void *)((index * STEP) + 1));
     }
 
     for (index = 0; index < SIZE; ++index)

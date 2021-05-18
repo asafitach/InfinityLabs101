@@ -1,7 +1,6 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <stdio.h>/*printf*/
+#include <pthread.h>/*pthread_create, pthread_join, pthread_deatach*/
+#include <unistd.h>/*sleep*/
 
 #define SIZE 31000
 #define NUM 1000000000

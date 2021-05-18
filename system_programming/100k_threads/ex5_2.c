@@ -1,18 +1,12 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <stdio.h>/*printf*/
+#include <pthread.h>/*pthread_create, pthread_join, pthread_deatach*/
+#include <unistd.h>/*sleep*/
 
 #define SIZE 1
 #define NUM 1000000000
 #define STEP  ((NUM / SIZE) + 1)
 
 
-void *ThreadInsertValueInArray(void *index_to_assaign)
-{
-    int index = *(int *)&index_to_assaign;
-    return (NULL);
-}
 
 void *SumDivisors(void *number)
 {

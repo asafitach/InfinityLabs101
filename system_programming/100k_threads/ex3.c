@@ -1,15 +1,14 @@
-#include <stdio.h>
-#include <pthread.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include <stdio.h>/*printf*/
+#include <pthread.h>/*pthread_create, pthread_join, pthread_deatach*/
+#include <unistd.h>/*sleep*/
 
 #define SIZE 100000
 
-int global_array_t[SIZE] = {0};
+size_t global_array_t[SIZE] = {0};
 
 void *ThreadInsertValueInArray(void *index_to_assaign)
 {
-    int index = *(int *)&index_to_assaign;
+    size_t index = *(size_t *)&index_to_assaign;
     global_array_t[index] = index;
 
     return (NULL);
@@ -25,10 +24,6 @@ int main()
     {
          pthread_create(&threads_array[index], NULL, ThreadInsertValueInArray, *(void **)&index);
          pthread_detach(threads_array[index]); 
-         if (index % 1000 == 0)
-         {
-             sleep(2);
-         }
     }
 
     for (index = 0 ; index < SIZE; ++index)
