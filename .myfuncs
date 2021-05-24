@@ -2,7 +2,7 @@
 
 echo "welcome $USER!"
 
-export PATH=$PATH:/home/asafitach/asaf-itach:/home/asafitach/asaf-itach/ds:/home/asafitach/asaf-itach/system_programming
+export PATH=$PATH:/home/asafitach/asaf-itach:/home/asafitach/asaf-itach/ds:/home/asafitach/asaf-itach/system_programming:/home/asafitach/asaf-itach/ds/include
 
 
 alias myfuncs='gedit ~/asaf-itach/.myfuncs'

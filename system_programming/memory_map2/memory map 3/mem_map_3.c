@@ -65,7 +65,7 @@ static int StaticInt(int *x)
 }
 
 
-static void *TreadTest(void *x)
+void *TreadTest(void *x)
 {
 	int fun_var = 3;
 	int fun_var_second = 6;
@@ -82,8 +82,8 @@ static void *TreadTest(void *x)
 	printf("TLS global---------------->\t\t\t%lu|\n", (size_t)&key);
 
 	
-	x = (void *)((size_t)x + 1);
-	return (x);
+/* 	x = (void *)((size_t)x + 1);
+ */	return (x);
 }
 
 
@@ -119,14 +119,14 @@ int main(int argc, char *argv[], char *envp[])
 	pthread_create(&threads[1], NULL, TreadTest, NULL);
 	sleep(2);
 
-	lib = dlopen("/home/asafitach/asaf-itach/ds/lib/libdllist.so", RTLD_LAZY);
+/* 	lib = dlopen("/home/asafitach/asaf-itach/ds/lib/libdllist.so", RTLD_LAZY);
 
 	
-	*(void**)(&fprint) = dlsym(lib, "DlistCreate");
+	*(void**)(&fprint) = dlsym(lib, "DlistCreate"); */
 /*	first = atoi(argv[1]);*/
 /*	first += rand();*/
-	fprint();	
-	lib2 = dlopen("./libstack.so", RTLD_LAZY);
+/* 	fprint();	
+ */	lib2 = dlopen("./libstack.so", RTLD_LAZY);
 	*(void **)(&stackcreate) = dlsym(lib2, "StackCreate");
 	stackcreate((size_t)2);
 	
@@ -158,11 +158,13 @@ int main(int argc, char *argv[], char *envp[])
 	printf("----------------------------------------------------------------\n");
 	printf("|d list lib--------------->\t\t\t%lu|\n", (size_t)lib);
 	printf("TLS global---------------->\t\t\t%lu|\n", (size_t)&key);
-	printf("TLS local----------------->\t\t\t%lu|\n", (size_t)lib);
 
 /* 	MemoryMap(8);
  *//* 	printf("|memory map--------------->\t\t\t%lu|\n", (size_t)MemoryMap);
  */	printf("|strlen(library func)----->\t\t\t%lu|\n", (size_t)&printf);
+    printf("|strlen(library func)----->\t\t\t%lu|\n", (size_t)&StrLen);
+    printf("|strlen(library func)----->\t\t\t%lu|\n", (size_t)&StrCpy);
+    printf("|strlen(library func)----->\t\t\t%lu|\n", (size_t)&StrChr);
 	printf("----------------------------------------------------------------\n\n");
 	printf("|stack lib---------------->\t\t\t\t%lu|\n", (size_t)lib2);
 	printf("|alloc_second------------->\t\t\t\t%lu|\n", (size_t)alloc_second);
@@ -192,8 +194,8 @@ int main(int argc, char *argv[], char *envp[])
 	printf("|static function --------->\t\t\t\t%lu|\n\n", (size_t)&StaticInt );
 	printf("-----------------------BOTTOM LINE------------------\n\n");
 	
-	dlclose(lib);
-	dlclose(lib2);
+/* 	dlclose(lib);
+ */	dlclose(lib2);
 	
 return 0;
 }
