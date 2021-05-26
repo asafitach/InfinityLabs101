@@ -74,7 +74,7 @@ void *ProducerFunc(void *param)
         __sync_fetch_and_add(&full_elements, 1);
         if (15 > full_elements)
         {
-            data = __sync_add_and_fetch(&data, 1);
+            ++data;
             SlistInsert(SlistBegin(list), *(void **)&data);
             printf(RED"\nprod say %d\n"RESET, data);
             __sync_sub_and_fetch(&free_elements, 1);
