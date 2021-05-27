@@ -8,7 +8,6 @@
 
 
 
-atomic_int g_flag = 0;
 
 /* initiat scheduler */
 
@@ -26,7 +25,9 @@ void CleanTask(ilrd_uid_t uid, void*param);
 
 void CangeFlag(int pid);
 
+void EndScheduler(int pid);
 
+int ReImplementSigaction(void *handler);
 
 
 #endif /* __WATCH_DOG_LIB_H__ */

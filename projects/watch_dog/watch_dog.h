@@ -18,7 +18,7 @@ int WatchDogStart();
 @return: The function returns a pointer to avl_t *tree.
 @errors: Returns NULL if malloc fails.
 */
-int WatchDogStop();
+void WatchDogStop();
 
 
 

@@ -3,23 +3,38 @@
 /* #define _POSIX_C_SOURCE 199309L */
 
 #include <signal.h>   /* kill */
-#include <stdatomic.h>   /* atomic_t */
 #include <pthread.h>   /* comment */
-#include "scheduler.h"
+#include <stdio.h>
 #include "task.h"
-#include "uid.h"
 #include "watch_dog_lib.h"
+
+atomic_int g_flag = 0;
+
 
 
 scheduler_t * InitScheduler(pid_t pid_to_monitor)
 {
+    scheduler_t *scheduler = NULL;
     ilrd_uid_t send_signal_task;
     ilrd_uid_t check_flag_task;
+    struct sigaction new_sig_quit;
     struct sigaction change_flag;
 
-    scheduler_t *scheduler = SchedulerCreate();
+    scheduler = SchedulerCreate();
     if (NULL == scheduler)
     {
+        return (NULL);
+    }
+    
+
+    new_sig_quit.sa_handler = EndScheduler;
+    sigaction(SIGQUIT, &new_sig_quit, NULL);
+
+    change_flag.sa_handler = CangeFlag;
+    send_signal_task = SchedulerAddTask(scheduler, ReImplementSigaction, CleanTask, 1, (void *)&change_flag);
+    if (1 == UidIsSame(send_signal_task, GetBadUid()))
+    {
+        SchedulerDestroy(scheduler);
         return (NULL);
     }
 
@@ -30,16 +45,14 @@ scheduler_t * InitScheduler(pid_t pid_to_monitor)
         return (NULL);
     }
     
-    check_flag_task = SchedulerAddTask(scheduler, CheckFlag, CleanTask, 5, (void *)scheduler);
-    if (1 == UidIsSame(send_signal_task, GetBadUid()))
+    check_flag_task = SchedulerAddTask(scheduler, CheckFlag, CleanTask, 1, (void *)scheduler);
+    if (1 == UidIsSame(check_flag_task, GetBadUid()))
     {
         SchedulerDestroy(scheduler);
         return (NULL);
     }
 
-    /* happend in init sched */
-    change_flag.sa_handler = CangeFlag;
-    sigaction(SIGUSR1, &change_flag, NULL);
+    
 
     return (scheduler);
 }
@@ -47,8 +60,16 @@ scheduler_t * InitScheduler(pid_t pid_to_monitor)
 int SendSignal(void *param)
 {
     kill(*(pid_t *)&param, SIGUSR1);
+    printf("hello from sender\n");
 
     return(0);
+}
+
+int ReImplementSigaction(void *handler)
+{
+    sigaction(SIGUSR1, (struct sigaction *)handler, NULL);
+
+    return (1);
 }
 
 int CheckFlag(void *param)
@@ -58,6 +79,14 @@ int CheckFlag(void *param)
     {
         SchedulerStop((scheduler_t *)param);
     }
+
+    if (2 == g_flag)
+    {
+        SchedulerClear((scheduler_t *)param);
+        
+    }
+
+    printf("hello from reciver\n");
 
     return(0);
 }
@@ -71,10 +100,15 @@ void CleanTask(ilrd_uid_t uid, void*param)
 void CangeFlag(int pid)
 {
     pid = pid;
-    g_flag = 1;
+    __sync_bool_compare_and_swap(&g_flag, 0 , 1);
 }
 
 
+void EndScheduler(int pid)
+{
+    pid = pid;
+    g_flag = 2;
+}
 
 
 
