@@ -9,7 +9,7 @@
 #include "watch_dog_lib.h"
 
 
-pid_t wd_proc_pid = -1;
+static pid_t wd_proc_pid = -1;
 
 void SetFlag(int pid);
 
@@ -18,6 +18,8 @@ void *StartUpThread(void *param);
 void *WdStartUp(void *param)
 {
     pthread_t tr;
+
+    sem_unlink("/watch_dog");
     
     pthread_create(&tr, NULL, StartUpThread, param);
 
@@ -41,19 +43,16 @@ void *WdStartUp(void *param)
 void *StartUpThread(void *param)
 {
     scheduler_t *scheduler = NULL;
-    struct sigaction watch_dog_thread;
     int sched_exit_stat = 0;
     sem_t *sem = NULL;
     
-/*     watch_dog_thread.sa_handler = SetFlag;
-    sigaction(SIGUSR1, &watch_dog_thread, NULL);
- */
+
+
     
     while (NULL == scheduler)
     {
         scheduler = InitScheduler(wd_proc_pid);
     }
-    sem_unlink("/watch_dog");
 
     sem = sem_open("/watch_dog", O_CREAT, 0664, 0);
     sem_wait(sem);
@@ -82,20 +81,16 @@ void Empty(int param)
 
     return;
 }
+
+
 int WatchDogStart(char *argv[])
 {
-    pthread_t thread = 0;
-    struct sigaction ignor;
+    struct sigaction ignor = {0};
 
     ignor.sa_handler = Empty;
     sigaction(SIGUSR1, &ignor, NULL);
 
-    while (0 != pthread_create(&thread, NULL, WdStartUp,NULL))
-    {
-        ;/* busy wait */
-    }
-
-    pthread_join(thread, NULL);
+    WdStartUp(argv);
     
 
     return (0);
@@ -104,6 +99,6 @@ int WatchDogStart(char *argv[])
 
 void WatchDogStop()
 {
-    kill(getpid(), SIGQUIT);
-    kill(wd_proc_pid, SIGQUIT);
+    kill(getpid(), SIGUSR2);
+    kill(wd_proc_pid, SIGUSR2);
 }

@@ -1,5 +1,4 @@
-#include <unistd.h>   /* execlp */
-#include <stdlib.h>   /* comment */
+#include <unistd.h>   /* sleep */
 #include <stdio.h>   /* printf */
 #include "watch_dog.h"
 
@@ -7,7 +6,6 @@ int main(int argc, char *argv[])
 {
     char *a = "a";
     long sa = 1;
-
 
     if (NULL != argv)
     {
@@ -18,8 +16,12 @@ int main(int argc, char *argv[])
             ++argv;
         }
     }
+    argv -= argc;
+
     printf("critic begin\n\n");
     WatchDogStart();
+
+    sleep(3);
 
     while (sa< 9999999999999)
     {
@@ -27,12 +29,8 @@ int main(int argc, char *argv[])
     }
 
     printf("%ld", sa);
-    sleep(4);
-/*     WatchDogStop();
- */      
-
-/*             *a = 'b';
- */
+    sleep(2);
+    /* WatchDogStop(); */
 
 
     return (0);

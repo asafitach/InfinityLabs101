@@ -10,7 +10,7 @@
 #include "watch_dog_lib.h"
 
 
-pid_t g_user_proc_pid;
+static pid_t g_user_proc_pid;
 
 void Revive(char *name_of_exe, char *argv[]);
 void EndScheduler(int pid);
@@ -25,14 +25,16 @@ int main(int argc, char *argv[])
     sem_t *sem = NULL;
     
     g_user_proc_pid = getppid();
-    sem = sem_open("/watch_dog", O_CREAT, 0664, 0);
-
-
+    printf("pid: %d\n\n", g_user_proc_pid);
+    sleep(4);
+    argc = argc;
 
     while (NULL == scheduler)
     {
         scheduler = InitScheduler(g_user_proc_pid);
     }
+
+    sem = sem_open("/watch_dog", O_CREAT, 0664, 0);
 
     printf("watch dog begin\n");
     sem_post(sem);
@@ -66,8 +68,8 @@ void Revive(char *name_of_exe, char *argv[])
     if (0 == new_user_proc)
     {
         printf("now a.out begin again\n");
-        execve("./a.out", argv, NULL);
+        execve(name_of_exe, argv, NULL);
     }
 
-    kill(getpid(), SIGQUIT);
+    kill(getpid(), SIGINT);
 }

@@ -8,7 +8,7 @@
 #include "task.h"
 #include "watch_dog_lib.h"
 
-atomic_int g_flag = 0;
+static atomic_int g_flag = 0;
 
 
 
@@ -17,8 +17,8 @@ scheduler_t * InitScheduler(pid_t pid_to_monitor)
     scheduler_t *scheduler = NULL;
     ilrd_uid_t send_signal_task;
     ilrd_uid_t check_flag_task;
-    struct sigaction new_sig_quit;
-    struct sigaction change_flag;
+    struct sigaction new_sig_quit = {0};
+    struct sigaction change_flag = {0};
 
     scheduler = SchedulerCreate();
     if (NULL == scheduler)
@@ -28,7 +28,7 @@ scheduler_t * InitScheduler(pid_t pid_to_monitor)
     
 
     new_sig_quit.sa_handler = EndScheduler;
-    sigaction(SIGQUIT, &new_sig_quit, NULL);
+    sigaction(SIGUSR2, &new_sig_quit, NULL);
 
     change_flag.sa_handler = CangeFlag;
     send_signal_task = SchedulerAddTask(scheduler, ReImplementSigaction, CleanTask, 1, (void *)&change_flag);
@@ -59,8 +59,9 @@ scheduler_t * InitScheduler(pid_t pid_to_monitor)
 
 int SendSignal(void *param)
 {
+    printf("hello from sender pid num: %d\n", *(pid_t *)&param);
+    
     kill(*(pid_t *)&param, SIGUSR1);
-    printf("hello from sender\n");
 
     return(0);
 }
