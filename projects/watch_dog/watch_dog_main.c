@@ -1,75 +1,73 @@
-#include <signal.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <semaphore.h>
-#include <pthread.h>
-#include <stdio.h>
-#include <fcntl.h>
-#include "scheduler.h"
-#include "watch_dog.h"
 #include "watch_dog_lib.h"
 
-
-static pid_t g_user_proc_pid;
-
+pid_t user_proc_pid;
 void Revive(char *name_of_exe, char *argv[]);
-void EndScheduler(int pid);
-void *EmptySchrduler(void *param);
-
 
 int main(int argc, char *argv[])
 {
+    int scheduler_exit_status = 0;
     scheduler_t *scheduler = NULL;
-    char * user_proc_name = "./a.out";
-    int sched_exit_stat = 0;
     sem_t *sem = NULL;
-    
-    g_user_proc_pid = getppid();
-    printf("pid: %d\n\n", g_user_proc_pid);
-    sleep(4);
-    argc = argc;
+/*     
+    struct sigaction change_flag = {0};
+    struct sigaction end_scheduler = {0}; */
 
-    while (NULL == scheduler)
+/* 
+    end_scheduler.sa_handler = EndScheduler;
+    sigaction(SIGUSR2, &end_scheduler, NULL);
+
+    change_flag.sa_handler = CangeFlag;
+    sigaction(SIGUSR1, &change_flag, NULL); */
+
+    user_proc_pid = getppid();
+    if ((sem = sem_open("/watch_dog", O_CREAT, 0644, 0)) == SEM_FAILED)
     {
-        scheduler = InitScheduler(g_user_proc_pid);
+        #ifndef NDEBUG
+        PrintError(SEM);
+        #endif
+
+        return (1);
+    }
+/* 
+    if (NULL != argv)
+    {
+        printf("argc = %d\n", argc);
+        while (NULL != *argv)
+        {
+            printf("%s\n", *argv);
+            ++argv;
+        }
+    }
+    argv -= argc; */
+    argc = argc;
+    argv = argv;
+
+    scheduler = InitScheduler(user_proc_pid);
+    if (NULL == scheduler)
+    {
+        #ifndef NDEBUG
+        PrintError(SCHEDULER);
+        #endif
+
+        return (1);
     }
 
-    sem = sem_open("/watch_dog", O_CREAT, 0664, 0);
-
+    #ifndef NDEBUG
     printf("watch dog begin\n");
+    #endif
+
     sem_post(sem);
 
-    sched_exit_stat = SchedulerRun(scheduler);
+    scheduler_exit_status = SchedulerRun(scheduler);
 
-    if (sched_exit_stat == 0)
+    if (scheduler_exit_status == 2)
     {
-        SchedulerDestroy(scheduler);
+        WdStartUp(argv, WD_PROCESS);
     }
 
-    else
-    {
-        Revive(user_proc_name, argv);
-    }
+    kill(getpid(), SIGKILL);
 
     return (0);
 }
 
-void Revive(char *name_of_exe, char *argv[])
-{
-    pid_t new_user_proc = 0;
 
-    new_user_proc = fork();
-
-    while (-1 == new_user_proc)
-    {
-        new_user_proc = fork();
-    }
-
-    if (0 == new_user_proc)
-    {
-        printf("now a.out begin again\n");
-        execve(name_of_exe, argv, NULL);
-    }
-
-    kill(getpid(), SIGINT);
-}

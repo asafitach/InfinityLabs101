@@ -8,8 +8,9 @@ ilrd_uid_t UidCreate(void)
     static size_t counter = 0;
     ilrd_uid_t new_uid = {0}; 
     
-    new_uid.counter = ++counter;
     new_uid.timestamp = time(NULL);
+    __sync_fetch_and_add(&counter, 1);
+    new_uid.counter = counter;
     new_uid.pid = getpid();
     
     return(new_uid);    

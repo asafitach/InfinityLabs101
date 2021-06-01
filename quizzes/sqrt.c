@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#define PRESICE 0.00000000000001 /* max prisice or insert "if" check for number == 0 */
+#define PRESICE 0.1 /* max prisice or insert "if" check for number == 0 */
 double Sqrt(double number);
 
 
