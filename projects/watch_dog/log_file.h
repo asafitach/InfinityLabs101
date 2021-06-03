@@ -2,7 +2,22 @@
 #define __LOG_FILE_H__
 
 
-
+typedef enum events
+{
+    WATCH_DOG_START,
+    WATCH_DOG_STOP,
+    USER_PID,
+    PROCESS_PID,
+    SCHEDULER_FAIL,
+    SCHEDULER_RUN,
+    SCHEDULER_STOPPED,
+    TASK_FAIL,
+    SEM_FAIL,
+    FORK_FROM_USER,
+    FORK_FROM_WD,
+    EXEC,
+    THREAD_FAIL 
+}events_t;
 
 
 /*Description: the function write an event to LOG.txt including detail, time stamp and pid.
