@@ -6,35 +6,20 @@
 /* 
 threads     time
 4           real	0m4.274s user	0m0.752s sys	0m2.125s
-5           real	0m4.716s user	0m0.747s sys	0m2.451s
-6           real	0m4.634s user	0m0.733s sys	0m2.547s
-7           real	0m4.412s user	0m0.680s sys	0m2.298s
-8           real	0m4.553s user	0m0.762s sys	0m2.377s
-9           real	0m4.694s user	0m0.716s sys	0m2.365s
-10          real	0m4.907s user	0m0.719s sys	0m2.573s
-11          real	0m4.893s user	0m0.819s sys	0m2.474s
-12          real	0m4.898s user	0m0.869s sys	0m2.436s
-12          real	2m5.342s user	0m20.323s sys	1m2.973s
-11          real	2m5.342s user	0m20.323s sys	1m2.973s
-10          real	1m57.485s user	0m17.419s sys	1m0.974s
-9           real	1m53.237s user	0m17.850s sys	0m58.238s
-8           real	1m53.879s user	0m17.591s sys	0m59.087s
-7           real	1m53.573s user	0m17.682s sys	0m58.470s
-5           real	1m54.261s user	0m17.385s sys	0m58.817s
-3           real	1m56.097s user	0m17.790s sys	0m59.676s
-1           real	1m55.569s user	0m17.430s sys	0m59.559s
+
 
 
 
  */
 
 #define MAX_WORD 50
-#define DUP 2
+#define DUP 4
 #define THREADS 8
 
 
 void PrintDict(char **buff);
 void LoadDictionary(char **buff);
+void RandomizeDictionary(char **buff);
 void DestroyBuffer(char **buff, size_t index);
 char **CreateBuffer(size_t num_of_lines);
 void CopyBuff(char **dest, char **src);
@@ -70,6 +55,7 @@ int main()
     }
 
     LoadDictionary(buff);
+    RandomizeDictionary(buff);
     
     for (index = 1; index < DUP; ++index)
     {
@@ -98,74 +84,6 @@ int main()
     DestroyBuffer(buff, g_word_count * DUP);
 
     return (0);
-}
-
-
-
-void *CountLettersInWord(void *buffer)
-{
-    char **buff = (char **)buffer;
-    size_t thread = __sync_fetch_and_add(&g_thread_num, 1);
-    size_t section = g_word_count  * DUP / THREADS;
-    size_t count_lut[MAX_WORD] = {0};
-    size_t index = 0;
-
-    buff += (section) * thread;
-    if (thread + 1 == THREADS)
-    {
-        section = (g_word_count * DUP) - (section * (THREADS - 1));
-    }
-
-
-    while (section)
-    {
-        if (NULL != *buff)
-        {
-            ++count_lut[strlen(*buff)];
-            --section;
-        }
-            ++buff;
-    }
-
-    pthread_mutex_lock(&mutex);
-    for (index = 0; index < MAX_WORD; ++index)
-    {
-        g_count_lut[index] += count_lut[index];
-    }
-    pthread_mutex_unlock(&mutex);
-
-    return (NULL);
-}
-
-
-char **CountingMerge(char **buff)
-{
-    size_t index = 0;
-    size_t len = 0;
-    char **dup_buff = (char **)malloc(sizeof(char *) * g_word_count * DUP);
-    if (NULL == dup_buff)
-    {
-        return (NULL);
-    }
-
-    for (index = 0; index < (g_word_count * DUP); ++index)
-    {
-        if (NULL != buff[index])
-        {
-            len = strlen(buff[index]);
-            dup_buff[g_count_lut[len - 1]] = buff[index];
-            ++g_count_lut[len - 1];
-        }
-    }
-
-    for (index = 0; index < g_word_count * DUP; ++index)
-    {
-        buff[index] = dup_buff[index];
-    }
-
-    free(dup_buff);
-
-    return (buff);
 }
 
 
@@ -203,6 +121,24 @@ void DestroyBuffer(char **buff, size_t index)
 
     return;
 }
+
+void RandomizeDictionary(char **buff)
+{
+    char *tmp = NULL;
+    size_t index = 0;
+    size_t random_index = 0;
+
+    qsort(buff, g_word_count, sizeof(char *), random);
+/* 
+    for (index = 0; index < g_word_count; ++index)
+    {
+        tmp = buff[index];
+        random_index = rand() % g_word_count - 1;
+        buff[index] = buff[random_index];
+        buff[random_index] = tmp;
+    }
+ */}
+
 
 void LoadDictionary(char **buff)
 {
@@ -271,4 +207,64 @@ size_t LinesInDictionary()
 
     return (counter);
     
+}
+
+void Merge(char **left_arr, int left_len, char **right_arr, int right_len)/*/maby use runner !!!*/
+{
+	int left_runner = 0;
+	int right_runner = 0;
+	int *tmp_index = NULL;
+
+	int *tmp_arr = (int *)malloc(sizeof(int) * (left_len + right_len));
+	if (NULL == tmp_arr)
+	{
+		return;
+	}
+	tmp_index = tmp_arr;
+
+	assert(NULL != left_arr);
+	assert(NULL != right_arr);
+
+	while (left_runner < left_len && right_runner < right_len)
+	{
+		if (left_arr[left_runner] <= right_arr[right_runner])
+		{
+			*tmp_index = left_arr[left_runner];
+			++left_runner;
+		}
+		else
+		{
+			*tmp_index = right_arr[right_runner];
+			++right_runner;
+		}
+		++tmp_index;
+	}
+
+	while (left_runner < left_len)
+	{
+		*tmp_index = left_arr[left_runner];
+		++left_runner;
+		++tmp_index;
+	}
+	while (right_runner < right_len)
+	{
+		*tmp_index = right_arr[right_runner];
+		++right_runner;
+		++tmp_index;
+	}
+
+	ArrCpy(left_arr, tmp_arr, left_len + right_len);
+	free(tmp_arr);
+}
+
+void MergeSort(void *param)
+{
+    char **buff = (char **)param;
+    size_t size = DUP *g_word_count; 
+
+
+	MergeSort(buff, size / 2);
+	MergeSort(arr + (size / 2), size - (size / 2));
+
+	Merge(arr ,size / 2, arr + (size / 2), size - (size / 2));
 }
