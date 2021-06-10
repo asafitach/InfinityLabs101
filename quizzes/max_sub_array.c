@@ -1,16 +1,17 @@
 #include <stdio.h>
 
 #define SIZE 8
-int MaxSubArray(int arr[], int size, int *begin, int *end);
+int MaxSubArray1(int arr[], int size, int *begin, int *end);
+int MaxSubArray(int array[], int size);
 
 int main()
 {
-	int array[SIZE] = {2, 3, 6, -5, 3, -2, 16, -8};
+	int array[SIZE] = {2, 3, 6, -5, 3, -40, 50, -8};
 	int begin_index = 0;
 	int end_index = 0;
 	int res = 0;
 	
-	res = MaxSubArray(array, SIZE, &begin_index, &end_index);
+	res = MaxSubArray(array, SIZE);
 	
 	printf("max sum of sub array is: %d start at index %d and end at index %d\n"
 	, res, begin_index, end_index);
@@ -18,7 +19,7 @@ int main()
 	return (0);
 }
 
-int MaxSubArray(int arr[], int size, int *begin, int *end)
+int MaxSubArray1(int arr[], int size, int *begin, int *end)
 {
 	int p_sum = 0;
 	int n_sum = 0;
@@ -65,4 +66,25 @@ int MaxSubArray(int arr[], int size, int *begin, int *end)
 	}
 	
 	return (t_sum);
+}
+
+int MaxSubArray(int array[], int size)
+{
+	int index = 0;
+	int max = 0; 
+	int total_max = 0;
+	
+	for (index = 0; index < size; ++index)
+	{
+		max += array[index];
+		if (max < array[index])
+		max = array[index];
+		if (max > total_max)
+		{
+			total_max = max;
+		}
+		
+	}
+	
+	return ((max > total_max) ? max: total_max);
 }

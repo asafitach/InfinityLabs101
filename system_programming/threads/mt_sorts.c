@@ -3,7 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-/* 
+#include <assert.h>
+
+/* gd 
 threads     time
 4           real	0m4.274s user	0m0.752s sys	0m2.125s
 
@@ -27,6 +29,10 @@ void *CountLettersInWord(void *buffer);
 size_t LinesInDictionary();
 void *CountLettersInWord(void *buffer);
 char **CountingMerge(char **buff);
+void Merge(char **left_arr, int left_len, char **right_arr, int right_len);
+void MergeSort(char **arr, size_t size);
+void *DevideToPartition(void *buffer);
+
 
 
 
@@ -55,30 +61,26 @@ int main()
     }
 
     LoadDictionary(buff);
+
     RandomizeDictionary(buff);
-    
-    for (index = 1; index < DUP; ++index)
+ 
+     for (index = 1; index < DUP; ++index)
     {
-        CopyBuff(buff + (index * (g_word_count )) , buff);
+        CopyBuff(buff + (index * (g_word_count )) - 1 , buff);
     }
 
+/*     DevideToPartition((void *)buff);
+ */
     for (index = 0; index < THREADS; ++index)
     {
-        pthread_create(threads + index, NULL, CountLettersInWord, (void *)buff);
+        pthread_create(&threads[index], NULL, DevideToPartition, (void *)buff);
     }
 
     for (index = 0; index < THREADS; ++index)
     {
         pthread_join(threads[index], NULL);
-    }
-
-    g_count_lut[0] = 0;
-    for (index = 1; index < MAX_WORD; ++index)
-    {
-        g_count_lut[index] += g_count_lut[index - 1];
-    }
-
-    CountingMerge(buff);
+    } 
+    Merge(buff ,g_word_count * DUP / 2, buff + (g_word_count * DUP / 2), g_word_count * DUP - (g_word_count * DUP / 2)); 
     PrintDict(buff);
 
     DestroyBuffer(buff, g_word_count * DUP);
@@ -90,7 +92,7 @@ int main()
 char **CreateBuffer(size_t num_of_lines)
 {
     size_t index = 0;
-    char **buff = (char **)malloc(num_of_lines  * sizeof(char *));
+    char **buff = (char **)calloc(num_of_lines  ,sizeof(char *));
     if (NULL == buff)
     {
         return (NULL);
@@ -98,7 +100,7 @@ char **CreateBuffer(size_t num_of_lines)
 
     for (index = 0; index < num_of_lines; ++index)
     {
-        buff[index] = (char *)malloc(MAX_WORD);
+        buff[index] = (char *)calloc(MAX_WORD, 1);
         if (NULL == buff[index])
         {
             DestroyBuffer(buff, index);
@@ -128,8 +130,6 @@ void RandomizeDictionary(char **buff)
     size_t index = 0;
     size_t random_index = 0;
 
-    qsort(buff, g_word_count, sizeof(char *), random);
-/* 
     for (index = 0; index < g_word_count; ++index)
     {
         tmp = buff[index];
@@ -137,7 +137,8 @@ void RandomizeDictionary(char **buff)
         buff[index] = buff[random_index];
         buff[random_index] = tmp;
     }
- */}
+}
+
 
 
 void LoadDictionary(char **buff)
@@ -167,7 +168,7 @@ void PrintDict(char **buff)
     printf("|Dictionary print:|\n\n");
     while (counter < g_word_count * DUP )
     {
-        if (0 != *buff)
+        if (NULL != *buff && ' ' < **buff)
         {
             printf("%s\n", *buff);
         }
@@ -209,13 +210,34 @@ size_t LinesInDictionary()
     
 }
 
+void *DevideToPartition(void *buffer)
+{
+    char **buff = (char **)buffer;
+    size_t thread = __sync_fetch_and_add(&g_thread_num, 1);
+    size_t section = g_word_count  * DUP / THREADS;
+
+    buff += (section) * thread;
+    if (thread + 1 == THREADS)
+    {
+        section = (g_word_count * DUP) - (section * (THREADS - 1));
+    }
+
+    MergeSort(buff + (thread * g_word_count  * DUP / THREADS), section);
+
+/*     MergeSort(buff , g_word_count  * DUP);
+ */
+    return (*(void **)&thread);
+}
+
 void Merge(char **left_arr, int left_len, char **right_arr, int right_len)/*/maby use runner !!!*/
 {
-	int left_runner = 0;
-	int right_runner = 0;
-	int *tmp_index = NULL;
+	char **left_runner = left_arr;
+	char **right_runner = right_arr;
+    char **end = right_arr + right_len;
+	char  **tmp_index = NULL;
+    int total_length = right_len + left_len;
 
-	int *tmp_arr = (int *)malloc(sizeof(int) * (left_len + right_len));
+	char **tmp_arr = (char **)calloc((left_len + right_len), sizeof(char *));
 	if (NULL == tmp_arr)
 	{
 		return;
@@ -225,45 +247,64 @@ void Merge(char **left_arr, int left_len, char **right_arr, int right_len)/*/mab
 	assert(NULL != left_arr);
 	assert(NULL != right_arr);
 
-	while (left_runner < left_len && right_runner < right_len)
+	while (left_runner < right_arr && right_runner < end)
 	{
-		if (left_arr[left_runner] <= right_arr[right_runner])
+        if (NULL != *left_runner && NULL != *right_runner)
+        {
+
+		if (0 > strcmp(*left_runner, *right_runner))
 		{
-			*tmp_index = left_arr[left_runner];
+			tmp_index = left_runner;
 			++left_runner;
 		}
 		else
 		{
-			*tmp_index = right_arr[right_runner];
+			tmp_index = right_runner;
 			++right_runner;
 		}
 		++tmp_index;
+        }
+        else
+        {
+            ++left_runner;
+            ++right_runner;
+        }
 	}
 
-	while (left_runner < left_len)
+	while (left_runner < right_arr)
 	{
-		*tmp_index = left_arr[left_runner];
+		tmp_index = left_runner;
 		++left_runner;
 		++tmp_index;
 	}
-	while (right_runner < right_len)
+	while (right_runner < end)
 	{
-		*tmp_index = right_arr[right_runner];
+		tmp_index = right_runner;
 		++right_runner;
 		++tmp_index;
 	}
 
-	ArrCpy(left_arr, tmp_arr, left_len + right_len);
+    tmp_index = tmp_arr;
+
+    while (total_length)
+    {
+        left_arr = tmp_index;
+        ++left_arr;
+        ++tmp_index;
+        --total_length;
+    }
+
 	free(tmp_arr);
 }
 
-void MergeSort(void *param)
+
+void MergeSort(char **arr, size_t size)
 {
-    char **buff = (char **)param;
-    size_t size = DUP *g_word_count; 
-
-
-	MergeSort(buff, size / 2);
+	if (size < 2)
+	{
+		return;
+	}
+	MergeSort(arr, size / 2);
 	MergeSort(arr + (size / 2), size - (size / 2));
 
 	Merge(arr ,size / 2, arr + (size / 2), size - (size / 2));

@@ -13,6 +13,14 @@ alias gc='gcc -ansi -pedantic-errors -Wall -Wextra -DNDEBUG -O3'
 alias gdo='gcc -ansi -pedantic-errors -Wall -Wextra -g -c'
 alias gd9='gcc -std=c99 -pedantic-errors -wall -wextra -g'
 alias gc9='gcc -std=c99 -pedantic-errors -wall -wextra -DNDEBUG -o3'
+alias gdp='g++ -std=c++98 -pedantic-errors -Wall -Wextra -g'
+alias gcp='g++ -std=c++98 -pedantic-errors -Wall -Wextra -DNDEBUG -O3'
+alias wgdp='g++ -std=c++98 -pedantic-errors -Wall -Werror -Wextra -g'
+alias wgcp='g++ -std=c++98 -pedantic-errors -Wall -Werror -Wextra -DNDEBUG -O3'
+alias gdp11='g++ -std=c++11 -pedantic-errors -Wall -Wextra -g'
+alias gcp11='g++ -std=c++11 -pedantic-errors -Wall -Wextra -DNDEBUG -O3'
+alias wgdp11='g++ -std=c++11 -pedantic-errors -Wall -Werror -Wextra -g'
+alias wgcp11='g++ -std=c++11 -pedantic-errors -Wall -Werror -Wextra -DNDEBUG -O3'
 
 
 #valgrind alias

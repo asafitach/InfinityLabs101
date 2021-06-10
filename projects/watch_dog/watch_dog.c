@@ -10,10 +10,13 @@ int WatchDogStart(char *argv[])
     struct sigaction ignor = {0};
     char create[] = "1";
 
-    ignor.sa_handler = EmptyStub;
-    sigaction(SIGUSR1, &ignor, NULL);
+/*     ignor.sa_handler = EmptyStub;
+    sigaction(SIGUSR1, &ignor, NULL); */
 
-    WdStartUp(argv, FIRST_CALL);
+    if (NULL == WdStartUp(argv, FIRST_CALL))
+    {
+        return (1);
+    }
     ChangeEnvironmentVar(create);
 
 
