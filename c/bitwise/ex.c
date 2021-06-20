@@ -45,9 +45,9 @@ unsigned int IsPowerOf2( unsigned int n)
 
 /*****************************************************************************/
 
-unsigned int AddOne(unsigned int n)
+/* unsigned int AddOne(unsigned int n)
 {
-	unsigned int one = 1;
+	unsigned int one = 1; 
 	unsigned int carry = 0;
 
 	while(one)
@@ -57,8 +57,18 @@ unsigned int AddOne(unsigned int n)
 		one = carry << 1;
 	}
 	return(n);
-}
+} */
+unsigned int AddOne(unsigned int n)
+{
+	unsigned int mask = 1;
+	while ((n & mask))
+	{
+		n ^= mask;
+		mask <<= 1;
+	}
 
+	return (n |= mask);
+}
 /*****************************************************************************/
 
 void TreeBitsOn(unsigned int *numbers, unsigned int size)

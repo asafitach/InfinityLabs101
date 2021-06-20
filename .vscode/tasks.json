@@ -6,6 +6,10 @@
             "command": "/usr/bin/gcc-9",
             "args": [
                 "-g",
+                "-wall",
+                "-wextra",
+                "-std=c++98",
+                "-pedantic-errors",
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"

@@ -13,7 +13,7 @@ typedef struct array_node
 typedef struct array
 {
     array_node_t *array_nodes;
-    int *version;
+    int set_val5;
     int last_set_version;
     int size;
 }array_t;
@@ -33,14 +33,7 @@ array_t *ArrayCreate(int size)
         return (NULL);
     }
 
-    array->version = (int *)calloc(size * 2, sizeof(int));
-    if (NULL == array->version)
-    {
-        free(array->array_nodes);
-        free(array);
-        return (NULL);
-    }
-
+    array->set_val = 0;
     array->size = size;
     array->last_set_version = 0;
 
@@ -52,7 +45,6 @@ void ArrayDestroy(array_t *array)
     assert(NULL != array);
 
     free(array->array_nodes);
-    free(array->version);
     free(array);
 
     array = NULL;
@@ -78,25 +70,39 @@ void ArraySetAll(array_t *array, int val)
     assert(NULL != array);
 
     array->last_set_version += 2;
-    array->version[array->last_set_version] = val;
+    array->set_val = val;
 }
 
 int ArrayGetVal(array_t *array, int index)
 {
     assert(NULL != array);
 
-    if (array->last_set_version >= array->array_nodes[index].version_num)
+    return ((array->array_nodes[index].version_num > array->last_set_version) ? array->array_nodes[index].val: array->set_val);
+}
+void PrintArr(array_t *arr)
+{
+    int index = 0;
+    for (index = 0; index < arr->size; ++index)
     {
-        return(array->version[array->last_set_version]);
+        printf("%d\t", ArrayGetVal(arr, index));
     }
-    if (0 == array->array_nodes[index].version_num % 2)
-    {
-        return (array->version[array->array_nodes[index].version_num]);
-    }
-
-    return (array->array_nodes[index].val);
+    printf("\n");
 }
 
+int main()
+{
+    array_t *arr = ArrayCreate(10);
+    ArraySetVal(arr, 3, 5);
+    ArraySetVal(arr, 2, 90);
+    PrintArr(arr);
+    ArraySetAll(arr, 88);
+    PrintArr(arr);
+    ArraySetVal(arr, 3, 5);
+    ArraySetVal(arr, 2, 90);
+    PrintArr(arr);
+
+    return (0);
+}
 /* 
 2. can br done by lut wich contain the corresponde number to complete the sum - only for some range. or can be done by sort the array and tranverse it once - curcurrently from the start and from the end. first is O(n) and the second is O(nlog(n)) (the first isnt so greate)
  */

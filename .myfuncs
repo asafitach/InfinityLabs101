@@ -59,6 +59,7 @@ alias sys='cd ~/asaf-itach/system_programming/'
 alias d='cgdb ./a.out'
 alias v='vlg ./a.out'
 alias a='./a.out'
+alias cpp='cd ~/asaf-itach/cpp_fs'
 alias zoo='xdg-open https://infinitylabs.zoom.us/j/6567999017?pwd=UDRKU1FzZlhkNzk2ODFxeGVsdk9kQT09#success &'
 
 #GIT lazy

@@ -7,14 +7,22 @@ void CheckEndianess()
 	
 	p = (size_t)p - 1;
 	
-	if (2 == *p)
+//	if (2 == *p)\
 	{
 		printf("Little Endianess\n");
 	}
 	
+	
 	printf("Big Endianess\n");
 }
 
+//*
+void EventLoop();
+void EventLoop();
+void EventLoop();
+void EventLoop();
+void EventLoop();
+//*/
 
 list_t *FilterListFromDuplicatedData(list_t *list)
 {
