@@ -1,80 +1,82 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
-//#include "string.cpp"
+#include "string.hpp"
 
-class string
-{
-public:
-    string();
-    string(const char *str);
-    string(const string& other_); 
-    string&operator=(const string& other_);
 
-    ~string();
-    
-    char *CStr();
-    size_t Length();
 
-private:
-    char *m_cstr;
-    size_t length;
-};
-
-string::string()
+String::String()
 {
     m_cstr = NULL;
 
 }
 
-string::string(const char *str)
+String::String(const char *str)
 {
-    length = strlen(str);
-    m_cstr = new char[length + 1];
+    m_length = strlen(str);
+    m_cstr = new char[m_length + 1];
     strcpy(m_cstr, str);
-    m_cstr[length] = '\0';
 }
 
-string::~string()
+String::~String()
 {
     delete[] m_cstr;
     m_cstr = NULL;
 }
 
- string::string(const string &other_)
+ String::String(const String &other_)
 {
-    length = strlen(other_.m_cstr);
-    m_cstr = new char[length + 1];
+    m_length = other_.m_length;
+    m_cstr = new char[m_length + 1];
     strcpy(m_cstr, other_.m_cstr);
-    m_cstr[length] = '\0';
 }
 
-string&string::operator=(const string& other_)
+String&String::operator=(const String& other_)
 {
-    length = strlen(other_.m_cstr);
+    m_length = other_.m_length;
     delete[] m_cstr;
-    m_cstr = new char [length + 1];
+    m_cstr = new char [m_length + 1];
     strcpy(m_cstr, other_.m_cstr);
-    m_cstr[length] = '\0';
 
     return (*this);
 }
 
-char *string::CStr()
+bool String::operator==(const String& other_)
+{
+    return (strcmp(m_cstr, other_.m_cstr));
+}
+
+
+bool String::operator<(const String& other_)
+{
+    return ((0 > strcmp(m_cstr, other_.m_cstr)) ? true: false);
+}
+
+bool String::operator>(const String& other_)
+{
+    return ((0 < strcmp(m_cstr, other_.m_cstr)) ? true: false);
+}
+
+char *String::CStr()
 {
     return m_cstr;
 }
 
-size_t string::Length()
+size_t String::Length()
 {
-    return length;
+    return m_length;
+}
+
+std::ostream& operator<<(std::ostream& os, const String &str)
+{
+    return (os<<str.m_cstr);
 }
 
 int main()
 {
-    string c1("hello");
-    string c2(" world!");
-    string c3;
+    String c1("hello");
+    String c2(" world!");
+    String c3;
     c3 = c2;
 
     std::cout<<c1.CStr()<<" ";
@@ -85,6 +87,8 @@ int main()
 
     std::cout<<c3.CStr()<<" ";
     std::cout<<c3.Length()<<std::endl;
+    std::cout<<c1<<std::endl;
+    std::cout<<(c1==c2)<<std::endl;
 
     return (0);
 }

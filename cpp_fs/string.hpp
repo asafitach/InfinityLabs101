@@ -1,18 +1,29 @@
 #ifndef __ILRD_RD101_STRING_HPP__
 #define __ILRD_RD101_STRING_HPP__
 
-class string
+#include <iostream>
+
+class String;
+
+std::ostream& operator<<(std::ostream& os, const String &str);
+
+class String
 {
 public:
-    string();
-    string(const char *str);
-    string(const string& other_); 
-    string&operator=(const string& other_);
+    String();
+    String(const char *str);
+    String(const String& other_); 
+    friend std::ostream& operator<<(std::ostream& os, const String &str);
+    String&operator=(const String& other_);
+    bool operator==(const String& other_);
+    bool operator<(const String& other_);
+    bool operator>(const String& other_);
+
 
     char *CStr();
     size_t Length();
     
-    ~string();
+    ~String();
 
 private:
     char *m_cstr;
