@@ -11,7 +11,7 @@ struct X
 
     X& operator=(const X& other_);// assignment operator;
  */
-    explicit X(int a_, int b_ = 0); //regular (non default) ctor
+    //explicit X(int a_, int b_ = 0); //regular (non default) ctor
     int m_a;
     //const int m_b;
     int s;
@@ -27,11 +27,11 @@ struct X
                                    " m_b: " << m_b << std::endl; 
 } */
 
-X::X(int a_, int b_): m_a(a_), s(b_) //implementation of the second Ctor
+/* X::X(int a_, int b_): m_a(a_), s(b_) //implementation of the second Ctor
 {
     std::cout<< "this:" << this << " X int int Ctor. m_a: " << m_a <<
                                    " m_b: " << s << std::endl; 
-}
+} */
 
 /* 
 X::X(const X& other_): m_a(other_.m_a), m_b(other_.m_b)  //implementation of the copy Ctor
