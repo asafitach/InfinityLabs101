@@ -3,31 +3,37 @@
 
 #include <iostream>
 
-class String;
-
-std::ostream& operator<<(std::ostream& os, const String &str);
-
-class String
+namespace ilrd
 {
-public:
-    String();
-    String(const char *str);
-    String(const String& other_); 
-    friend std::ostream& operator<<(std::ostream& os, const String &str);
-    String&operator=(const String& other_);
-    bool operator==(const String& other_);
-    bool operator<(const String& other_);
-    bool operator>(const String& other_);
+    class String;
+}
 
 
-    char *CStr();
-    size_t Length();
-    
-    ~String();
 
-private:
-    char *m_cstr;
-    size_t m_length;
+namespace ilrd
+{
+
+    class String
+    {
+    public:
+        String(const char *str = "");
+        String(const String& other_); 
+        friend std::ostream& operator<<(std::ostream& os, const String &str);
+        String&operator=(const String& other_);
+        bool operator==(const String& other_);
+        bool operator<(const String& other_);
+        bool operator>(const String& other_);
+
+
+        const char *CStr() const;
+        size_t Length() const;
+        
+        ~String();
+
+    private:
+        char *m_cstr;
+        char *CreateString(const char *str);
 };
+}
 
 #endif/* ILRD_RD101_STRING_HPP__ */

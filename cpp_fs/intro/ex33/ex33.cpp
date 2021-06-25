@@ -1,11 +1,4 @@
-/*****************************************************************************
- *	FILENAME:	ex33.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    Testing for ex33 lib.							      	 	 *
- *																			 *
- *****************************************************************************/
+
 
 #include <iostream> // cout
 #include <exception> // throw, try, catch

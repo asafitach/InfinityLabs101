@@ -1,15 +1,10 @@
-/*****************************************************************************
- *	FILENAME:	ex32.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    Testing for ex32 lib.							      	 	 *
- *																			 *
- *****************************************************************************/
 
 #include <iostream> // std::cerr
 #include <cstdlib>	// exit
 #include <exception> // std::set_unexpected
+
+using namespace std;
+
 /*****************************************************************************/
 void MyUnexpected(void) throw(char) 
 {

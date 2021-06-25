@@ -1,11 +1,3 @@
-/*****************************************************************************
- *	FILENAME:	ex30.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    testing for ex30 lib.							      	 	 *
- *																			 *
- *****************************************************************************/
 
 #include <iostream> // std
 #include <exception> // throw, try, catch
@@ -27,11 +19,15 @@ struct BadDog: public runtime_error
 {
     BadDog(const string& s = "This is bad dog"): runtime_error(s) {}
 };
+struct GoodDog: public runtime_error
+{
+    GoodDog(const string& s = "This is good dog"): runtime_error(s) {}
+};
 
 void Fifi()
 {
 	X x2;
-    throw BadDog("bad pup"); cerr << "Fifi() after throw" << endl;
+    throw GoodDog("good pup"); cerr << "Fifi() after throw" << endl;
 }
 
 void Foo()
@@ -53,19 +49,23 @@ int main()
     {
         Bar();
     }
-    catch(bad_alloc&)
+/*     catch(GoodDog& b)
     {
-        cerr << "Out of memory! exiting."; exit(2);
-    }
+        cerr << "Good Dog exception: " << b.what(); exit(3);
+    } */
     catch(BadDog& b)
     {
         cerr << "Bad Dog exception: " << b.what(); exit(3);
     }
-    catch(exception& r)
+    catch(bad_alloc&)
+    {
+        cerr << "Out of memory! exiting."; exit(2);
+    }
+/*     catch(exception& r)
     {
         cerr << "unknown exception:" << r.what();
         exit(4);
-    }
+    } */
 
     return 0;
 }

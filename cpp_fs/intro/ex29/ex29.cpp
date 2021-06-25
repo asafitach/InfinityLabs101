@@ -1,18 +1,10 @@
-/*****************************************************************************
- *	FILENAME:	ex29.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    testing for ex29 lib.							      		 *
- *																			 *
- *****************************************************************************/
 
 #include <iostream> // std
 /*****************************************************************************/
 class B
 {
     public:
-        B(int a = 0):m_a(a){ std::cout << "B::Ctor" << std:: endl; }
+        B(int a = 8):m_a(a){ std::cout << "B::Ctor" << std:: endl; }
         virtual ~B(){ std::cout << "B::Dtor" << std::endl; }
         virtual void Print1() const;
         virtual void Print2() const;
@@ -33,6 +25,7 @@ void B::Print3() const
 {
     std::cout << "B:: Print3" << std::endl;
 }
+
 class X: public B
 {
 public:
@@ -56,8 +49,13 @@ int main ()
 	B *b1 = new B;
     B *b2 = new X;
 
+    std::cout << std::endl << "main b1" << std::endl;
+    b1->Print1();
+    b1->Print2();
+    b1->Print3();
+    
     std::cout << std::endl << "main b2" << std::endl;
-    b2->Print1();
+     b2->Print1();
     b2->Print2();
     b2->Print3();
 

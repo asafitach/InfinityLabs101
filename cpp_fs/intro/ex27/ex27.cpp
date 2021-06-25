@@ -1,11 +1,3 @@
-/*****************************************************************************
- *	FILENAME:	ex27.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    testing for ex27 lib.							      	 	 *
- *																			 *
- *****************************************************************************/
 
 #include <iostream> // std
 /*****************************************************************************/
@@ -37,7 +29,7 @@ void X::Print() const
     std::cout << "X::Print() " << m_a << std::endl;
 }
 
-void Fifi(X x_ )
+void Fifi(const X &x_ )
 {
     std::cout << "Fifi() " << x_ << std::endl;
     x_.Print();
@@ -52,7 +44,7 @@ int main()
     Fifi(x1); //1
     Fifi(X(7)); //2
     Fifi(9); //3
-    Fifi(3, 4);
+   // Fifi(3, 4);
 
     std::cout << x1 * 3 << std::endl;
 
