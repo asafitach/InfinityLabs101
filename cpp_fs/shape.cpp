@@ -74,25 +74,25 @@ void Shape:: PrintSpaces() const
 void Line:: Draw() const
 {
     PrintSpaces();
-    std::cout<<"Line length: "<< m_length<<"\n";
+    std::cout<<"Line length: "<< m_length<<std::endl;
 }
 
 void Circle:: Draw() const
 {
     PrintSpaces();
-    std::cout<<"Circle with raduis: " << m_rdius.GetLineLength()<<"\n";
+    std::cout<<"Circle with raduis: " << m_rdius.GetLineLength()<<std::endl;
 }
 
 void Rectangle:: Draw() const
 {
     PrintSpaces();
-    std::cout<<"Rectangle with hight: "<<m_hight.GetLineLength()<<"and width: "<<m_width.GetLineLength()<<std::endl;   
+    std::cout<<"Rectangle with hight: "<<m_hight.GetLineLength()<<" and width: "<<m_width.GetLineLength()<<std::endl;   
 }
 
 void Square:: Draw() const
 {
     PrintSpaces();
-    std::cout<<"Square with edge: "<<m_edge.GetLineLength()<<"\n";
+    std::cout<<"Square with edge: "<<m_edge.GetLineLength()<<std::endl;
 }
 
 }
