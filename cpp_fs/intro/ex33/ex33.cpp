@@ -7,7 +7,7 @@
 
 using namespace std;
 /*****************************************************************************/
-void Fifi(int *ip) throw(int);
+void Fifi(int *ip) ;
 void Fishi(void);
 void Bar(int *ip);
 void Foo();
@@ -35,34 +35,38 @@ int main()
 /*****************************************************************************/
 void Dodo(void)
 {
-    cerr << "Dodo()" << endl;
+    cerr << "err Dodo()" << endl;
 }
 
-void Fifi(int *ip) throw(int)
+void Fifi(int *ip)
 {
-	cerr << "Fifi()" << endl;
+	cerr << "err Fifi()" << endl;
     throw 7;
 }
 
 void Fishi(void)
 {
-    cerr << "Fishi()" << endl;
+    cerr << "err Fishi()" << endl;
 }
 
 void Bar(int *ip)
 {
-    cerr << "Bar()" << endl;
+    cerr << "err Bar()" << endl;
 }
 
 void Foo()
 {
 	int *ip = new int;
-	
+	try{
 	Bar(ip);
 	Fishi();
 	Fifi(ip);
 	Dodo();
-
-	delete ip;
+    }
+    catch(int)
+    {
+    	delete ip;
+        return;
+    }
 }
 /*****************************************************************************/

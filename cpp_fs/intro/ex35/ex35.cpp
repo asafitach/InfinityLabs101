@@ -1,12 +1,3 @@
-/*****************************************************************************
- *	FILENAME:	ex35.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    Testing for ex35 lib.							      	 	 *
- *																			 *
- *****************************************************************************/
-
 #include <iostream> // cout
 #include <typeinfo> // type
 
@@ -135,7 +126,7 @@ int main()
 {
     try
     {
-        K var1;
+        L var1;
     }
     catch(exception& e)
     {

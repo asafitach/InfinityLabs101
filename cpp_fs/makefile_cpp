@@ -1,0 +1,23 @@
+$(EX)= rcstring
+DIR = ~/asafitach/asaf-itach/cpp_fs/lib/$(EX)
+GOAL = $(EX).out
+MAIN = ~/asafitach/asaf-itach/cpp_fs/test/$(EX)_test.cpp
+SRC = ~/asafitach/asaf-itach/cpp_fs/src/$(EX).cpp 			#$(GIT)src/s_l_list.c example for adding another src file 
+HEAD = ~/asafitach/asaf-itach/cpp_fs/include   				#For every file outside the makefile dir., a full path 
+CFILES = $(MAIN) $(SRC) 							#must be added. GIT var (line 3) is allowed.
+
+OBJECTS = $(EX)_test.o $(EX).o
+CC = g++
+CFLAGS = -std=c++98 -pedantic-errors -Wall -Wextra -g
+
+GOAL : $(OBJECTS)
+	$(CC) -o $(GOAL) $(CFLAGS) $(OBJECTS) -iquote $(HEAD)  
+
+$(OBJECTS) : $(HEAD) $(CFILES) 
+	$(CC) -c $(CFLAGS) $(CFILES) -iquote $(HEAD)  
+
+
+.PHONY : clean
+
+clean :
+	rm -f OUT $(OBJECTS)

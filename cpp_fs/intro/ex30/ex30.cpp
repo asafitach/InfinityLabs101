@@ -49,10 +49,6 @@ int main()
     {
         Bar();
     }
-/*     catch(GoodDog& b)
-    {
-        cerr << "Good Dog exception: " << b.what(); exit(3);
-    } */
     catch(BadDog& b)
     {
         cerr << "Bad Dog exception: " << b.what(); exit(3);
@@ -61,11 +57,15 @@ int main()
     {
         cerr << "Out of memory! exiting."; exit(2);
     }
-/*     catch(exception& r)
+    catch(exception& r)
     {
         cerr << "unknown exception:" << r.what();
         exit(4);
-    } */
+    }
+    catch(GoodDog& b)
+    {
+        cerr << "Good Dog exception: " << b.what(); exit(3);
+    }
 
     return 0;
 }

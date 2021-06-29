@@ -1,11 +1,3 @@
-/*****************************************************************************
- *	FILENAME:	ex34.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    Testing for ex34 lib.							      	 	 *
- *																			 *
- *****************************************************************************/
 
 // set_unexpected example
 #include <iostream>       // std::cerr
@@ -13,7 +5,7 @@
 #include <cstdlib> 
 #include <typeinfo>
 /*****************************************************************************/
-int Foo(int) throw(std::bad_cast)
+int Foo(int) throw(std::bad_alloc)
 {
   std::cout << "Foo" << std::endl;
   std::bad_cast cat;
@@ -28,14 +20,14 @@ public:
     ~X()
     {
         std::cerr<< "X::Dtor\n" << std::endl;
-        std::cerr<< Foo(m_a) << std::endl;
-        std::cerr<< "X::Dtor 2\n" << std::endl;
+         std::cerr<< Foo(m_a) << std::endl;
+        // std::cerr<< "X::Dtor 2\n" << std::endl;
     }
 private:
   int m_a;
 };
 
-void Bar(void) throw(std::bad_alloc)
+void Bar(void) throw(std::bad_cast)
 {
     std::cout << "Bar" << std::endl;
 
@@ -51,8 +43,10 @@ void Fishi()
     std::cout << "Fishi" << std::endl;
     
 	X x1;
+
+    Bar();
     
-	try
+/* 	try
     {
 	
 	}
@@ -67,7 +61,7 @@ void Fishi()
     catch(...)
     {
         std::cerr << "main error ";
-    }
+    } */
 }//Dtor invoked here thus we cant catch him
 
 int main()

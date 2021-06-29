@@ -1,12 +1,3 @@
-/*****************************************************************************
- *	FILENAME:	ex36.cpp              AUTHOR: Liad Oz	     LAB: RD100	     *
- *																			 *
- *	REVIEWER:																 *
- *																			 *
- *	PURPOSE:    Testing for ex36, ex37 lib.						      	 	 *
- *																			 *
- *****************************************************************************/
-
 #include <iostream> // cout
 /*****************************************************************************/
 class X;
@@ -15,7 +6,7 @@ void Foo(X x);
 class X
 {
 public:
-	X() { std::cout << "X ctor" << std::endl; }
+	//X() { std::cout << "X ctor" << std::endl; }
 	//	X(const X &other): m_a(other.m_a) {}
  	virtual ~X() { std::cout << "X dtor" << std::endl; }
 
@@ -26,7 +17,7 @@ private:
 class Y: public X
 {
 public:
-	Y() { std::cout << "Y ctor" << std::endl; }
+	//Y() { std::cout << "Y ctor" << std::endl; }
 	virtual ~Y() { std::cout << "Y dtor" << std::endl; }
 
 private:
@@ -35,9 +26,13 @@ private:
 /********************************** driver ***********************************/
 int main(void)
 {
-	Y y1;
+/* 	Y y1;
 
-	Foo(y1);
+	Foo(y1); */
+
+	Y *xp = new Y[5];
+
+	delete[] xp;
 
 	return 0;
 }
