@@ -4,16 +4,21 @@
 namespace ilrd
 {
 
-size_t Line::GetLineLength() const
-{
-    return (m_length);
-}
+Shape::Shape& ():m_cord
+{}
 
+Line::Line&(size_t length):m_length(length)
+{}
 
-void Shape:: Move(size_t move_by)
-{
-    m_cord += move_by;
-}
+Circle::Circle&(size_t radius):m_radius(radius)
+{}
+
+Rectangle::Rectangle&(size_t width, size_t hight): m_width(width), m_hight(hight)
+{}
+
+Square::Square&(size_t edge):m_edge(edge)
+{}
+  
 
 void Shape:: Draw() const
 {

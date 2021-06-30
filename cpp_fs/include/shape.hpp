@@ -11,7 +11,10 @@ class Shape
 public:
     Shape():m_cord(0){}
     virtual void Draw() const = 0;
-    void Move(size_t move_by);
+    inline void Move(size_t move_by)
+    {
+        m_cord += move_by;
+    }
 private:
     size_t m_cord;
 };
@@ -21,7 +24,10 @@ class Line:public Shape
 public:
     Line(size_t length = 0):m_length(length){}
     virtual void Draw() const;
-    size_t GetLineLength() const;
+    inline size_t GetLineLength() const
+    {
+        return (m_length);
+    }
 private:
     size_t m_length;
 };
