@@ -20,7 +20,7 @@ public:
     ~X()
     {
         std::cerr<< "X::Dtor\n" << std::endl;
-         std::cerr<< Foo(m_a) << std::endl;
+         std::cerr<< Foo(m_a) << std::endl;//destructor throw
         // std::cerr<< "X::Dtor 2\n" << std::endl;
     }
 private:
