@@ -135,10 +135,11 @@ public:
     {
     }
 
-    PublicConvoy(const PublicConvoy& other) : m_m(other.m_m), m_t(other.m_t)
+    PublicConvoy(const PublicConvoy& other) :PublicTransport(other), m_m(other.m_m), m_t(other.m_t)
     {
-        m_pt1 = new Minibus(*((Minibus*)(&other.m_pt1)));
-        m_pt2 = new Minibus(*((Minibus*)(&other.m_pt2)));
+
+        m_pt1 = new Minibus(*((Minibus*)(other.m_pt1)));
+        m_pt2 = new Taxi(*((Taxi*)(other.m_pt2)));
     }
 
     ~PublicConvoy()
@@ -192,7 +193,7 @@ void taxi_display(Taxi s)
 
 int main(int argc, char **argv, char **envp)
 {
-    Minibus m;
+      Minibus m;
     print_info(m);
     print_info(3).display();
     PublicTransport *array[] = { new Minibus(), new Taxi(), new Minibus() };
@@ -200,21 +201,21 @@ int main(int argc, char **argv, char **envp)
     for (int i = 0; i < 3; ++i) {
         array[i]->display();
     }
-    /*
 
     for (int i = 0; i < 3; ++i) {
         delete array[i];
     }
 
+    //arr2[0] = ctor-mini(ctor-pt)->cctor-pt->dtor(mini)
+    //arr2[1] = ctor-tax(ctor-pt)->cctor-pt
+    //arr2[2] = ctor-mini(ctor-pt)->cctor-pt
     PublicTransport arr2[] = { Minibus(), Taxi(), PublicTransport() };/////////////
-    //PublicTransport arr2[3];
-
     for (int i = 0; i < 3; ++i) {
         arr2[i].display();
     }
     print_info(arr2[0]);
-
     PublicTransport::print_count();
+
     Minibus m2;
     m2.print_count();
 
@@ -222,18 +223,21 @@ int main(int argc, char **argv, char **envp)
     Taxi *arr4 = new Taxi[4];
     delete[] arr4;
 
+
+
     std::cout << max_func(1, 2) << "\n";
     std::cout << max_func<int>(1, 2.0f)<< "\n";
     SpecialTaxi st;
-    taxi_display(st);
+    taxi_display(st);  
 
+    
     PublicConvoy *ts1 = new PublicConvoy();
-    PublicConvoy *ts2 = new PublicConvoy(*ts1);
     ts1->display();
+     PublicConvoy *ts2 = new PublicConvoy(*ts1);
     ts2->display();
-    delete ts1;
+   delete ts1;
     ts2->display(); // this crashes. fix the bug!
     delete ts2;
-*/
+
     return 0;
 }

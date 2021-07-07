@@ -44,6 +44,15 @@
         "sstream": "cpp",
         "stdexcept": "cpp",
         "typeinfo": "cpp",
-        "exception": "cpp"
+        "exception": "cpp",
+        "ext2_fs.h": "c",
+        "SAMPLE.C": "cpp",
+        "mutex": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "thread": "cpp",
+        "cinttypes": "cpp"
     }
 }
