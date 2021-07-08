@@ -53,6 +53,7 @@
         "ctime": "cpp",
         "ratio": "cpp",
         "thread": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "assert.h": "c"
     }
 }

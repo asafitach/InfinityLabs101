@@ -42,29 +42,22 @@ class b : public a
 
 int main()
 {
-
- 	Shared_ptr<a> ptr1(new a());
-	Shared_ptr<a> ptr11(ptr1);
-	Shared_ptr<a> ptra(new b());
-	Shared_ptr<b> ptr4(new b());
-	Shared_ptr<a> ptr2(reinterpret_cast<Shared_ptr<a>&>(ptr4));
-	Shared_ptr<a> ptr3();
+	ilrd::Shared_ptr<b> ptr4(new b());
+ 	ilrd::Shared_ptr<a> ptr1(new a());
+	ilrd::Shared_ptr<a> ptr11(ptr1);
+	ilrd::Shared_ptr<a> ptra(new b());
+	ilrd::Shared_ptr<a> ptr2(ptr4);
+	ilrd::Shared_ptr<a> ptr3(ptr2);
 
     ptr1 = ptr11;
-    //ptr3 = ptr1;
+    ptr3 = ptr1;
 
 
-    // ptr1->Print(); 
+    ptr1->Print(); 
     (*ptra).Print();
     (*ptr4).Print();
-//    (*ptr3).Print();
-    (*ptr2).Print(); 
-
-    
-
-    //std::cout<<ptr1<<" "<<*ptr1<<std::endl;
-
-std::cout<<"hello\n";
+    (*ptr3).Print();
+    ptr2->Print(); 
 
 
 	return 0;

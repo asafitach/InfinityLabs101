@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+namespace ilrd
+{
 
 template <typename T>
 class Shared_ptr
@@ -12,8 +14,8 @@ public:
     friend class Shared_ptr<T>;
 	
 	explicit Shared_ptr(T* ptr = NULL);
-	Shared_ptr(Shared_ptr& other);
-    Shared_ptr& operator=(Shared_ptr<T> &other);
+	Shared_ptr(const Shared_ptr& other);
+    Shared_ptr& operator=(const Shared_ptr<T> &other);
 	virtual ~Shared_ptr();
 	
 	template <typename S_P_T>
@@ -25,9 +27,9 @@ public:
 	T& operator*()const;
 	T* operator->()const;
     operator T*()const;
-    void dtorHelper();
 
 private:
+    void memoryRealese();
 	size_t* m_counter;
 	T* m_ptr;
 };//Shared_ptr
@@ -43,7 +45,7 @@ template <typename T> Shared_ptr <T>:: Shared_ptr(T* ptr)
 }
 
 
-template <typename T>	Shared_ptr<T>:: Shared_ptr(Shared_ptr<T>& other): 
+template <typename T>	Shared_ptr<T>:: Shared_ptr(const Shared_ptr<T>& other): 
 								m_counter(other.m_counter), m_ptr(other.m_ptr)
 {
 	(*m_counter)++;
@@ -71,17 +73,17 @@ template <typename T>   Shared_ptr<T>:: operator T*()const
     return (m_ptr);
 }
 
-template <typename T>   Shared_ptr<T>& Shared_ptr<T>:: operator=(Shared_ptr<T>& other)
+template <typename T>   Shared_ptr<T>& Shared_ptr<T>:: operator=(const Shared_ptr<T>& other)
 {
     (*(other.m_counter))++;
-    dtorHelper();
+    memoryRealese();
     m_ptr = other.m_ptr;
     m_counter = other.m_counter;
     std::cout<<"=operator "<<*m_counter<<" "<<m_ptr<<std::endl;
     return (*this);
 }
 
-template <typename T> void Shared_ptr<T>:: dtorHelper()
+template <typename T> void Shared_ptr<T>:: memoryRealese()
 {
     std::cout<<"dtor "<<*m_counter<<" "<<m_ptr<<std::endl;
 	(*m_counter)--;
@@ -95,7 +97,7 @@ template <typename T> void Shared_ptr<T>:: dtorHelper()
 template <typename T> 
 Shared_ptr<T>:: ~Shared_ptr()
 {
-    dtorHelper();
+    memoryRealese();
 }
 
 template <typename T> 
@@ -109,7 +111,7 @@ template <typename S_P_T>
 Shared_ptr<T>& Shared_ptr<T>:: operator=(Shared_ptr<S_P_T>& other)
 {
     (*(other.m_counter))++;
-    dtorHelper();
+    memoryRealese();
     m_ptr = other.m_ptr;
     m_counter = other.m_counter;
     std::cout<<"=operator "<<*m_counter<<" "<<m_ptr<<std::endl;
@@ -125,7 +127,7 @@ Shared_ptr<T>:: Shared_ptr(Shared_ptr<S_P_T>& other):
 	(*m_counter)++;
     std::cout<<"cctor "<<*m_counter<<" "<<m_ptr<<std::endl;
 }
-
+}//ilrd
 
 
 #endif //__ILRD__RD101_SHARED_PTR_HPP
