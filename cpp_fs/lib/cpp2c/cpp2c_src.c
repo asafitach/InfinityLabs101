@@ -192,10 +192,10 @@ void PCdisplay(void *public_convoy)
     tmpp = pc->m_ptr2;
     tmpp->virtual_function->display(tmpp);
 
-    tmpp = &(pc->m_m);
+    tmpp = (public_transportation_t *)&(pc->m_m);
     tmpp->virtual_function->display(tmpp);
 
-    tmpp = &(pc->m_t);
+    tmpp = (public_transportation_t *)&(pc->m_t);
     tmpp->virtual_function->display(tmpp);
 }
 
@@ -229,11 +229,11 @@ void Mprint_info(minibus_t *m)
 public_transportation_t PTRprint_info(int i)/* Public Transportation Return */
 {
     minibus_t ret = {0};
+    public_transportation_t copy_ret = {0};
     CtorMinibus(&ret);
     printf("print_info(int i)\n");
     ret.parrent.virtual_function->display(&ret);
 
-    public_transportation_t copy_ret = {0};
     CCtorPublicTransport(&copy_ret, &ret);
     DtorMinibus(&ret);
     return (copy_ret);

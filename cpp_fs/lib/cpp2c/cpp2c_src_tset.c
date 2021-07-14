@@ -14,9 +14,9 @@ int main(int argc, char **argv, char **envp)
     public_transportation_t tmp2;
     public_transportation_t *array[3];
 
-    v_table_t *mini = &g_minibus_v_ptr;
-    v_table_t *tax = &g_taxi_v_ptr;
-    v_table_t *pt = &g_public_transportation_v_ptr;
+    // v_table_t *mini = &g_minibus_v_ptr;
+    // v_table_t *tax = &g_taxi_v_ptr;
+    // v_table_t *pt = &g_public_transportation_v_ptr;
 
     CtorMinibus(&m);
     Mprint_info(&m);
