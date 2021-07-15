@@ -13,9 +13,6 @@ int main()
     ilrd::BitArray<800> big_array;
     ilrd::BitArray<800> big_array2;
 
-    size_t count = big_array2.CountBitsOn();
-
-
     std::cout<< array.ToString()<<std::endl;
     array.SetBit(1);
     std::cout<< array.ToString()<<std::endl;

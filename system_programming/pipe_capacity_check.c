@@ -12,25 +12,29 @@ int main()
 	int fd;
 	char *file_path = "/home/asafitach/asaf-itach/system_programming/pip";
 	char buf1[BUFF_SIZE] = {0};
-	char buf2[BUFF_SIZE] = "program 1 sends Hi!\n";
+	char buf2[BUFF_SIZE] = {'a', 0};
+    size_t counter = 0;
 
 	mkfifo(file_path, 0666);
 
-	while (1)
-	{
+
 		fd = open(file_path, O_WRONLY);
 
+        while (2 > write(fd, buf2, 2))
+        {
+            ++counter;
+        }
 
-		write(fd, buf2, 21);/* need to add check for the return value of write */
+        printf("Pipe capacity is %lu bytes\n", counter);
+
 		close(fd);
 
 		fd = open(file_path, O_RDONLY);
-		read(fd, buf1, BUFF_SIZE);
-        printf("User1: %s\n", buf1);
+        while (0 != read(fd, buf1, BUFF_SIZE)){};
+
 
 
 		close(fd);
-        sleep(1);
-	}
+
 	return 0;
 }

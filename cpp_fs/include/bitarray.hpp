@@ -2,6 +2,7 @@
 #define ILRD__RD101_BIT_ARRAY_HPP
 
 #include <string>
+#include <iostream>
 #include <stdio.h>
 #include <algorithm>
 #include <numeric>
@@ -25,7 +26,7 @@ class BitArray
 {
 private:
     static const size_t SIZE_IN_SIZE_T = ((SIZE - 1) / (BITS_IN_BYTE * WORD_SIZE)) + 1;
-    class BitProxy;
+    class BitProxy; // the user recieve BitProxy from operator[] so this class being private is pointless
 
 public:
     explicit BitArray();
@@ -41,9 +42,9 @@ public:
     BitArray& operator <<=(size_t n_times);//advanced
     BitArray& operator >>=(size_t n_times);//advanced
 
-    BitArray& SetBit(size_t index, bool setTo = false);/* can throw exception "out_of_range" */
+    BitArray& SetBit(size_t index, bool setTo = true);/* can throw exception "out_of_range" */
     BitArray& UnSetBit(size_t index);/* can throw exception "out_of_range" */
-    BitArray& SetAll(bool setTo = false);
+    BitArray& SetAll(bool setTo = true);
     BitArray& UnSetAll();
     bool GetBit(size_t index)const;/* can throw exception out_of_range */
     void FlipBit(size_t index);/* can throw exception out_of_range */
@@ -51,8 +52,9 @@ public:
     size_t CountBitsOn()const;
 
     std::string ToString() const;
+    
     template <size_t LUT_SIZE> 
-    friend class FunctorGentBitsOn; 
+    friend class FunctorGentBitsOn;
 
 private:
     size_t m_array[SIZE_IN_SIZE_T];
@@ -64,7 +66,7 @@ private:
         BitProxy(size_t &array, size_t index);
         BitProxy(BitProxy &other);
         virtual ~BitProxy();
-        BitProxy& operator=(const BitProxy &other);
+        BitProxy& operator=(const BitProxy &other);//can be deleted
         BitProxy& operator=(bool changeTo);
         operator bool() const;
 
@@ -87,8 +89,7 @@ private:
 
 Lut::Lut()
 {
-    std::cout<<"lut ctor\n";
-    for (size_t i = 0; i < 256; i++)
+    for (size_t i = 0; i < LUT_SIZE; i++) 
     {
         lut[i] = (i & 1) + lut[i / 2];/* takes the bits on from the prev power of 2 (i / 2) and adds one if lsb is on */
     }
@@ -96,7 +97,7 @@ Lut::Lut()
 
 size_t Lut::GetBitsOn(size_t num)
 {
-    size_t mask = 0xffff;
+    size_t mask = 0xff;
     return (lut[num & mask]
             +lut[mask & (num >> BITS_IN_BYTE)]
             +lut[mask & (num >> (BITS_IN_BYTE * 2))]
@@ -121,7 +122,7 @@ class FlipBitsFunctor
 public:
     void operator()(size_t& x)
     {
-        x ^= 0xffffffffffffffff;
+        x ^= 0xffffffffffffffff; //(size_t)-1 or ~0LU is also gooood
     }
 };
 
@@ -144,32 +145,39 @@ public:
 
 };
 
-class BitWise
+
+class OrFunctor
 {
 public:
-    enum CurOp {OR = 0, AND = 1, XOR = 2}; 
-    BitWise(CurOp t) : m_current(t) {}
-    
     size_t operator() (size_t &left, const size_t &right)
     {
-        switch (m_current)
-        {
-        case OR:
-            return left | right;
-        case AND:
-            return left & right;
-        case XOR:
-            return left ^ right;
-        }
-        return 0; 
+        left |= right;
+        return (left);
     }
+};
 
-    private:
-        CurOp m_current; 
+class XorFunctor
+{
+public:
+    size_t operator() (size_t &left, const size_t &right)
+    {
+        left ^= right;
+        return (left);
+    }
+};
+
+class AndFunctor
+{
+public:
+    size_t operator() (size_t &left, const size_t &right)
+    {
+        left &= right;
+        return (left);
+    }
 };
 
 template <size_t SIZE> 
-class FunctorGentBitsOn /*set to one functor*/
+class FunctorGentBitsOn 
 {
     public:
         FunctorGentBitsOn() {}
@@ -186,7 +194,8 @@ class FunctorGentBitsOn /*set to one functor*/
 template <size_t SIZE> 
 BitArray<SIZE>::BitArray()
 {
-    std::for_each(m_array, m_array + SIZE_IN_SIZE_T, SetZero());
+    SetAll(false);
+//    std::for_each(m_array, m_array + SIZE_IN_SIZE_T, SetZero());//calling setAll possible also
 }
 
 
@@ -209,7 +218,7 @@ bool BitArray<SIZE>:: operator[](size_t index) const
     {
         TrowFunc();
     }
-    return m_array[index / BITS_IN_BYTE] & 1 << (index % BITS_IN_BYTE);
+    return m_array[index / (BITS_IN_BYTE * WORD_SIZE)] & 1 << (index % (BITS_IN_BYTE * WORD_SIZE));
 }
 
 template <size_t SIZE> 
@@ -228,7 +237,7 @@ bool BitArray<SIZE>:: operator!=(const BitArray &other) const
 template <size_t SIZE> 
 BitArray<SIZE>& BitArray<SIZE>::operator |= (const BitArray &other)
 {
-    std::transform(m_array, m_array + SIZE_IN_SIZE_T, other.m_array, m_array, BitWise(BitWise::OR));
+    std::transform(m_array, m_array + SIZE_IN_SIZE_T, other.m_array, m_array, OrFunctor());
     return *this; 
 }
 
@@ -236,7 +245,7 @@ BitArray<SIZE>& BitArray<SIZE>::operator |= (const BitArray &other)
 template <size_t SIZE> 
 BitArray<SIZE>& BitArray<SIZE>::operator ^=(const BitArray &other)
 {
-    std::transform(m_array, m_array + SIZE_IN_SIZE_T, other.m_array, m_array, BitWise(BitWise::XOR));
+    std::transform(m_array, m_array + SIZE_IN_SIZE_T, other.m_array, m_array, XorFunctor());
     return *this; 
 }
 
@@ -244,7 +253,7 @@ BitArray<SIZE>& BitArray<SIZE>::operator ^=(const BitArray &other)
 template <size_t SIZE> 
 BitArray<SIZE>& BitArray<SIZE>::operator &=(const BitArray &other)
 {
-    std::transform(m_array, m_array + SIZE_IN_SIZE_T, other.m_array, m_array, BitWise(BitWise::AND));
+    std::transform(m_array, m_array + SIZE_IN_SIZE_T, other.m_array, m_array, AndFunctor());
     return *this; 
 }
 
@@ -263,11 +272,15 @@ BitArray<SIZE>& BitArray<SIZE>::SetBit(size_t index, bool setTo)
     {
         TrowFunc();
     }
-    m_array[index / BITS_IN_BYTE] &= ~(1 << index);
     
-    if (!setTo)
+    if (false == setTo)
     {
-        m_array[index / BITS_IN_BYTE] |= (1 << index);
+        m_array[index / (BITS_IN_BYTE * WORD_SIZE)] &= ~(1 << index);
+    }
+    
+    else
+    {
+        m_array[index / (BITS_IN_BYTE * WORD_SIZE)] |= (1 << index);
     }
     return *this;
 }
@@ -279,14 +292,14 @@ BitArray<SIZE>& BitArray<SIZE>::UnSetBit(size_t index)
     {
         TrowFunc();
     }
-    return (SetBit(index, true));
+    return (SetBit(index, false));
 }
 
 
 template<size_t SIZE> 
 BitArray<SIZE> &BitArray<SIZE>::SetAll(bool setTo)
 {
-    if (setTo)
+    if (false == setTo)
     {
         std::for_each(m_array, m_array + SIZE_IN_SIZE_T, SetZero());
     }
@@ -310,7 +323,8 @@ bool BitArray<SIZE>:: GetBit(size_t index)const
     {
         TrowFunc();
     }
-    return (m_array[index / BITS_IN_BYTE] & (1 << (index % BITS_IN_BYTE)));
+    return (m_array[index]);
+    //return (m_array[index / (BITS_IN_BYTE * WORD_SIZE)] & (1 << (index % (BITS_IN_BYTE * WORD_SIZE))));
 }
 
 template <size_t SIZE> 
@@ -320,7 +334,7 @@ void BitArray<SIZE>:: FlipBit(size_t index)
     {
         TrowFunc();
     }
-    m_array[index / BITS_IN_BYTE] ^= (1 << (index % BITS_IN_BYTE));
+    m_array[index / (BITS_IN_BYTE * WORD_SIZE)] ^= (1 << (index % (BITS_IN_BYTE * WORD_SIZE)));
 }
 
 template <size_t SIZE> 
