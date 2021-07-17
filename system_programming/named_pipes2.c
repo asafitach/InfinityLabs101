@@ -4,31 +4,46 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
-
+#include <stdlib.h>
 
 #define BUFF_SIZE 100
 
 int main()
 {
-	int fd1;
-	char * file_path = "/home/asafitach/asaf-itach/system_programming/pip";
-	char str1[BUFF_SIZE] = {0}; 
-	char str2[BUFF_SIZE] = "program 2 sends Hi!\n"; 
+	int reader;
+	int writer;
+	char *file_path_read = "/home/asafitach/asaf-itach/system_programming/pippong";
+	char *file_path_write = "/home/asafitach/asaf-itach/system_programming/pipping";
+	char buf1[BUFF_SIZE] = {0};
+	char buf2[BUFF_SIZE] = "program 1 sends Hi!\n";
+	int counter = 30;
 
-	mkfifo(file_path, 0666);
-
-	while (1)
+	if (-1 == mkfifo(file_path_read, 0666) || -1 == mkfifo(file_path_write, 0666))
 	{
-		fd1 = open(file_path,O_RDONLY);
-		read(fd1, str1, BUFF_SIZE);
-
-		printf("User1: %s\n", str1);
-		close(fd1);
-
-		fd1 = open(file_path,O_WRONLY);
-		write(fd1, str2, 21);
-		close(fd1);
-        sleep(1);
+		perror("failed to create pipe\n");
+		exit(1);
 	}
+
+
+	while (counter)
+	{
+	writer = open(file_path_write, O_WRONLY);
+		if (-1 == write(writer, buf2, 21))
+		{
+			perror("failed to write\n");
+			exit (1);	
+		}
+	close(writer);
+		
+	reader = open(file_path_read, O_RDONLY);
+		read(reader, buf1, BUFF_SIZE);
+        printf("pong: %s\n", buf1);
+	close(reader);
+
+        sleep(1);
+		--counter;
+	}
+	
+	
 	return 0;
 }

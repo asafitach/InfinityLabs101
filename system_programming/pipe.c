@@ -35,41 +35,36 @@ int main()
             break;
 
         case 0:
+            close(parrent_write[1]);
+            close(child_write[0]);
             for (int i = 0; i < 5; ++i)
             {
                 sleep(1);
-                close(parrent_write[1]);
                 nbytes = read(parrent_write[0], buf, BUFF_SIZE);
-                close(parrent_write[0]);
 
                 printf("%s", buf);
-/*             }
-            for (int i = 0; i < 5; ++i)
-            { */
 
-                close(child_write[0]);
                 write(child_write[1], "Hello from child\n\0", 19);
-                close(child_write[1]);
             }
+                close(child_write[1]);
+                close(parrent_write[0]);
             break;
 
         default:
+                close(parrent_write[0]);
+                close(child_write[1]);
             for (int i = 0; i < 5; ++i)
             {
                 sleep(1);
 
-                close(parrent_write[0]);
                 write(parrent_write[1], "Hello from pap's\n\0", 19);
-                close(parrent_write[1]);
-/*             }
-            for (int i = 0; i < 5; ++i)
-            { */
-                close(child_write[1]);
+
                 nbytes = read(child_write[0], buf, BUFF_SIZE);
-                close(child_write[0]);
 
                 printf("%s", buf);
             }
+                close(child_write[0]);
+                close(parrent_write[1]);
 
     }
 

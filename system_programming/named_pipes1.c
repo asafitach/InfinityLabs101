@@ -4,33 +4,42 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <stdlib.h>
+
 
 #define BUFF_SIZE 100
 
 int main()
 {
-	int fd;
-	char *file_path = "/home/asafitach/asaf-itach/system_programming/pip";
+	int reader;
+	int writer;
+	char *file_path_read = "/home/asafitach/asaf-itach/system_programming/pipping";
+	char *file_path_write = "/home/asafitach/asaf-itach/system_programming/pippong";
 	char buf1[BUFF_SIZE] = {0};
 	char buf2[BUFF_SIZE] = "program 1 sends Hi!\n";
+	int counter = 30;
 
-	mkfifo(file_path, 0666);
 
-	while (1)
+
+	while (counter)
 	{
-		fd = open(file_path, O_WRONLY);
+	reader = open(file_path_read, O_RDONLY);
+		read(reader, buf1, BUFF_SIZE);
+        printf("ping: %s\n", buf1);
+	close(reader);
 
+	writer = open(file_path_write, O_WRONLY);
+		if (-1 == write(writer, buf2, 21))
+		{
+			perror("failed to write\n");
+			exit(1);
+		}
+	close(writer);
 
-		write(fd, buf2, 21);/* need to add check for the return value of write */
-		close(fd);
-
-		fd = open(file_path, O_RDONLY);
-		read(fd, buf1, BUFF_SIZE);
-        printf("User1: %s\n", buf1);
-
-
-		close(fd);
         sleep(1);
+		--counter;
 	}
+	
+	
 	return 0;
 }
