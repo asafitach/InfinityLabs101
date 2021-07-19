@@ -10,7 +10,6 @@
 #define PORT	 8080
 #define MAXLINE 1024
 
-// Driver code
 int main() {
 	int sockfd;
 	char buffer[MAXLINE];
@@ -30,6 +29,9 @@ int main() {
 	servaddr.sin_port = htons(PORT);
 	servaddr.sin_addr.s_addr = INADDR_ANY;
 	
+	socklen_t soclen = 0;
+	connect(sockfd, (const struct sockaddr *)&servaddr, soclen);
+
 	int n, len;
 	for (int i = 0; i < 10; ++i)
     {

@@ -31,8 +31,8 @@ int main()
 	
 	// Filling server information
 	servaddr.sin_family = AF_INET; // IPv4
-	servaddr.sin_addr.s_addr = INADDR_ANY;
 	servaddr.sin_port = htons(PORT);
+	servaddr.sin_addr.s_addr = INADDR_ANY;
 	
 	// Bind the socket with the server address
 	if ( bind(sockfd, (const struct sockaddr *)&servaddr,
@@ -42,24 +42,27 @@ int main()
 		exit(EXIT_FAILURE);
 	}
 	
+	socklen_t soclen = 0;
+
     listen(sockfd, 1);
 	int len, n;
+	accept(sockfd, (struct sockaddr *)&cliaddr, &soclen);
 
-	len = sizeof(cliaddr); //len is value/resuslt
+	// len = sizeof(cliaddr); //len is value/resuslt
 for (int i = 0; i < 10; ++i)
 {
     sleep(1);
-    n = recv(sockfd, buffer, MAXLINE, MSG_WAITALL);
-	// n = recvfrom(sockfd, (char *)buffer, MAXLINE,
-				// MSG_WAITALL, ( struct sockaddr *) &cliaddr,
-				// &len);
+    // n = recv(sockfd, buffer, MAXLINE, MSG_WAITALL);
+	n = recvfrom(sockfd, (char *)buffer, MAXLINE,
+				MSG_WAITALL, ( struct sockaddr *) &cliaddr,
+				&len);
 	buffer[n] = '\0';
 	printf("Client : %s\n", buffer);
 
-    send(sockfd, hello, strlen(hello), MSG_CONFIRM);
-	// sendto(sockfd, (const char *)hello, strlen(hello),
-		// MSG_CONFIRM, (const struct sockaddr *) &cliaddr,
-			// len);
+    // send(sockfd, hello, strlen(hello), MSG_CONFIRM);
+	sendto(sockfd, (const char *)hello, strlen(hello),
+		MSG_CONFIRM, (const struct sockaddr *) &cliaddr,
+			soclen);
 	printf("Hello message sent.\n");
 }
 	
