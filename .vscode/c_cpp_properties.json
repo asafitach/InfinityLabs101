@@ -10,7 +10,8 @@
                 "/usr/local",
                 "/usr/local/include",
                 "/home/asafitach/asaf-itach/cpp_fs/include",
-                "${workspaceFolder}/cpp_fs"
+                "${workspaceFolder}/cpp_fs",
+                "${workspaceFolder}/system_programming/server client"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

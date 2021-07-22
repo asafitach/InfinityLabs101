@@ -12,41 +12,15 @@
 #define MAX_LINE 1024
 
 
-int UdpCrerateSocket(int domain, int socket_type, int protocol)
-{
-	int sockfd = 0;
-
-	if ((sockfd = socket(domain, socket_type, protocol)) < 0) 
-	{
-		perror("socket creation failed");
-		exit(EXIT_FAILURE);
-	}
-
-	return (sockfd);
-}
-
-struct sockaddr_in UdPServerInfo()
-{
-	struct sockaddr_in servaddr;
-
-	memset(&servaddr, 0, sizeof(servaddr));
-	
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(PORT);
-	servaddr.sin_addr.s_addr = INADDR_ANY;
-
-	return (servaddr);
-}
-	
 void UdpClientPingPong(int socket_fd)
 {
-	struct sockaddr_in servaddr = UdPServerInfo();
+	struct sockaddr_in servaddr = ServerInfo(UDP_CLIENT);
 	int is_done = 1;
     socklen_t len = sizeof(servaddr);
 
 	while (is_done)
 	{
-		UdpSend(&servaddr, socket_fd, len);
+		UdpSend(&servaddr, socket_fd, len, MSG_CONFIRM);
 
 		is_done = UdpRecv(&servaddr, socket_fd, &len);
 	}
@@ -56,7 +30,7 @@ void UdpClientPingPong(int socket_fd)
 
 void UdpServerPingPong(int socket_fd)
 {
-	struct sockaddr_in servaddr = UdPServerInfo();
+	struct sockaddr_in servaddr = ServerInfo(UDP_SERVER);
 	struct sockaddr_in cliaddr;
 	int is_done = 1;
     socklen_t len = 0;
@@ -76,39 +50,18 @@ void UdpServerPingPong(int socket_fd)
 	{
 		is_done = UdpRecv(&cliaddr, socket_fd, &len);
 
-		UdpSend(&cliaddr, socket_fd, len);
+		UdpSend(&cliaddr, socket_fd, len, MSG_CONFIRM);
 	}
 
 	close(socket_fd);
 }
 
-char *UserInput()
-{
-    char *ping = (char *)malloc(MAX_LINE);
-    int index = 0;
-
-    memset(ping, 0, MAX_LINE);
-
-    printf("Please write your message\n");
-
-    ping[index] = getchar();
-    while ('\n' != ping[index])
-    {
-        ++index;
-        ping[index] = getchar();
-    }
-
-    printf("string: %s\n", ping);
-
-    return (ping);
-}
-
-void UdpSend(struct sockaddr_in *other_address, int socket_fd, socklen_t len)
+void UdpSend(struct sockaddr_in *other_address, int socket_fd, socklen_t len, int flag)
 {
     char *ping = UserInput();
 /*     char *ping = "hello";
  */
-	sendto(socket_fd, (const void *)ping, strlen(ping),MSG_CONFIRM, (const struct sockaddr *) other_address,len);
+	sendto(socket_fd, (const void *)ping, strlen(ping),flag, (const struct sockaddr *) other_address,len);
 	printf("Message sent.\n");
     free(ping);
 }
@@ -122,7 +75,7 @@ int UdpRecv(struct sockaddr_in *other_address, int socket_fd, socklen_t *len)
     memset(buffer, 0, MAX_LINE);
 
 
-	n = recvfrom(socket_fd, (char *)buffer, MAX_LINE,MSG_WAITALL, (struct sockaddr *) other_address, len);
+	n = recvfrom(socket_fd, (char *)buffer, MAX_LINE, MSG_WAITALL, (struct sockaddr *) other_address, len);
 	
 	buffer[n] = '\0';
 	
@@ -131,3 +84,12 @@ int UdpRecv(struct sockaddr_in *other_address, int socket_fd, socklen_t *len)
 	return (strcmp(buffer, exit));
 }
 
+void UdpBroadcastConfig(int socket_fd)
+{
+	int yes=1;
+	if(setsockopt(socket_fd,SOL_SOCKET,SO_BROADCAST,&yes,sizeof(yes))<0)
+	{
+		perror("setsockopt failed\n");
+		exit (1);
+	}
+}
