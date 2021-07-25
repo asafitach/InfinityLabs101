@@ -41,7 +41,7 @@ void TcpSend(int socket_fd)
     char *ping = UserInput();
 /*     char *ping = "hello";
  */
-	write(socket_fd, ping, strlen(ping));
+	send(socket_fd, ping, strlen(ping), MSG_DONTWAIT);
 	printf("Message sent.\n");
     free(ping);
 }
@@ -53,12 +53,15 @@ int TcpRecv(int socket_fd)
 
     memset(buffer, 0, MAX_LINE);
 
-    read(socket_fd, buffer, sizeof(buffer));
+    recv(socket_fd, buffer, sizeof(buffer), MSG_DONTWAIT);
+	// read(socket_fd, buffer, sizeof(buffer));
 	printf("Message : %s", buffer);
 
 	return (strncmp(buffer, exit, 4));
 }
-/* special */
+
+
+
 int TcpServerConnect(struct sockaddr_in *server_address, struct sockaddr_in *client_address, int server_socket_fd)
 {
     socklen_t len = 0;

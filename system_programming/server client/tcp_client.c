@@ -59,24 +59,14 @@ int main()
 	struct sockaddr_in servaddr, cli;
 
 	// socket create and varification
-	sockfd = CrerateSocket(AF_INET, SOCK_STREAM, 0);
+	sockfd = CrerateSocket(SOCK_STREAM);
 
 
 	bzero(&servaddr, sizeof(servaddr));
 
-	// assign IP, PORT
-	// servaddr.sin_family = AF_INET;
-	// servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	// servaddr.sin_port = htons(PORT);
-    servaddr = ServerInfo(tcp_client);
+    servaddr = ServerInfo(TCP_CLIENT);
 
-	// connect the client socket to server socket
 	TcpClientConnect(&servaddr, sockfd);
 
-	// function for chat
-	// func(sockfd);
-
-	// // close the socket
-	// close(sockfd);
-    TcpPingPong(sockfd, tcp_client);
+    TcpPingPong(sockfd, TCP_CLIENT);
 }
