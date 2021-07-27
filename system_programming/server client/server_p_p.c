@@ -35,6 +35,7 @@ int main(void)
     int retval;
     int flag = 1;
     int len = 0;
+    int max_socket = 0;
     int ports[TOTAL_PORTS] = {0};
     int num_of_tcp_ports = TCP_LISTEN + 1;
     char buffer[BUFF_SIZE] = {0};
@@ -68,6 +69,7 @@ int main(void)
 		exit(0);
 	}
 
+    max_socket = (ports[UDP] > ports[TCP_LISTEN])? ports[UDP]: ports[TCP_LISTEN];
 
 while(flag)
 {
@@ -83,7 +85,7 @@ while(flag)
     }
 
     /* Wait up to seven seconds. */
-    retval = select(TOTAL_PORTS, &rfds, NULL, NULL, &tv);
+    retval = select(max_socket, &rfds, NULL, NULL, &tv);
 
     if (retval == -1)
     {
@@ -95,6 +97,7 @@ while(flag)
         {
             PostActionToFile("New Tcp Connection");
             ports[num_of_tcp_ports] = accept(ports[TCP_LISTEN], &g_tcp_client, &len);
+            max_socket = (max_socket > ports[num_of_tcp_ports])? max_socket: ports[num_of_tcp_ports];
             ++num_of_tcp_ports;
         }
         

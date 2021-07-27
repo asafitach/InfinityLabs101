@@ -55,6 +55,16 @@
         "thread": "cpp",
         "cinttypes": "cpp",
         "assert.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "csignal": "cpp",
+        "bitset": "cpp",
+        "codecvt": "cpp",
+        "complex": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "iomanip": "cpp",
+        "typeindex": "cpp",
+        "variant": "cpp"
     }
 }

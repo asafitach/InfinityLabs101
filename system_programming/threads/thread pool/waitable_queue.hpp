@@ -4,7 +4,7 @@
 #include <mutex>          // std::mutex
 #include <condition_variable> // std::cond
 #include <boost/core/noncopyable.hpp>  // boost::noncopyable
-
+#include <iostream>
 
 namespace ilrd
 {

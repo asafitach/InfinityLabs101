@@ -7,11 +7,13 @@
                 "${workspaceFolder}",
                 "${PATH}",
                 "/usr/local/lib",
+                "~/asa",
                 "/usr/local",
                 "/usr/local/include",
                 "/home/asafitach/asaf-itach/cpp_fs/include",
                 "${workspaceFolder}/cpp_fs",
-                "${workspaceFolder}/system_programming/server client"
+                "${workspaceFolder}/system_programming/server client",
+                "${workspaceFolder}/cpp_fs/lib"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
