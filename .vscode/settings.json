@@ -65,6 +65,7 @@
         "set": "cpp",
         "iomanip": "cpp",
         "typeindex": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "sumof.h": "c"
     }
 }

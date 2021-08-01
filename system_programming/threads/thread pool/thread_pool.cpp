@@ -9,114 +9,259 @@
 #include "priority_queue.hpp"
 #include "thread_pool.hpp"
 #include <iostream>
+#include <semaphore.h>
 #include <unistd.h>
+#include <boost/interprocess/sync/interprocess_semaphore.hpp>
+#include <boost/interprocess/sync/named_semaphore.hpp>
+#include <boost/interprocess/creation_tags.hpp>
 
 
-ilrd::ThreadPool::ThreadPool(size_t numOfThreads, unsigned int niceness):m_pause(false), m_numOfThreads(numOfThreads), m_TaskQueue(), m_ThreadMap() 
+/* ############################## Thread pool imp.  ############################## */
+
+/* CTOR */
+ilrd::ThreadPool::ThreadPool(size_t numOfThreads, unsigned int niceness):m_numOfThreads(numOfThreads), m_TaskQueue(), m_ThreadMap(), m_ThreadMapToDelete() 
+{
+    OpenThreds(m_numOfThreads);
+}
+
+void ilrd::ThreadPool::OpenThreds(size_t num_of_thread_to_open)
 {
     WorkerThread *tmp = NULL;
-    for (size_t i = 0; i < numOfThreads; i++)
+    for (size_t i = 0; i < num_of_thread_to_open; i++)
     {
         tmp = new WorkerThread(this);
         m_ThreadMap[tmp->GetId()] = tmp;
-        std::cout<<"threadpool ctor"<<tmp->GetId()<<std::endl;
+        std::cout<<"threadpool ctor\t\t"<<tmp->GetId()<<std::endl;
     }
 }
 
+
+/* DTOR */
 ilrd::ThreadPool::~ThreadPool() noexcept
 {
+    CloseThreds(m_numOfThreads);
+}
+ 
+void ilrd::ThreadPool::CloseThreds(size_t num_of_thread_to_close)
+{
+    boost::interprocess::named_semaphore dtor_sem(boost::interprocess::open_or_create, "dtor_semaphore", 0);
+    ilrd::ThreadPool::FunctorTask<void> *obj = new ilrd::ThreadPool::FunctorTask<void>(ilrd::ThreadPool::badApple(this));
+    std::shared_ptr<ilrd::ThreadPool::ITask> ptr2(obj);
+    for (size_t i = 0; i < num_of_thread_to_close; i++)
+    {
+        AddTask(ptr2, ilrd::ThreadPool::priority_t::HIGH);
+    }
+    
+    for (size_t i = 0; i < m_numOfThreads; i++)
+    {
+        dtor_sem.wait();
+    }
+    
+    dtor_sem.remove("dtor_semaphore");
+
     std::map<std::thread::id ,WorkerThread*>::iterator iter = m_ThreadMap.begin();
-    m_pause = true;
+
+    int counter = 0;
     while (iter != m_ThreadMap.end())
     {
-        iter->second->m_thread->join();
+        ++counter;
+
+        // iter->second->m_thread->join();
+        std::cout<<"DTOR "<<counter<</* "  id: "<<(iter->first)<< */std::endl;
+        delete iter->second;
         ++iter;
     }
 }
 
-void ilrd::ThreadPool::WorkerThread::RunThread(ilrd::ThreadPool *TP)
+/* Add Task */
+void ilrd::ThreadPool::AddTask(std::shared_ptr<ilrd::ThreadPool::ITask> task, ilrd::ThreadPool::priority_t priority)
+{
+    m_TaskQueue.Push(task);
+}
+
+/* Pause */
+void ilrd::ThreadPool::Pause()
+{
+    boost::interprocess::named_semaphore pause_sem(boost::interprocess::open_or_create, "pause_sem_threadpool", 0);
+    boost::interprocess::named_semaphore run_sem(boost::interprocess::open_or_create, "run_sem_threadpool", 0);
+    
+    ilrd::ThreadPool::FunctorTask<void> *obj = new ilrd::ThreadPool::FunctorTask<void>(ilrd::ThreadPool::threadToSleep());
+    std::shared_ptr<ilrd::ThreadPool::ITask> ptr2(obj);
+    for (size_t i = 0; i < m_numOfThreads; i++)
+    {
+        AddTask(ptr2, ilrd::ThreadPool::priority_t::HIGH);
+    }
+    for (size_t i = 0; i < m_numOfThreads; i++)
+    {
+        pause_sem.wait();
+    }
+
+    delete obj;
+}
+
+/* Resume */
+void ilrd::ThreadPool::Resume()
+{
+    boost::interprocess::named_semaphore run_sem(boost::interprocess::open_or_create, "run_sem_threadpool", 0);
+    for (size_t i = 0; i < m_numOfThreads; i++)
+    {
+        run_sem.post();
+    }
+}
+
+/* Set Num Of Thread */
+void ilrd::ThreadPool::SetNumOfThreads(size_t numOfThrads)
+{
+    if (numOfThrads >= m_numOfThreads)
+    {
+        OpenThreds(numOfThrads - m_numOfThreads);
+    }
+    else
+    {
+        CloseThreds(m_numOfThreads - numOfThrads);
+    }
+}
+
+
+/* ############################## Worker Thread imp.  ############################## */
+
+/* CTOR */
+ilrd::ThreadPool::WorkerThread::WorkerThread(ilrd::ThreadPool *TP)
+                        :m_stop(false), m_thread(new std::thread(ilrd::ThreadPool::RunThread, TP, this))
+{
+}
+
+/* DTOR */
+ilrd::ThreadPool::WorkerThread::~WorkerThread()
+{
+    if (!(m_thread->joinable()))
+    m_thread->join();
+    delete (m_thread);
+    m_thread = NULL;
+}
+
+/* Run Thread */
+void ilrd::ThreadPool::RunThread(ilrd::ThreadPool *TP, ilrd::ThreadPool::WorkerThread *worker)
 {
     std::shared_ptr<ilrd::ThreadPool::ITask> fun_ptr;
-    
-    while (!TP->m_pause)
+
+    while (worker->m_stop)
     {
         TP->m_TaskQueue.Pop(fun_ptr);
         fun_ptr->Run();
+        std::cout<<"thread id: "<<std::this_thread::get_id()<<" pause flag is: "<<worker->m_stop<<std::endl;
     }
-    std::thread::id this_id = std::this_thread::get_id();
-    std::cout<<"this is the run func"<<this_id<<std::endl;
 
 }
 
-ilrd::ThreadPool::WorkerThread::WorkerThread(ilrd::ThreadPool *TP)
-                        : m_thread(new std::thread(ilrd::ThreadPool::WorkerThread::RunThread, TP))
-{
-}
-
-ilrd::ThreadPool::WorkerThread::~WorkerThread()
-{}
-
+/* Get Function */
 std::thread::id ilrd::ThreadPool::WorkerThread::GetId()const
 {
     return m_thread->get_id();
 }
 
-/* void ilrd::ThreadPool::ITask::Run()
-{
+/* ##############################  ITask imp. ############################## */
 
+ilrd::ThreadPool::ITask::~ITask()
+{
 }
- */
+
+bool ilrd::ThreadPool::ITask::operator<(ilrd::ThreadPool::ITask &other)
+{
+    return (priority < other.priority);
+}
+
+void ilrd::ThreadPool::ITask::SetPriority(ilrd::ThreadPool::priority_t set_to)
+{
+    priority = set_to;
+}
+
+/* ##############################  Function Task imp. ############################## */
+
+/* CTOR */
+ilrd::ThreadPool::FunctionTask::FunctionTask(std::function<void(void)> ptr, priority_t pr): m_func(ptr)
+{
+    this->SetPriority(pr);
+}
+
+/* Run */
+void ilrd::ThreadPool::FunctionTask::Run()
+{
+    m_func();
+}
+
+
+/* ##############################   ############################## */
+void ilrd::ThreadPool::threadToSleep::operator()()
+{
+    boost::interprocess::named_semaphore pause_sem(boost::interprocess::open_only, "pause_sem_threadpool");
+    boost::interprocess::named_semaphore run_sem(boost::interprocess::open_only, "run_sem_threadpool");
+    pause_sem.post();
+    run_sem.wait();
+}
+
+
+ilrd::ThreadPool::badApple::badApple(ilrd::ThreadPool *TP):m_TP(TP)
+{}
+
+void ilrd::ThreadPool::badApple::operator()()
+{
+    boost::interprocess::named_semaphore dtor_sem(boost::interprocess::open_only, "dtor_semaphore");
+    ThreadPool::WorkerThread *thread_to_stop = NULL;
+    std::thread::id th_id = std::this_thread::get_id();
+    thread_to_stop = m_TP->m_ThreadMap[th_id];
+    thread_to_stop->m_stop = true;
+    m_TP->m_ThreadMapToDelete[th_id] = thread_to_stop;
+    dtor_sem.post();
+}
+
+
+
+
 
 
 class functor_task_2
 {
 private:
-    /* data */
+    static int x;
 public:
     bool operator()()
     {
-        std::cout<<"hello from task 2\n";
+        ++x;
+        std::cout<<"hello from task 2  ("<<x<<") \n";
         return true;
     }
 };
 
-
+int functor_task_2::x = 0;
 
 void TaskOne();
 
 int main()
 {
-    ilrd::ThreadPool pool(1,20);
-    std::function<void(void)> fun(TaskOne);
-    std::function<bool(void)> fun2(functor_task_2());
+    ilrd::ThreadPool pool(3,20);
+
     std::shared_ptr<ilrd::ThreadPool::FunctionTask> ptr(new ilrd::ThreadPool::FunctionTask(TaskOne, ilrd::ThreadPool::HIGH));
+    ilrd::ThreadPool::FunctorTask<bool> *obj = new ilrd::ThreadPool::FunctorTask<bool>(functor_task_2());
+    std::shared_ptr<ilrd::ThreadPool::ITask> ptr2(obj);
 
-    // std::shared_ptr<ilrd::ThreadPool::FunctorTask> ptr(new ilrd::ThreadPool::FunctorTask<bool(void)>(fun2));
-    ilrd::WaitableQueue<int, ilrd::PriorityQueue<int>> Q_k;
-    fun();
 
-    Q_k.Push(78);
-    Q_k.Push(9);
-    Q_k.Push(8);
-    int ppi;
-    Q_k.Pop(ppi);
-    std::cout<<" "<<ppi<<" ";
-    
-    Q_k.Pop(ppi);
-    std::cout<<" "<<ppi<<" ";
-    
-    Q_k.Pop(ppi);
-    std::cout<<" "<<ppi<<" ";
-    
-
-    fun2();
-
-/* 
-    std::shared_ptr<ilrd::ThreadPool::ITask> ptr = new ilrd::ThreadPool::FunctorTask<void ()>(fun); */
     pool.AddTask(ptr);
-    sleep(2);
-
+    pool.AddTask(ptr);
+    pool.AddTask(ptr2);
     pool.Pause();
+    std::cout<<"after pause\n";
+    sleep(1);
+    std::cout<<"noe resume\n";
+    pool.Resume();
+    pool.AddTask(ptr2);
+    pool.AddTask(ptr);
+    pool.AddTask(ptr2);
+    pool.AddTask(ptr);
+    pool.AddTask(ptr);
+    pool.AddTask(ptr2);
+    sleep(5);
+
     return 0;
 }
 
@@ -124,6 +269,8 @@ void TaskOne()
 {
     std::cout<<"hello from task one\n";
 }
+
+
 
 
 /* 

@@ -26,7 +26,7 @@ private:
 };
 
 
-template<class T, class queueType>
+template<typename T, typename queueType>
 bool ilrd::WaitableQueue<T, queueType>::Pop(T &outParam, time_t timeOut)
 {
     std::unique_lock<std::mutex> lock(this->m_mutex);

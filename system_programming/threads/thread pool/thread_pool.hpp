@@ -14,14 +14,13 @@
 
 
 
-
-
-
 namespace ilrd
 {
 
 class ThreadPool : private boost::noncopyable 
 {
+private:
+    class WorkerThread;
 public:
     class ITask;
     enum priority_t
@@ -34,36 +33,37 @@ public:
     explicit ThreadPool(size_t numOfThreads,unsigned int niceness);
     ~ThreadPool();
 
-    void AddTask(std::shared_ptr<ITask> task, priority_t priority = MED)
-    {
-        m_TaskQueue.Push(task);
-    }
-    void Pause()
-    {
-        m_pause = true;/* plus join semi-destructor */
-    }
-    void Resume()
-    {
-        /* semi-constructor just for the map */
-    }
+    void AddTask(std::shared_ptr<ITask> task, priority_t priority = MED);
+    void Pause();
+    void Resume();
     void SetNumOfThreads(size_t numOfThrads);
+    static void RunThread(ilrd::ThreadPool *TP, ilrd::ThreadPool::WorkerThread *worker);
+
+    class badApple
+    {
+    private:
+        ThreadPool *m_TP;
+    public:
+        badApple(ThreadPool *TP);
+        void operator()();
+
+    };
+    class threadToSleep
+    {
+    private:
+    public:
+        void operator()();
+    };
+
 
     class ITask : public boost::noncopyable
     {
     public:
         virtual void Run()=0;
-        virtual ~ITask()
-        {
+        virtual ~ITask();
+        virtual bool operator<(ITask &other);
+        void SetPriority(priority_t set_to);
 
-        }
-        virtual bool operator<(ITask &other)
-        {
-            return (priority < other.priority);
-        }
-        void SetPriority(priority_t set_to)
-        {
-            priority = set_to;
-        }
     private:
         priority_t priority;
     };
@@ -72,14 +72,8 @@ public:
     class FunctionTask : public ITask
     {
     public:
-        explicit FunctionTask(std::function<void(void)> ptr, priority_t pr = LOW): m_func(ptr)
-        {
-            this->SetPriority(pr);
-        }
-        void Run()
-        {
-            m_func();
-        }
+        explicit FunctionTask(std::function<void(void)> ptr, priority_t pr = LOW);
+        void Run();
     private:
         std::function<void(void)> m_func;
     };
@@ -94,10 +88,12 @@ public:
         }
         void Run()
         {
+
             m_functor();
         }
         RETURN_TYPE Get()
         {
+
             return m_functor();
         }
     private:
@@ -110,17 +106,24 @@ private:
     public: 
         WorkerThread(ThreadPool *TP);
         ~WorkerThread();
-        static void RunThread(ilrd::ThreadPool *TP);
         std::thread::id GetId() const;
+        void join()
+        {
+            if (!(m_thread->joinable()))
+            m_thread->join();
+        }
+        bool m_stop;
         std::thread *m_thread;
     private:
     };
 
-    bool m_pause;
+
     size_t m_numOfThreads;
+    void CloseThreds(size_t num_of_thread_to_close);
+    void OpenThreds(size_t num_of_thread_to_open);
     WaitableQueue <std::shared_ptr<ITask> , ilrd::PriorityQueue<std::shared_ptr<ITask>>> m_TaskQueue;
     std::map<std::thread::id ,WorkerThread*> m_ThreadMap;
-    friend WorkerThread;
+    std::map<std::thread::id ,WorkerThread*> m_ThreadMapToDelete;
 };
 
 
