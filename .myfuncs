@@ -54,6 +54,7 @@ export PATH
 alias c='clear'
 alias ds='cd ~/asaf-itach/ds'
 alias srt='cd ~/asaf-itach/ds/src/sorts'
+alias prj='cd /home/asafitach/asaf-itach/projects/final_project/framework'
 alias quiz='cd ~/asaf-itach/quizzes'
 alias sys='cd ~/asaf-itach/system_programming/'
 alias d='cgdb ./a.out'

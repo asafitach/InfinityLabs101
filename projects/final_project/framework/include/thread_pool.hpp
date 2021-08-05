@@ -19,7 +19,7 @@ namespace ilrd
 class ThreadPool : private boost::noncopyable 
 {
 public:
-    class ITask;
+    class ATask;
     enum priority_t
     {
         LOW = 0,
@@ -28,18 +28,18 @@ public:
     };
     static const int TIMEOUT = 500;
     explicit ThreadPool(size_t numOfThreads, unsigned int niceness);
-    ~ThreadPool();
-    void AddTask(std::shared_ptr<ITask> task, priority_t priority = MED);
+    virtual ~ThreadPool();
+    void AddTask(std::shared_ptr<ATask> task, priority_t priority = MED);
     void Pause();
     void Resume();
     void SetNumOfThreads(size_t numOfThrads);
     
 
-    class ITask : public boost::noncopyable  
+    class ATask : public boost::noncopyable  
     {
     public:
         virtual void Run()=0;
-        virtual ~ITask() {}
+        virtual ~ATask() {}
         priority_t GetPriority();
         void SetPriority(priority_t priority);
     private:
@@ -47,7 +47,7 @@ public:
     };
 
     
-    class FunctionTask : public ITask
+    class FunctionTask : public ATask
     {
     public:
         explicit FunctionTask(std::function<void(void)> ptr);
@@ -57,10 +57,10 @@ public:
     };
 
     template<typename RETURN_TYPE>
-    class FunctorTask : public ITask
+    class FutureTask : public ATask
     {
     public:
-        explicit FunctorTask(std::function<RETURN_TYPE(void)> functor);
+        explicit FutureTask(std::function<RETURN_TYPE(void)> functor);
         void Run();
         RETURN_TYPE Get();
     private:
@@ -104,7 +104,7 @@ private:
         ThreadPool *m_tp;
     };
 
-    WaitableQueue <std::shared_ptr<ITask>, Pqueue<std::shared_ptr<ITask>>> m_taskQueue;
+    WaitableQueue <std::shared_ptr<ATask>, PriorityQueue<std::shared_ptr<ATask>>> m_taskQueue;
     size_t m_numOfThreads;
     std::map<std::thread::id ,WorkerThread *> m_threadVector;
     std::atomic<bool> m_keepRunning;
@@ -114,20 +114,21 @@ private:
     
 
     void PauseAll();
+    void OpenThreads(size_t num_of_threads);
 };
 
 template<typename RETURN_TYPE>
-ThreadPool::FunctorTask<RETURN_TYPE>::FunctorTask(std::function<RETURN_TYPE(void)> functor) : m_functor(functor) { } 
+ThreadPool::FutureTask<RETURN_TYPE>::FutureTask(std::function<RETURN_TYPE(void)> functor) : m_functor(functor) { } 
                                                                     
 
 template<typename RETURN_TYPE>
-void ThreadPool::FunctorTask<RETURN_TYPE>::Run()
+void ThreadPool::FutureTask<RETURN_TYPE>::Run()
 {
     this->m_promiseObj.set_value(this->m_functor());   
 }
 
 template<typename RETURN_TYPE>
-RETURN_TYPE ThreadPool::FunctorTask<RETURN_TYPE>::Get()
+RETURN_TYPE ThreadPool::FutureTask<RETURN_TYPE>::Get()
 {
     std::future<RETURN_TYPE> futureObj;
     futureObj = this->m_promiseObj.get_future();

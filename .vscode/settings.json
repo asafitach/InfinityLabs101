@@ -66,6 +66,13 @@
         "iomanip": "cpp",
         "typeindex": "cpp",
         "variant": "cpp",
-        "sumof.h": "c"
+        "sumof.h": "c",
+        "strstream": "cpp",
+        "future": "cpp",
+        "cfenv": "cpp",
+        "valarray": "cpp",
+        "stl2gts": "cpp",
+        "*.ipp": "cpp",
+        "limits": "cpp"
     }
 }

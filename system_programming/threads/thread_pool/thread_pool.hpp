@@ -8,7 +8,7 @@
 #include <boost/core/noncopyable.hpp>  // boost::noncopyable
 #include <memory>
 #include "waitable_queue.hpp"
-#include "priority_queue.hpp"
+#include "pqueue_wrap.hpp"
 #include <iostream>
 #include <functional>
 
@@ -22,7 +22,7 @@ class ThreadPool : private boost::noncopyable
 private:
     class WorkerThread;
 public:
-    class ITask;
+    class ATask;
     enum priority_t
     {
         LOW = 0,
@@ -33,7 +33,7 @@ public:
     explicit ThreadPool(size_t numOfThreads,unsigned int niceness);
     ~ThreadPool();
 
-    void AddTask(std::shared_ptr<ITask> task, priority_t priority = MED);
+    void AddTask(std::shared_ptr<ATask> task, priority_t priority = MED);
     void Pause();
     void Resume();
     void SetNumOfThreads(size_t numOfThrads);
@@ -56,12 +56,12 @@ public:
     };
 
 
-    class ITask : public boost::noncopyable
+    class ATask : public boost::noncopyable
     {
     public:
         virtual void Run()=0;
-        virtual ~ITask();
-        virtual bool operator<(ITask &other);
+        virtual ~ATask();
+        virtual bool operator<(ATask &other);
         void SetPriority(priority_t set_to);
 
     private:
@@ -69,7 +69,7 @@ public:
     };
 
     
-    class FunctionTask : public ITask
+    class FunctionTask : public ATask
     {
     public:
         explicit FunctionTask(std::function<void(void)> ptr, priority_t pr = LOW);
@@ -79,7 +79,7 @@ public:
     };
 
     template<typename RETURN_TYPE>
-    class FunctorTask : public ITask
+    class FunctorTask : public ATask
     {
     public:
         explicit FunctorTask(std::function<RETURN_TYPE(void)> functor, priority_t pr = LOW): m_functor(functor)
@@ -121,7 +121,7 @@ private:
     size_t m_numOfThreads;
     void CloseThreds(size_t num_of_thread_to_close);
     void OpenThreds(size_t num_of_thread_to_open);
-    WaitableQueue <std::shared_ptr<ITask> , ilrd::PriorityQueue<std::shared_ptr<ITask>>> m_TaskQueue;
+    WaitableQueue <std::shared_ptr<ATask> , ilrd::PriorityQueue<std::shared_ptr<ITask>>> m_TaskQueue;
     std::map<std::thread::id ,WorkerThread*> m_ThreadMap;
     std::map<std::thread::id ,WorkerThread*> m_ThreadMapToDelete;
 };

@@ -40,7 +40,7 @@ ThreadPool::~ThreadPool()
 }
 
 
-void ThreadPool::AddTask(std::shared_ptr<ITask> task, priority_t priority /* = MED */)
+void ThreadPool::AddTask(std::shared_ptr<ATask> task, priority_t priority /* = MED */)
 {
     task->SetPriority(priority);
     this->m_taskQueue.Push(task);
@@ -63,7 +63,7 @@ ThreadPool::WorkerThread::WorkerThread(ThreadPool *tp) :    m_toPause(false)
 
 void ThreadPool::WorkerThread::RunThread(ThreadPool *tp, ThreadPool::WorkerThread *wt)
 {
-    std::shared_ptr<ITask> res;
+    std::shared_ptr<ATask> res;
     while (!wt->m_toPause)
     {
         if(tp->m_taskQueue.Pop(res, ThreadPool::TIMEOUT))
@@ -106,12 +106,12 @@ void ThreadPool::FunctionTask::Run()
     m_ptr();
 }
 
-ThreadPool::priority_t ThreadPool::ITask::GetPriority()
+ThreadPool::priority_t ThreadPool::ATask::GetPriority()
 {
     return (m_priority);
 }
 
-void ThreadPool::ITask::SetPriority(ThreadPool::priority_t priority)
+void ThreadPool::ATask::SetPriority(ThreadPool::priority_t priority)
 {
     m_priority = priority;
 }
@@ -142,7 +142,7 @@ void ThreadPool::Pause()
     {
         cout <<"Sleeping Pill" << endl;
         ThreadPool::FunctionTask *sleepTask = new ThreadPool::FunctionTask(SleepingPill(this));
-        std::shared_ptr<ThreadPool::ITask> task(sleepTask);
+        std::shared_ptr<ThreadPool::ATask> task(sleepTask);
         this->m_taskQueue.Push(task);
     }
 
@@ -168,7 +168,7 @@ void ThreadPool::SetNumOfThreads(size_t numOfThrads)
         for(size_t i = numOfThrads; i < m_numOfThreads; i++)
         {
             ThreadPool::FunctionTask *badApple = new ThreadPool::FunctionTask(BadApple(this));
-            std::shared_ptr<ThreadPool::ITask> task(badApple);
+            std::shared_ptr<ThreadPool::ATask> task(badApple);
             this->m_taskQueue.Push(task);
         }
 
@@ -201,7 +201,7 @@ void ThreadPool::SetNumOfThreads(size_t numOfThrads)
     m_numOfThreads = numOfThrads;
 }
 
-bool operator<(std::shared_ptr<ThreadPool::ITask> task1, std::shared_ptr<ThreadPool::ITask> task2)
+bool operator<(std::shared_ptr<ThreadPool::ATask> task1, std::shared_ptr<ThreadPool::ATask> task2)
 {
     return (task1->GetPriority() < task2->GetPriority());
 }

@@ -46,7 +46,7 @@ void ilrd::ThreadPool::CloseThreds(size_t num_of_thread_to_close)
 {
     boost::interprocess::named_semaphore dtor_sem(boost::interprocess::open_or_create, "dtor_semaphore", 0);
     ilrd::ThreadPool::FunctorTask<void> *obj = new ilrd::ThreadPool::FunctorTask<void>(ilrd::ThreadPool::badApple(this));
-    std::shared_ptr<ilrd::ThreadPool::ITask> ptr2(obj);
+    std::shared_ptr<ilrd::ThreadPool::ATask> ptr2(obj);
     for (size_t i = 0; i < num_of_thread_to_close; i++)
     {
         AddTask(ptr2, ilrd::ThreadPool::priority_t::HIGH);
@@ -74,7 +74,7 @@ void ilrd::ThreadPool::CloseThreds(size_t num_of_thread_to_close)
 }
 
 /* Add Task */
-void ilrd::ThreadPool::AddTask(std::shared_ptr<ilrd::ThreadPool::ITask> task, ilrd::ThreadPool::priority_t priority)
+void ilrd::ThreadPool::AddTask(std::shared_ptr<ilrd::ThreadPool::ATask> task, ilrd::ThreadPool::priority_t priority)
 {
     m_TaskQueue.Push(task);
 }
@@ -86,7 +86,7 @@ void ilrd::ThreadPool::Pause()
     boost::interprocess::named_semaphore run_sem(boost::interprocess::open_or_create, "run_sem_threadpool", 0);
     
     ilrd::ThreadPool::FunctorTask<void> *obj = new ilrd::ThreadPool::FunctorTask<void>(ilrd::ThreadPool::threadToSleep());
-    std::shared_ptr<ilrd::ThreadPool::ITask> ptr2(obj);
+    std::shared_ptr<ilrd::ThreadPool::ATask> ptr2(obj);
     for (size_t i = 0; i < m_numOfThreads; i++)
     {
         AddTask(ptr2, ilrd::ThreadPool::priority_t::HIGH);
@@ -143,7 +143,7 @@ ilrd::ThreadPool::WorkerThread::~WorkerThread()
 /* Run Thread */
 void ilrd::ThreadPool::RunThread(ilrd::ThreadPool *TP, ilrd::ThreadPool::WorkerThread *worker)
 {
-    std::shared_ptr<ilrd::ThreadPool::ITask> fun_ptr;
+    std::shared_ptr<ilrd::ThreadPool::ATask> fun_ptr;
 
     while (worker->m_stop)
     {
@@ -162,16 +162,16 @@ std::thread::id ilrd::ThreadPool::WorkerThread::GetId()const
 
 /* ##############################  ITask imp. ############################## */
 
-ilrd::ThreadPool::ITask::~ITask()
+ilrd::ThreadPool::ATask::~ATask()
 {
 }
 
-bool ilrd::ThreadPool::ITask::operator<(ilrd::ThreadPool::ITask &other)
+bool ilrd::ThreadPool::ATask::operator<(ilrd::ThreadPool::ATask &other)
 {
     return (priority < other.priority);
 }
 
-void ilrd::ThreadPool::ITask::SetPriority(ilrd::ThreadPool::priority_t set_to)
+void ilrd::ThreadPool::ATask::SetPriority(ilrd::ThreadPool::priority_t set_to)
 {
     priority = set_to;
 }
@@ -243,7 +243,7 @@ int main()
 
     std::shared_ptr<ilrd::ThreadPool::FunctionTask> ptr(new ilrd::ThreadPool::FunctionTask(TaskOne, ilrd::ThreadPool::HIGH));
     ilrd::ThreadPool::FunctorTask<bool> *obj = new ilrd::ThreadPool::FunctorTask<bool>(functor_task_2());
-    std::shared_ptr<ilrd::ThreadPool::ITask> ptr2(obj);
+    std::shared_ptr<ilrd::ThreadPool::ATask> ptr2(obj);
 
 
     pool.AddTask(ptr);

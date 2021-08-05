@@ -10,7 +10,7 @@ using namespace ilrd;
 using std::cout;
 using std::endl;
 
-class MyTask : public ThreadPool::ITask
+class MyTask : public ThreadPool::ATask
 {
    void Run()
    {
@@ -42,15 +42,15 @@ int main()
     tp.AddTask(ptr);
 
     std::function<void(void)> funcPtr = &MyTask2;  // std::function - wrapper to fnction or functor
-    std::shared_ptr<ThreadPool::ITask> ptr2(new ThreadPool::FunctionTask(funcPtr));
+    std::shared_ptr<ThreadPool::ATask> ptr2(new ThreadPool::FunctionTask(funcPtr));
     tp.AddTask(ptr2);
 
-    std::shared_ptr<ThreadPool::ITask> ptr3 = std::make_shared<ThreadPool::FunctionTask>(MyTask2);
+    std::shared_ptr<ThreadPool::ATask> ptr3 = std::make_shared<ThreadPool::FunctionTask>(MyTask2);
     tp.AddTask(ptr3);
     tp.AddTask(ptr3);
 
 
-    std::shared_ptr<ThreadPool::FunctorTask<int>> task_ptr = std::make_shared<ThreadPool::FunctorTask<int>>(Functor());
+    std::shared_ptr<ThreadPool::FutureTask<int>> task_ptr = std::make_shared<ThreadPool::FutureTask<int>>(Functor());
     tp.AddTask(task_ptr);
     cout << task_ptr->Get() << endl;
 

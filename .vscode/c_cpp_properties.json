@@ -13,7 +13,8 @@
                 "/home/asafitach/asaf-itach/cpp_fs/include",
                 "${workspaceFolder}/cpp_fs",
                 "${workspaceFolder}/system_programming/server client",
-                "${workspaceFolder}/cpp_fs/lib"
+                "${workspaceFolder}/cpp_fs/lib",
+                "/home/asafitach/asaf-itach/projects/final_project/framework/include"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",
