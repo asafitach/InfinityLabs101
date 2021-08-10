@@ -7,7 +7,7 @@
 /******************************************************************************/
 int Coupling(unsigned char chr)
 {
-	size_t index = 0;
+/* 	size_t index = 0;
 	size_t count = 0;
 	int check = chr & 1;
 	
@@ -23,12 +23,23 @@ int Coupling(unsigned char chr)
 		chr >>= 1;
 	}
 	
+	return (count); */
+
+	char mask1 = 0x1;
+	char mask2 = 0x2;
+	size_t count = 0;
+
+	for (; mask1 != (char)0x80; mask1 <<= 1, mask2 <<= 1)
+	{
+		count += (mask1 & chr) && (mask2 & chr);
+	}
+	
 	return (count);
 }
 
 int CountSetBits(unsigned char chr)
 {
-	int count = 0;
+/* 	int count = 0;
 
 	while (chr != 0)
 	{
@@ -36,7 +47,13 @@ int CountSetBits(unsigned char chr)
 		count++;
 	}
 	
-	return (count);
+	return (count); */
+
+	char lut[16] = {0, 1, 1, 2,
+					1, 2, 2, 3,
+					1, 2, 2, 3,
+					2, 3, 3, 4};
+	return((int)(lut[chr & 0xf] + lut[chr & 0x0f]));
 }
 
 int main()

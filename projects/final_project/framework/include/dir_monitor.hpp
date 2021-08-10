@@ -18,13 +18,20 @@ public:
     void Unregister(ACallback<const std::string&> *callback);
 
 private:
-    static void Monitor(void);
+    static void Monitor(DirMonitor *monitored_file);
 
-    Dispatcher<const std::string&> m_dispatcher;
     const std::string m_monitoredDirPath;
     bool m_stopFlag;
+    Dispatcher<const std::string&> m_dispatcher;
     std::thread m_monitorThread;
 };
+
+class MonitorFile: public ACallback<std::string&>
+{
+    MonitorFile();
+    void Notify()    
+
+}
 
 }//ilrd
 

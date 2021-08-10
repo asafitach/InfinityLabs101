@@ -62,6 +62,7 @@ void inorder(node_t* root)
         return;
     inorder(root->left);
     cout << root->data << " ";
+    inorder(root->right);
 /*     inorder(root->parent);
  */}
 
@@ -70,7 +71,7 @@ int main()
 {
     node_t* root = newNode(10);
     node_t *rt = NULL;
-    root->left = newNode(4);
+    root->left = newNode(4);    
     root->left->left = newNode(2);
     root->left->right = newNode(5);
     root->left->left->left = newNode(1);
@@ -78,9 +79,17 @@ int main()
     root->left->left->right = newNode(3);
     root->left->right->right = newNode(6);
  
+    inorder(root);
+    cout<<endl;
+    
     BstToList(root);
  
     cout << "The Inorder traversal after "
             "flattening binary tree ";
-    inorder(rt);
+    while (NULL != rt)
+    {
+        cout<<" "<<rt->data<<" ";
+        rt = rt->left;
+    }
+    
 }

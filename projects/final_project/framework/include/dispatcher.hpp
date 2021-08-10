@@ -170,7 +170,7 @@ namespace ilrd
     {
         if (!m_notifyDeath)
         {
-            this->SetDispatcherToNull();
+            this->SetDispatcher(NULL);
             std::cout<<"dispatcher finished - no need to wait ant longer\n";
         }
         else
