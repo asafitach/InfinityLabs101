@@ -124,7 +124,7 @@ int CheckParren(char *str)
 			}
 			else if (!IsEmpty(stack))
 			{
-				return 1;
+				return 0;
 			}
 			
 		}
