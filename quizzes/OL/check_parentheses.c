@@ -99,12 +99,16 @@ void Destroy(stack_t *stack)
 
 int IsEmpty(stack_t *stack)
 {
-	return (!!(stack->index));
+	return ((stack->index) == 0);
 }
 
 int CheckParren(char *str)
 {
 	stack_t *stack = Create(strlen(str));
+	char lut[256] = {0};
+	lut['['] = ']';
+	lut['{'] = '}';
+	lut['('] = ')';
 
 	while (str != 0)
 	{
@@ -114,10 +118,15 @@ int CheckParren(char *str)
 		}
 		else if (*str == ')' || *str == ']' || *str == '}')
 		{
-			if (IsEmpty(stack) || (*str + 1) != Pop(stack))
+			if (IsEmpty(stack) && *str != lut[Pop(stack)])
+			{
+				return 0;
+			}
+			else if (!IsEmpty(stack))
 			{
 				return 1;
 			}
+			
 		}
 		
 		str++;
@@ -125,12 +134,13 @@ int CheckParren(char *str)
 
 	if (IsEmpty(stack))
 	{
-		return 1;
+		Destroy(stack);
+		return 0;
 	}
 	
 
 	Destroy(stack);
-	return 0;
+	return 1;
 }
 
 

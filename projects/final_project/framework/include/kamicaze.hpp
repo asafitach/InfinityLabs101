@@ -1,7 +1,8 @@
 #ifndef __KAMIKAZE_HPP__
 #define __KAMIKAZE_HPP__
 
-# include "scheduler.hpp"
+#include "handleton.hpp"
+#include "scheduler.hpp"
 
 namespace ilrd
 {

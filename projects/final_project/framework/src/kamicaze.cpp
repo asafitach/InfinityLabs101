@@ -1,6 +1,3 @@
-#include <sha
-#include "handleton.hpp"
-#include "scheduler.hpp"
 #include "kamicaze.hpp"
 
 ilrd::Kamikaze::Kamikaze(std::function<bool ()> action, time_t delay): m_action(action), m_delaySec(delay)

@@ -52,12 +52,6 @@ public:
     virtual ~IReactorPlatform(){}
 };
 
-class LinuxReactorPlatform: public IReactorPlatform 
-{
-public:
-    virtual std::list<Reactor::ModeAndFd> Listen(std::list<Reactor::ModeAndFd>); 
-    virtual ~LinuxReactorPlatform(){}
-};
 
 }//namespace ilrd
 
