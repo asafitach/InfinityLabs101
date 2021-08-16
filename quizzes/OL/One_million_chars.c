@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #define ALL_ASCII 256
+from git hub
 
 void PrintLut(size_t lut[])
 {
